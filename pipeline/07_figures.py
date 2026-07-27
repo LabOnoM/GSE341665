@@ -37,6 +37,52 @@ plt.rcParams.update({"font.size": 8, "axes.titlesize": 9, "axes.titleweight": "b
                      "axes.spines.right": False})
 
 
+
+# ---------- signed-significance colour encoding ----------
+# Bars in panels 5B, 5C, 6D and 6E are coloured by SIGNED significance:
+# hue carries direction (blue = down, red = up, grey = not significant) and
+# intensity carries -log10(adjusted P). This is a diverging encoding with a
+# neutral midpoint, per the project's visualisation rules — sequential ramps are
+# for unsigned magnitude, diverging for polarity, never a rainbow.
+#
+# It is applied ONLY where colour was previously redundant with the bar's own
+# direction. Panels 4C and 5D coluor by GENOTYPE (CON vs dcKO), which nothing else
+# encodes, and their programme-level P values are all at the n=3 permutation floor
+# of 0.10 — colouring those by P would render identical bars and imply a gradient
+# the design cannot produce.
+PCAP = 50.0   # -log10 adjusted P at which the ramp saturates; median is ~18
+
+def sig_colors(lfc, padj, cap=PCAP):
+    """Diverging colour by sign(log2FC) x min(-log10 padj, cap)."""
+    lfc = np.asarray(lfc, dtype=float)
+    padj = np.asarray(padj, dtype=float)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        nlp = -np.log10(np.where((padj > 0) & np.isfinite(padj), padj, np.nan))
+    nlp = np.where(np.isfinite(nlp), nlp, cap)       # padj == 0 -> saturate
+    nlp = np.clip(nlp, 0, cap)
+    signed = np.sign(lfc) * nlp
+    return plt.get_cmap("RdBu_r")(TwoSlopeNorm(0, -cap, cap)(signed))
+
+
+def sig_colorbar(fig, host_ax, rect=(0.42, 0.86, 0.50, 0.045),
+                 label="signed −log10 adjusted P"):
+    """Compact colourbar drawn INSIDE `host_ax` at `rect` (axes fraction).
+
+    Deliberately an inset rather than a normal colorbar: passing several axes to
+    fig.colorbar makes matplotlib steal space from the union of their extents, which
+    in a 2x2 layout runs the bar straight through the neighbouring panel.
+    """
+    cax = host_ax.inset_axes(rect)
+    sm = plt.cm.ScalarMappable(cmap="RdBu_r", norm=TwoSlopeNorm(0, -PCAP, PCAP))
+    cb = fig.colorbar(sm, cax=cax, orientation="horizontal")
+    cb.set_ticks([-PCAP, 0, PCAP])
+    cb.set_ticklabels([f"↓ ≥{PCAP:.0f}", "n.s.", f"↑ ≥{PCAP:.0f}"])
+    cb.ax.tick_params(labelsize=4.6, length=1.6, pad=1)
+    cb.set_label(label, fontsize=4.8, labelpad=3.5)
+    cb.outline.set_linewidth(0.4)
+    return cb
+
+
 def _load():
     deg = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False,
                      float_precision="round_trip")  # see note below
@@ -134,11 +180,12 @@ def figure5(deg, tpm, dec, ai):
     # (B) AI gene log2FC
     axB = fig.add_subplot(gs[0, 1])
     a = ai.dropna(subset=["log2FoldChange"]).sort_values("log2FoldChange")
-    cols = [RED if v > 0 else BLUE for v in a.log2FoldChange]
+    # colour now encodes signed significance, not bare direction
     # Label with the mouse symbol: the BioMart human-ortholog column is NaN for ~41%
     # of tested genes, which both breaks the axis and is the defect that corrupted the
     # enrichment itself (see 16_ai_gene_enrichment.py).
-    axB.barh(a["external_gene_name"], a.log2FoldChange, color=cols)
+    axB.barh(a["external_gene_name"], a.log2FoldChange,
+             color=sig_colors(a.log2FoldChange, a.padj))
     axB.axvline(0, c="k", lw=.6); axB.set_xlabel("log2 fold change")
     # Never hard-code a statistic into a figure (CLAUDE.md §2). Read the value that
     # 16_ai_gene_enrichment.py computed, and fail loudly if it is not there.
@@ -158,7 +205,8 @@ def figure5(deg, tpm, dec, ai):
     wq = PROGRAMS["Wound"]           # display exactly the scored program
     d = deg.dropna(subset=["external_gene_name"]).groupby("external_gene_name")["log2FoldChange"].mean()
     wv = d.reindex([g for g in wq if g in d.index]).dropna().sort_values()
-    axC.barh(wv.index, wv.values, color=RED)
+    wp = deg.dropna(subset=["external_gene_name"]).groupby("external_gene_name")["padj"].first()
+    axC.barh(wv.index, wv.values, color=sig_colors(wv.values, wp.reindex(wv.index).values))
     axC.axvline(0, c="k", lw=.6); axC.set_xlabel("log2 fold change")
     axC.set_title("C  Wound / stress program (up)"); axC.tick_params(labelsize=6)
     for lbl in axC.get_yticklabels(): lbl.set_style("italic")
@@ -175,6 +223,7 @@ def figure5(deg, tpm, dec, ai):
     axD.set_ylabel("% of cells (deconv.)")
     axD.set_title("D  Composition: ameloblasts preserved,\nmesenchyme down", fontsize=8)
     axD.legend(frameon=False, fontsize=7)
+    sig_colorbar(fig, axB, rect=(0.34, 0.06, 0.62, 0.040))
     fig.suptitle("Cell-intrinsic ameloblast identity switch", x=.02, ha="left", fontweight="bold")
     save(fig, "Figure5_identity_switch")
 
@@ -214,8 +263,9 @@ def figure6(deg, mod, spec):
     st = d.reindex(PROGRAMS["Sterol"]).dropna().sort_values(ascending=False).head(9)
     ifn = d.reindex(PROGRAMS["IFN"]).dropna().sort_values().head(7)
     v = pd.concat([st, ifn])
-    cols = [RED if x > 0 else BLUE for x in v]
-    ax[3].barh(range(len(v)), v.values, color=cols)
+    # colour now encodes signed significance, not bare direction
+    vp = deg.dropna(subset=["external_gene_name"]).groupby("external_gene_name")["padj"].first()
+    ax[3].barh(range(len(v)), v.values, color=sig_colors(v.values, vp.reindex(v.index).values))
     ax[3].set_yticks(range(len(v))); ax[3].set_yticklabels(v.index, fontsize=6, style="italic")
     ax[3].axvline(0, c="k", lw=.6); ax[3].set(xlabel="log2 FC", title="D  Sterol up / IFN down")
     ax[3].invert_yaxis()
@@ -223,10 +273,12 @@ def figure6(deg, mod, spec):
     de = deg.dropna(subset=["external_gene_name"]).groupby("external_gene_name")["log2FoldChange"].mean()
     erk = ["Ereg","Areg","Dusp6","Dusp1","Dusp4","Egr1","Dusp5","Fosl1","Spry4","Fosb","Spry2","Fos"]
     ev = de.reindex(erk).dropna().sort_values()
-    ax[4].barh(range(len(ev)), ev.values, color=RED)
+    ep = deg.dropna(subset=["external_gene_name"]).groupby("external_gene_name")["padj"].first()
+    ax[4].barh(range(len(ev)), ev.values, color=sig_colors(ev.values, ep.reindex(ev.index).values))
     ax[4].set_yticks(range(len(ev))); ax[4].set_yticklabels(ev.index, fontsize=6, style="italic")
     ax[4].axvline(0, c="k", lw=.6)
     ax[4].set(xlabel="log2 FC", title="E  ERK-activation signature")
+    sig_colorbar(fig, ax[3], rect=(0.03, 0.90, 0.42, 0.040))
     fig.suptitle("Signaling-to-metabolism convergence (ERK / SREBP2 activation)",
                  x=.02, ha="left", fontweight="bold")
     save(fig, "Figure6_metabolic_convergence")
