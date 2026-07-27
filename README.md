@@ -33,8 +33,8 @@ flowchart TD
     classDef out fill:#fbeeee,stroke:#b2182b,color:#3a1113,stroke-width:2px;
 
     subgraph WET["🧫 Wet lab (archived BBRC package)"]
-        G1["K14-cre; Smad4 fl/fl<br/>RNA-seq material + Figure 1"]
-        G2["K14-creER; Smad4 fl/fl<br/>Figures 2, 3, S1, S2"]
+        G1["K14-cre; Smad4 fl/fl<br/>Figure 1 (in vivo phenotype)"]
+        G2["K14-creER; Smad4 fl/fl<br/>RNA-seq + Figures 2, 3, S1, S2"]
         PH["Enamel hypoplasia,<br/>ameloblast disorganisation"]
         BLOT["p-Smad1/5/9, p-Smad2/3, p-p38 down;<br/>ERK1/2 is a brake — U0126 rescues"]
         G1 --> PH
@@ -93,6 +93,7 @@ flowchart TD
     PANEL --> P17
     MGI --> P17
     SCREF --> P05
+    G2 -. sequenced material .-> RAW
     RAW -. deposit .-> GEO
     STAR -. archive .-> ZEN
     EXP -. archive .-> ZEN

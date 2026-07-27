@@ -19,7 +19,7 @@ rather than inferred.
 | Field | Value |
 |---|---|
 | Samples | 6: CON1, CON2, CON3 (control) and dcKO1, dcKO2, dcKO3 (Smad4 conditional knockout) |
-| Genotype | dcKO: **K14-cre; Smad4^fl/fl^** (constitutive epithelial deletion). CON: Cre-negative Smad4^fl/fl^ littermates. The tamoxifen-inducible K14-creER line was used for other experiments in the study but **not** for the sequenced material. |
+| Genotype | dcKO: **K14-creER; Smad4^fl/fl^** (tamoxifen-inducible epithelial deletion at the secretory stage). CON: Cre-negative Smad4^fl/fl^ littermates. The constitutive K14-cre line was used for the in vivo enamel phenotype (Figure 1), not for the sequenced material. |
 | Groups | 2 groups × 3 biological replicates |
 | Tissue | Dental epithelium (mandibular molar tooth germ) |
 | Layout | Paired-end, 150 bp |

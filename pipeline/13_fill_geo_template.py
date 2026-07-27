@@ -62,9 +62,9 @@ LIBS = [
  ("CON1", 1, "CON", "Smad4^fl/fl (Cre-negative littermate control)"),
  ("CON2", 2, "CON", "Smad4^fl/fl (Cre-negative littermate control)"),
  ("CON3", 3, "CON", "Smad4^fl/fl (Cre-negative littermate control)"),
- ("dcKO1", 1, "dcKO", "K14-cre; Smad4^fl/fl (dental-epithelium conditional knockout)"),
- ("dcKO2", 2, "dcKO", "K14-cre; Smad4^fl/fl (dental-epithelium conditional knockout)"),
- ("dcKO3", 3, "dcKO", "K14-cre; Smad4^fl/fl (dental-epithelium conditional knockout)"),
+ ("dcKO1", 1, "dcKO", "K14-creER; Smad4^fl/fl (tamoxifen-inducible dental-epithelium conditional knockout)"),
+ ("dcKO2", 2, "dcKO", "K14-creER; Smad4^fl/fl (tamoxifen-inducible dental-epithelium conditional knockout)"),
+ ("dcKO3", 3, "dcKO", "K14-creER; Smad4^fl/fl (tamoxifen-inducible dental-epithelium conditional knockout)"),
 ]
 
 PROC1, PROC2 = "GSE_processed_gene_raw_counts.txt", "GSE_processed_gene_TPM.txt"
