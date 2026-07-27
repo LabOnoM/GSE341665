@@ -64,21 +64,22 @@ def sig_colors(lfc, padj, cap=PCAP):
     return plt.get_cmap("RdBu_r")(TwoSlopeNorm(0, -cap, cap)(signed))
 
 
-def sig_colorbar(fig, host_ax, rect=(0.42, 0.86, 0.50, 0.045),
-                 label="signed −log10 adjusted P"):
-    """Compact colourbar drawn INSIDE `host_ax` at `rect` (axes fraction).
+def sig_colorbar(fig, host_ax, rect=(0.93, 0.12, 0.030, 0.42),
+                 label="signed −log10 adj. P"):
+    """Vertical colourbar drawn INSIDE `host_ax` at `rect` (axes fraction).
 
-    Deliberately an inset rather than a normal colorbar: passing several axes to
-    fig.colorbar makes matplotlib steal space from the union of their extents, which
-    in a 2x2 layout runs the bar straight through the neighbouring panel.
+    Vertical, and one per panel: a horizontal bar spanning a panel's width is very
+    likely to run into the bars themselves or the neighbouring panel, and a single
+    shared bar leaves the other panel unlabelled. An inset is used rather than
+    fig.colorbar(ax=...), which steals space from the union of the given axes.
     """
     cax = host_ax.inset_axes(rect)
     sm = plt.cm.ScalarMappable(cmap="RdBu_r", norm=TwoSlopeNorm(0, -PCAP, PCAP))
-    cb = fig.colorbar(sm, cax=cax, orientation="horizontal")
+    cb = fig.colorbar(sm, cax=cax, orientation="vertical")
     cb.set_ticks([-PCAP, 0, PCAP])
-    cb.set_ticklabels([f"↓ ≥{PCAP:.0f}", "n.s.", f"↑ ≥{PCAP:.0f}"])
-    cb.ax.tick_params(labelsize=4.6, length=1.6, pad=1)
-    cb.set_label(label, fontsize=4.8, labelpad=3.5)
+    cb.set_ticklabels([f"↓{PCAP:.0f}", "n.s.", f"↑{PCAP:.0f}"])
+    cb.ax.tick_params(labelsize=4.4, length=1.5, pad=1.2)
+    cb.set_label(label, fontsize=4.6, labelpad=2.5)
     cb.outline.set_linewidth(0.4)
     return cb
 
@@ -223,7 +224,8 @@ def figure5(deg, tpm, dec, ai):
     axD.set_ylabel("% of cells (deconv.)")
     axD.set_title("D  Composition: ameloblasts preserved,\nmesenchyme down", fontsize=8)
     axD.legend(frameon=False, fontsize=7)
-    sig_colorbar(fig, axB, rect=(0.34, 0.06, 0.62, 0.040))
+    sig_colorbar(fig, axB, rect=(0.62, 0.08, 0.028, 0.40))   # 5B: empty right-lower
+    sig_colorbar(fig, axC, rect=(0.94, 0.06, 0.026, 0.38))   # 5C: empty right-lower
     fig.suptitle("Cell-intrinsic ameloblast identity switch", x=.02, ha="left", fontweight="bold")
     save(fig, "Figure5_identity_switch")
 
@@ -278,7 +280,8 @@ def figure6(deg, mod, spec):
     ax[4].set_yticks(range(len(ev))); ax[4].set_yticklabels(ev.index, fontsize=6, style="italic")
     ax[4].axvline(0, c="k", lw=.6)
     ax[4].set(xlabel="log2 FC", title="E  ERK-activation signature")
-    sig_colorbar(fig, ax[3], rect=(0.03, 0.90, 0.42, 0.040))
+    sig_colorbar(fig, ax[3], rect=(0.045, 0.55, 0.030, 0.40))  # 6D: empty upper-left
+    sig_colorbar(fig, ax[4], rect=(0.93, 0.06, 0.028, 0.40))   # 6E: empty right-lower
     fig.suptitle("Signaling-to-metabolism convergence (ERK / SREBP2 activation)",
                  x=.02, ha="left", fontweight="bold")
     save(fig, "Figure6_metabolic_convergence")
