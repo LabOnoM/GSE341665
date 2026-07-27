@@ -214,9 +214,9 @@ All code is provided in `scripts/JDR_reanalysis/` and is deterministic (fixed se
 
 ### B2. Gene-program scoring
 
-The four curated programs (membership and citations in the main Methods) are defined
-once in `scripts/JDR_reanalysis/programs.py` and imported by every analysis and figure
-script, so that scoring and display always use identical gene sets.
+The four curated programs are defined once in `scripts/JDR_reanalysis/programs.py` and
+imported by every analysis and figure script, so that scoring and display always use
+identical gene sets. Membership is tabulated below.
 
 **Two membership decisions are recorded explicitly.** (i) *Krt76* is among the most
 strongly reduced transcripts in the mutant epithelium (log2 fold change −4.64) but was
@@ -228,16 +228,37 @@ program because it behaves with the rest of that program, but it is classically 
 macrophage metalloelastase and may be contributed in part by non-epithelial cells; this
 caveat is stated in the main text.
 
+**Program membership.** The four programs follow published definitions and are defined
+once in `scripts/JDR_reanalysis/programs.py`:
+
+| Program | *n* | Members | Basis |
+|---|---|---|---|
+| Ameloblast identity | 16 | *Amelx, Ambn, Enam, Amtn, Mmp20, Klk4, Acp4, Lamc2* (matrix and maturation proteases); *Dlx3, Sp6, Shh, Gli1, Wnt10a, Trp63, Nfic, Sp7* (lineage transcription factors) | Lacruz et al. 2017; Bartlett 2013; Balic and Thesleff 2015; Zhang et al. 2015; Rhodes et al. 2021; Lee et al. 2018 |
+| Sterol biosynthesis | 20 | *Hmgcr, Hmgcs1, Mvd, Fdps, Sqle, Msmo1, Idi1, Ldlr, Insig1* (nine experimentally defined direct SREBP targets), *Srebf2*, and *Fdft1, Lss, Cyp51, Dhcr7, Dhcr24, Nsdhl, Mvk, Pmvk, Acat2, Sc5d* | Horton et al. 2003 |
+| Wound / stress | 14 | *Mmp10, Mmp12, Mmp13, Ereg, Areg, Ptgs2, Il1a, Cxcl2, Csf3, Fosl1, Mt1, Mt2, Slc7a11, Sprr1a* | Werner and Grose 2003; Ge et al. 2017 |
+| Interferon-stimulated | 18 | *Irf7, Irf9, Stat1, Isg15, Mx1, Oasl1, Oas1a, Oas2, Oas3, Ifit1, Ifit2, Ifit3, Ifi44, Ifi27l2a, Rsad2, Usp18, Bst2, Ccl5* | Interferome (Rusinova et al. 2013) |
+
 For each sample, a **program score** was computed as the mean of gene-wise *z*-scores
 of log2(TPM + 1) across program members — the combined gene-set *z*-score of Lee et al.
-(2008). Genotypes were compared by two-tailed *t* test.
+(2008).
 
-| Program | *n* genes | CON | dcKO | *P* |
+**Statistics: exact permutation, not *t* test.** Genotypes were compared by an exact
+permutation test over all C(6,3) = 20 label assignments. A parametric *t* test is **not**
+valid on these scores: each gene is *z*-scored across the same six samples before
+averaging, which forces a coherent program toward ±1 in the two groups and drives
+within-group variance toward zero, returning *P* values (10⁻⁶–10⁻⁸) that measure the
+arithmetic of the scoring procedure rather than biological replication. With three animals
+per genotype, **0.10 is the smallest *P* value the design can produce**, and all four
+programs attain it — i.e. the maximum separation the design can express. Program scores are
+therefore reported as **effect sizes**; statistical support for individual genes rests on
+the gene-level DESeq2 statistics.
+
+| Program | *n* genes | CON | dcKO | Exact permutation *P* |
 |---|---|---|---|---|
-| Ameloblast identity | 16 | +0.90 | −0.90 | 1.6 × 10⁻⁶ |
-| Sterol biosynthesis | 20 | −0.91 | +0.91 | 6.9 × 10⁻⁸ |
-| Wound / stress | 14 | −0.91 | +0.91 | 3.1 × 10⁻⁷ |
-| Interferon-stimulated | 18 | +0.88 | −0.88 | 1.1 × 10⁻⁵ |
+| Ameloblast identity | 16 | +0.90 | −0.90 | 0.10 (floor) |
+| Sterol biosynthesis | 20 | −0.91 | +0.91 | 0.10 (floor) |
+| Wound / stress | 14 | −0.91 | +0.91 | 0.10 (floor) |
+| Interferon-stimulated | 18 | +0.88 | −0.88 | 0.10 (floor) |
 
 ### B3. Single-cell reference and annotation
 
@@ -308,6 +329,55 @@ The complete chain regenerates from raw inputs. After an unrelated hardware fail
 destroyed the intermediate files, the reference was re-downloaded and re-annotated from
 scratch and the deconvolution reproduced identically (56.9% → 61.3%, *P* = 0.006;
 9.4% → 3.6%, *P* = 0.002).
+
+### B6. Amelogenesis-imperfecta gene panel, ortholog mapping and enrichment
+
+**Panel source.** Human amelogenesis-imperfecta (AI) genes were taken from the Genomics
+England **PanelApp** panel 269, "Amelogenesis imperfecta", **version 4.37** (panel version
+dated 24 June 2026; retrieved 27 July 2026 by `17_fetch_ai_panel.py`, which pins the
+version and fails loudly rather than falling back to a stored copy). Only genes rated
+**GREEN** (high, diagnostic-grade evidence) were used, giving **31 genes**. An external,
+versioned, publicly retrievable panel was used in preference to a list curated in-house so
+that the exact gene set is reproducible by a reader. The **15 amber- and red-rated genes**
+on the same panel were excluded and are named here rather than filtered silently: *AIRE,
+ALPL, AMTN, CLDN16, CLDN19, DSPP, ITGB4, KCNJ1, LAMC2, NECTIN4, SMARCD2, SMOC2, TMEM165,
+TP63, TUFT1*. Per-gene provenance (OMIM phenotype MIM, inheritance, primary reference,
+mouse ortholog) is given in **Supplementary Table S2**; **Supplementary Table S1** records
+the verification audit of the superseded hand-curated list.
+
+**Ortholog mapping.** Human genes were mapped to mouse orthologs using the Mouse Genome
+Informatics vertebrate homology report (`HOM_MouseHumanSequence`), accepting only
+unambiguous one-to-one homology classes. Three genes required explicit manual resolution
+for nomenclature reasons, each documented in the analysis code:
+
+| Gene | Resolution | Reason |
+|---|---|---|
+| *AMELX* | → *Amelx* | its MGI homology class also contains the Y-linked paralog *AMELY*, so the 1:1 filter rejects it |
+| *C4orf26* | → *Odaph* | PanelApp retains the retired symbol; HGNC renamed the gene *ODAPH* |
+| *FAM83H* | → *Fam83h* | renamed *SACK1H* by HGNC in February 2026, but carried as *Fam83h* in the Ensembl release 116 annotation used here |
+
+Matching was performed on **mouse symbols**. The human-ortholog annotation column of the
+differential-expression table was deliberately *not* used: it is empty for **40.9%** of
+tested genes, and because `Series.isin()` treats a missing value as a non-match, using it
+silently scored seven genuine, strongly down-regulated AI genes as non-risk. The resolution
+step therefore raises an error if any panel gene cannot be located, rather than proceeding
+on a truncated panel.
+
+**Enrichment and threshold sensitivity.** Over-representation of panel genes among
+down- versus up-regulated genes was assessed by a one-sided Fisher exact test. The test
+used **adjusted *P* < 0.05 with no fold-change threshold**, because the core enamel genes
+that carry the signal have |log2 fold change| ≈ 0.4 and are excluded by the fold-change
+cutoff used to define DEGs. The result is threshold-dependent and is reported as such:
+
+| Threshold | Panel down | Non-panel down | Panel up | Non-panel up | Odds ratio | *P* (one-sided) |
+|---|---|---|---|---|---|---|
+| adjusted *P* < 0.05, no fold-change cutoff | 18 | 2060 | 2 | 2107 | 9.21 | 1.7 × 10⁻⁴ |
+| adjusted *P* < 0.05 and \|log2FC\| > 0.25 | 15 | 1778 | 2 | 1656 | 6.99 | 1.9 × 10⁻³ |
+| adjusted *P* < 0.05 and \|log2FC\| > 1 (the DEG rule) | 0 | 354 | 1 | 208 | — | 1.00 |
+
+At the |log2 fold change| > 1 cutoff used to define the DEG list, only one panel gene
+reaches significance and the test is uninformative. The two significant up-regulated panel
+genes are *ODAPH* (C4orf26; log2 fold change +1.94) and *ORAI1* (+0.72).
 
 ---
 

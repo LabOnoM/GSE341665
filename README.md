@@ -136,7 +136,8 @@ smad4kotooth/
 ├── reference/                ← genome + annotation — not in Git (FILELIST.md)
 └── results/
     ├── figures/              ·  computational Figures 4–6, S3, S4 (PNG)
-    └── supplementary_data/   ·  Supplementary Data S1–S5 + AI panel + enrichment tables
+    └── supplementary_data/   ·  Supplementary Data S1–S5, AI panel, enrichment sensitivity,
+                              ·  and Tables S1–S2 (verified OMIM/PMID provenance)
 ```
 
 Each `data/` and `reference/` folder is **intentionally empty except for a `FILELIST.md`**
