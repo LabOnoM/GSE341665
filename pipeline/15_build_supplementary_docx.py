@@ -139,7 +139,7 @@ def main():
         "carried in the Ensembl release 116 annotation. Two entries are flagged: PEX26 has no "
         "enamel-specific publication (the cited paper is the peroxisome-biogenesis-disorder primary "
         "report), and PLXNB2 has no OMIM phenotype MIM assigned yet.\n\n"
-        + prov.panel_markdown() + "\n"
+        + prov.panel_markdown() + "\n" + prov.panel_footnote() + "\n"
     )
     open(BUILD, "w").write(TITLE + body.rstrip() + "\n" + figs + tables + DATA_TABLE)
     subprocess.run(["pandoc", os.path.basename(BUILD), "-o", OUT,

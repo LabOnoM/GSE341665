@@ -209,6 +209,74 @@ def panel_markdown() -> str:
     return h + rows
 
 
+def panel_footnote() -> str:
+    """Footnote defining every abbreviation that appears in Supplementary Table S2.
+
+    Kept next to the data so the two cannot drift; the abbreviation list was derived by
+    extracting every acronym actually present in the rendered table, not written from
+    memory.
+    """
+    return """
+**Table S2 footnote — abbreviations and conventions.**
+
+*Columns.* **Gene (human)** — HGNC-approved human gene symbol, as listed by PanelApp.
+**Mouse** — the MGI-approved mouse ortholog symbol (italic), as carried in the Ensembl
+release 116 annotation used for the differential-expression analysis; this is the symbol
+on which genes were matched. **OMIM phenotype MIM** — the Mendelian Inheritance in Man
+(OMIM) identifier of the *phenotype* entry, not the gene entry; each was confirmed to be
+of type "phenotype" and to map to the stated gene in NCBI `mim2gene_medgen`.
+**Phenotype** — the OMIM phenotype designation. **Inheritance** — mode of inheritance for
+that phenotype. **Primary reference (PMID)** — the report establishing the gene-phenotype
+link, with its PubMed identifier (PMID); each was confirmed to exist and to concern the
+gene's enamel or amelogenesis-imperfecta phenotype. **Notes** — caveats affecting how the
+row should be read.
+
+*Inheritance codes.* **AD**, autosomal dominant; **AR**, autosomal recessive; **XL**,
+X-linked.
+
+*Disease and phenotype abbreviations.* **AI**, amelogenesis imperfecta; **EB**,
+epidermolysis bullosa (**junctional EB**, the junctional subtype); **CRAC**, calcium
+release-activated calcium channel; **DASS**, dental anomalies and short stature;
+**SSASKS**, short stature, amelogenesis imperfecta and skeletal dysplasia with scoliosis;
+**PBD**, peroxisome biogenesis disorder; **LOF**, loss of function.
+
+*Amelogenesis-imperfecta subtype nomenclature.* OMIM numbers AI subtypes by a Roman
+numeral for the defect class followed by a letter (and, where several genes cause the same
+class, a digit): **type I** = hypoplastic (too little enamel formed, of normal
+mineralisation); **type II** = hypomaturation (full-thickness but incompletely matured,
+soft enamel); **type III** = hypocalcified (full-thickness but poorly mineralised). Hence
+type IA, IB, IE, IF, IG, IH, IJ and IK are hypoplastic forms; types IIA1-IIA6 are
+hypomaturation forms; and types IIIA and IIIC are hypocalcified forms. Where a parenthetical
+descriptor follows the subtype it restates this class for readability; rows without one
+follow the same Roman-numeral rule.
+
+*Gene-symbol changes.* Two genes are listed under the symbol PanelApp uses, with the
+current HGNC symbol given in Notes: **C4orf26** is now **ODAPH** (odontogenesis-associated
+phosphoprotein), and **FAM83H** was renamed **SACK1H** (scaffolding CK1 anchoring protein
+H) in February 2026. The mouse column retains *Odaph* and *Fam83h* because those are the
+symbols present in the Ensembl release 116 annotation on which matching was performed.
+
+*Symbols.* An em dash (**—**) in the OMIM column means no phenotype MIM has been assigned
+yet; this applies only to PLXNB2, whose AI phenotype was first reported in 2024.
+
+*Note-column meanings.* **"syndromic"** — enamel involvement occurs as one feature of a
+broader syndrome rather than as isolated AI. **"also causes junctional EB"** — the same
+gene causes both an AI-spectrum enamel defect and junctional epidermolysis bullosa.
+**"recessive LOF"** — the enamel phenotype belongs to the recessive loss-of-function
+disorder, not to the dominant gain-of-function disorder caused by the same gene.
+**"PBD primary report; no enamel-specific paper"** — for PEX26 the cited reference
+establishes the peroxisome biogenesis disorder; enamel involvement is inferred from the
+disorder spectrum rather than from a dedicated study. **"human evidence recent and
+limited"** — for SP6 the human AI association rests on one dominant family with functional
+corroboration plus one de novo case.
+
+*Panel definition.* All 31 genes are the GREEN-rated ("high evidence", diagnostic-grade)
+members of the Genomics England PanelApp panel 269, "Amelogenesis imperfecta", version
+4.37, retrieved 27 July 2026. Amber- and red-rated genes on the same panel were excluded
+and are named in Supplementary Methods B6.
+"""
+
+
 def summary() -> str:
     n_wrong_pmid = sum(1 for r in AUDIT if "correct" not in r.claimed_pmid_actual)
     n_wrong_mim = sum(1 for r in AUDIT if "correct" not in r.claimed_mim_actual)
