@@ -22,6 +22,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.colors import TwoSlopeNorm
 from programs import PROGRAMS
+import volcano_panel
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT  = os.path.join(ROOT, "scripts", "JDR_reanalysis", "output")
@@ -62,7 +63,13 @@ def save(fig, name):
 
 # ---------- Figure 4: transcriptome landscape ----------
 def figure4(deg, tpm, mod):
-    fig, ax = plt.subplots(1, 3, figsize=(11, 3.4))
+    # Panel B is a three-band broken axis (see volcano_panel.py), so Figure 4 uses a
+    # gridspec with a nested spec for B rather than a flat 1x3 subplots grid, and is
+    # taller than the old 3.4 in to give those bands room.
+    fig = plt.figure(figsize=(11, 4.35))
+    outer = fig.add_gridspec(1, 3, width_ratios=[1, 1.06, 1], wspace=0.30,
+                             left=0.055, right=0.985, top=0.88, bottom=0.145)
+    ax = [fig.add_subplot(outer[0]), None, fig.add_subplot(outer[2])]
     # (A) standard PCA on top-2000 variable genes (log2 TPM, gene-centered, no unit scaling)
     lg = np.log2(tpm + 1)
     top = lg.var(axis=1).sort_values(ascending=False).head(2000).index
@@ -75,23 +82,9 @@ def figure4(deg, tpm, mod):
         ax[0].scatter(pc[m, 0], pc[m, 1], c=col, s=70, label=g, edgecolor="k", lw=.4)
     ax[0].set(xlabel=f"PC1 ({ev[0]:.1f}%)", ylabel=f"PC2 ({ev[1]:.1f}%)", title="A  PCA")
     ax[0].legend(frameon=False, fontsize=7)
-    # (B) volcano
-    d = deg.dropna(subset=["log2FoldChange", "padj"]).copy()
-    d["nlp"] = -np.log10(d["padj"].clip(lower=1e-300))
-    sig = (d.padj < 0.05) & (d.log2FoldChange.abs() > 1)
-    ax[1].scatter(d.loc[~sig, "log2FoldChange"], d.loc[~sig, "nlp"], s=3, c=GREY, alpha=.4, rasterized=True)
-    ax[1].scatter(d.loc[sig & (d.log2FoldChange < 0), "log2FoldChange"], d.loc[sig & (d.log2FoldChange < 0), "nlp"], s=5, c=BLUE, alpha=.7, rasterized=True)
-    ax[1].scatter(d.loc[sig & (d.log2FoldChange > 0), "log2FoldChange"], d.loc[sig & (d.log2FoldChange > 0), "nlp"], s=5, c=RED, alpha=.7, rasterized=True)
-    # label a curated, spatially-separated set (avoid the padj-floor pile-up at centre)
-    for g in ["Krt76","Oasl1","Mx1","Isg15","Wnt10a","Fdps","Ldlr","Hmgcr","Ptgs2","Mmp12","Ereg","Sqle"]:
-        r = d[d.external_gene_name == g]
-        if len(r):
-            ax[1].annotate(g, (r.log2FoldChange.iloc[0], r.nlp.iloc[0]), xytext=(0, 4),
-                           textcoords="offset points", fontsize=6, style="italic", ha="center")
-    ax[1].axvline(-1, ls="--", c="k", lw=.5); ax[1].axvline(1, ls="--", c="k", lw=.5)
-    ax[1].axhline(-np.log10(0.05), ls="--", c="k", lw=.5)
-    ax[1].set(xlabel="log2 fold change (dcKO/CON)", ylabel="-log10 adjusted P",
-              title="B  Volcano (563 DEGs)", xlim=(-6, 6), ylim=(-8, 335))
+    # (B) volcano — three-band broken y-axis + de-collided labels
+    vinfo = volcano_panel.draw(fig, outer[1], deg)
+
     # (C) module means by genotype
     order = ["Identity", "IFN", "Sterol", "Wound"]
     means = mod.groupby("group")[order].mean().reindex(["CON", "dcKO"])
@@ -102,8 +95,16 @@ def figure4(deg, tpm, mod):
     ax[2].set_xticklabels(order, rotation=20, ha="right")
     ax[2].set(ylabel="program z-score", title="C  Program shift")
     ax[2].legend(frameon=False, fontsize=7)
-    fig.suptitle("Smad4-deficient dental-epithelium transcriptome", x=.02, ha="left", fontweight="bold")
-    fig.tight_layout(rect=(0, 0, 1, .96)); save(fig, "Figure4_transcriptome")
+    fig.suptitle("Smad4-deficient dental-epithelium transcriptome", x=.02, y=.985,
+                 ha="left", fontweight="bold")
+    clashes = volcano_panel.text_collisions(fig)
+    if clashes:
+        raise RuntimeError(f"Figure 4 has {len(clashes)} overlapping text pairs: {clashes[:6]}")
+    print(f"  Figure4 panel B: {vinfo['n_sig']} DEGs ({vinfo['n_up']} up / {vinfo['n_dn']} down); "
+          f"underflow row {vinfo['n_underflow']} genes ({vinfo['n_underflow_sig']} DEGs); "
+          f"{vinfo['n_offscale']} off-scale; max measured -log10P {vinfo['max_measured_nlp']:.1f}; "
+          f"text collisions 0")
+    save(fig, "Figure4_transcriptome")
 
 
 # ---------- Figure 5: identity switch ----------
