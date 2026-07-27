@@ -178,7 +178,7 @@ the code **fails loudly** rather than substituting a stored fallback. See `ENVIR
 | | Value |
 |---|---|
 | DEGs (padj < 0.05, \|log2FC\| > 1) | **563** (209 up / 354 down) of 15,803 tested |
-| Human AI-gene enrichment (down vs up) | **OR 9.21, P = 1.7 × 10⁻⁴** (PanelApp 269 v4.37, 31 GREEN genes) |
+| Human AI-gene enrichment (down vs up) | **OR 9.21, P = 1.7 × 10⁻⁴** (PanelApp 269 v4.37, 31 GREEN genes; 18 of 20 significant panel genes are down-regulated) |
 | Ameloblast fraction (deconvolution) | preserved/increased (maturation 57 → 61%, *P* = 0.006) → switch is cell-intrinsic |
 | Sterol (SREBP2) programme | coordinately up; ERK-driven, Smad-de-repressed |
 
@@ -186,6 +186,38 @@ The amelogenesis-imperfecta gene panel is taken from **Genomics England PanelApp
 version 4.37, GREEN genes only) so the gene set is versioned and reproducible; each gene's OMIM
 phenotype MIM and primary reference are verified in `pipeline/ai_gene_provenance.py` and
 Supplementary Tables S1–S2.
+
+---
+
+## Data-integrity notes
+
+This repository records defects found during pre-submission auditing and how they were
+resolved, because the fixes constrain how the code must be used.
+
+**Read `DEG_table.csv` with `float_precision="round_trip"`.** Very small adjusted *P*
+values are stored in full decimal notation (*Amelx* has 91 leading zeros) and pandas'
+default float parser silently flushes them to `0.0`. This made 420 genes look like
+underflow when only **5** genuinely are, and fabricated the −log10 *P* distribution that
+an earlier version of Figure 4B was designed around. DEG counts and the enrichment were
+**unaffected** — every threshold is `padj < 0.05`, and 0 < 0.05 — so the corruption was
+confined to displays and exported values.
+
+**The AI-gene panel is external and version-pinned.** Its hand-curated predecessor had a
+largely fabricated provenance column (18 of 20 PMIDs cited unrelated papers). It is
+replaced by Genomics England PanelApp panel 269 v4.37, retrieved by
+`pipeline/17_fetch_ai_panel.py`, which fails loudly rather than falling back to a stored
+copy. Every OMIM phenotype MIM and primary PMID for all 31 genes was verified against
+NCBI; see `results/supplementary_data/AI_gene_provenance_TableS1_S2.md`.
+
+**Program scores are effect sizes, not *t* tests.** Each gene is *z*-scored across the
+same six samples before averaging, which collapses within-group variance; a parametric
+*t* test on the result returns *P* values that measure the scoring arithmetic rather than
+biological replication. With n = 3 vs 3 the exact permutation floor is **P = 0.10**, and
+all four programs attain it.
+
+**Genotypes differ by experiment.** The sequenced material is
+*K14-creER;Smad4^fl/fl^* (tamoxifen-inducible); the in vivo enamel phenotype in Figure 1
+uses the constitutive *K14-cre* line.
 
 ---
 

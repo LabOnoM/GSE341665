@@ -32,6 +32,7 @@ SAMP = ["TPM_CON_1","TPM_CON_2","TPM_CON_3","TPM_dcKO_1","TPM_dcKO_2","TPM_dcKO_
 GRP  = ["CON"]*3 + ["dcKO"]*3
 BLUE, RED, GREY = "#2166AC", "#B2182B", "#BBBBBB"
 plt.rcParams.update({"font.size": 8, "axes.titlesize": 9, "axes.titleweight": "bold",
+                     "axes.titlelocation": "left",   # panel labels A/B/C left-aligned
                      "figure.dpi": 150, "savefig.dpi": 300, "axes.spines.top": False,
                      "axes.spines.right": False})
 
@@ -71,7 +72,14 @@ def figure4(deg, tpm, mod):
     outer = fig.add_gridspec(1, 3, width_ratios=[1, 1.06, 1], wspace=0.30,
                              left=0.055, right=0.985, top=0.88, bottom=0.145)
     ax = [fig.add_subplot(outer[0]), None, fig.add_subplot(outer[2])]
-    # (A) standard PCA on top-2000 variable genes (log2 TPM, gene-centered, no unit scaling)
+    # (A) PCA on log2(TPM+1) of the top-2000 variable genes, gene-centered, no unit
+    # scaling, plotted as PC SCORES (U*S).
+    # NOTE: this is NOT the same computation as the primary pipeline's QC figures
+    # 00.RawData/Bulk-RNAseq/00-{1,2}.{Before,After}BatchCorrect_PCA.png, which plot
+    # unit-norm eigenvectors (axis range +/-0.4) of the RUV-processed counts and report
+    # PC1 = 50.16% (before) and 58.77% (after). This panel uses raw TPM with no RUV
+    # adjustment, hence PC1 = 53.4%. The difference is the input matrix and the scaling,
+    # not an error; the legend states which is shown so the two cannot be confused.
     lg = np.log2(tpm + 1)
     top = lg.var(axis=1).sort_values(ascending=False).head(2000).index
     M = lg.loc[top].T.values                 # samples x genes

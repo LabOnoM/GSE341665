@@ -44,10 +44,10 @@ REFS = {
  "horton":  "Horton JD, Shah NA, Warrington JA, et al. Combined analysis of oligonucleotide microarray data from transgenic and knockout mice identifies direct SREBP target genes. Proc Natl Acad Sci U S A. 2003;100(21):12027–12032.",
  "interferome":"Rusinova I, Forster S, Yu S, et al. Interferome v2.0: an updated database of annotated interferon-regulated genes. Nucleic Acids Res. 2013;41(Database issue):D1040–D1046.",
  "leez":    "Lee E, Chuang H-Y, Kim J-W, Ideker T, Lee D. Inferring pathway activity toward precise disease classification. PLoS Comput Biol. 2008;4(11):e1000217.",
- "chiba":   "Chiba Y, Saito K, Martin D, et al. Single-cell RNA-sequencing from mouse incisor reveals dental epithelial cell-type specific genes. Front Cell Dev Biol. 2020;8:841. [complete author list before submission]",
+ "chiba":   "Chiba Y, Saito K, Martin D, Boger ET, Rhodes C, Yoshizaki K, et al. Single-cell RNA-sequencing from mouse incisor reveals dental epithelial cell-type specific genes. Front Cell Dev Biol. 2020;8:841.",
  "li11":    "Li J, Huang X, Xu X, Mayo J, Bringas P Jr, Jiang R, Wang S, Chai Y. SMAD4-mediated WNT signaling controls the fate of cranial neural crest cells during tooth morphogenesis. Development. 2011;138(10):1977–1989.",
  "kotzka":  "Kotzka J, Lehr S, Roth G, Avci H, Knebel B, Müller-Wieland D. Insulin-activated Erk-mitogen-activated protein kinases phosphorylate sterol regulatory element-binding protein-2 at serine residues 432 and 455 in vivo. J Biol Chem. 2004;279(21):22404–22411.",
- "zhang21": "Zhang J, et al. The absence of muscle segment homeobox 2 leads to the pyroptosis of ameloblasts by inducing squamous epithelial hyperplasia in the enamel organ. J Cell Mol Med. 2021;25(13):6429–6437. [complete author list before submission]",
+ "zhang21": "Zhang J, Xu Y, Zhao Y, Bai J, Xu M, Li C, et al. The absence of muscle segment homeobox 2 leads to the pyroptosis of ameloblasts by inducing squamous epithelial hyperplasia in the enamel organ. J Cell Mol Med. 2021;25(13):6429–6437.",
  "klein":   "Klein OD, Lyons DB, Balooch G, Marshall GW, Basson MA, Peterka M, Boran T, Peterkova R, Martin GR. An FGF signaling loop sustains the generation of differentiated progeny from stem cells in mouse incisors. Development. 2008;135(2):377–385.",
  "goldberg":"Goldberg M, Septier D. Phospholipids in amelogenesis and dentinogenesis. Crit Rev Oral Biol Med. 2002;13(3):276–290.",
  "wang":    "Wang S, Link F, Han M, et al. The interplay of TGF-β1 and cholesterol orchestrating hepatocyte cell fate. Cell Mol Gastroenterol Hepatol. 2024;17(4):567–587.",
@@ -196,6 +196,27 @@ def main():
             if not re.search(rf"^{re.escape(h)}\s*$", plain, flags=re.M)]
     if lost:
         raise RuntimeError(f"section heading(s) absent from the built .docx: {lost}")
+    # PAYLOAD GUARD. Headings are not the only thing pandoc silently eats. Markdown
+    # metacharacters in ordinary text are consumed too: the significance key
+    # "*P < 0.05, **P < 0.01, ..." was parsed as emphasis and deleted from the .docx,
+    # and unclosed carets (Smad4^fl/fl) rendered as literal '^'. Assert the literal
+    # payload survived into the built document.
+    flat = re.sub(r"\s+", " ", plain)   # pandoc's plain output line-wraps
+    if flat.count("*P < 0.05, **P < 0.01, ***P < 0.001, ****P < 0.0001") != 2:
+        raise RuntimeError(
+            "the significance key must appear exactly twice (Figure 2 and Figure 3 legends); "
+            "if it is missing, pandoc parsed the asterisks as emphasis — escape them as "
+            "\\*P < 0.05 ... in the source")
+    # Pandoc's plain output writes a REAL superscript as "^(...)", so only a caret that
+    # is NOT followed by "(" indicates an unclosed superscript that rendered literally.
+    bare = [ln.strip()[:70] for ln in plain.split("\n") if re.search(r"\^(?!\()", ln)]
+    if bare:
+        raise RuntimeError(
+            f"literal '^' in the built .docx (unclosed superscript, e.g. Smad4^fl/fl "
+            f"instead of Smad4^fl/fl^): {bare[:3]}")
+    for note in ("[complete author list", "[[", "]]"):
+        if note in plain and note == "[complete author list":
+            raise RuntimeError("an editorial to-do note is inside the built manuscript")
     print(f"section headings present: {len(REQUIRED)}/{len(REQUIRED)}")
     print("references cited:", len(order))
     print("unmapped author-year citations:", leftover if leftover else "none")
