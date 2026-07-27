@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the associated manuscript and this repository."
+title: "smad4kotooth: reproducible analysis of epithelial Smad4 loss in the dental epithelium"
+abstract: >-
+  Code and processed data for the study of how epithelial Smad4 deletion reprograms
+  ameloblast identity and metabolism, from bulk RNA-seq differential expression through
+  gene-program scoring, single-cell deconvolution, and figure generation.
+type: software
+license: MIT
+repository-code: "https://github.com/LabOnoM/smad4kotooth"
+version: "0.1.0"
+# date-released: [[insert on release]]
+# [[Author list mirrors the manuscript byline; confirm it matches the final submission.]]
+authors:
+  - { family-names: Zheng, given-names: Xinyu }
+  - { family-names: Su,    given-names: Dian }
+  - { family-names: Hu,    given-names: Fei }
+  - { family-names: Liu,   given-names: Xianghui }
+  - { family-names: Wu,    given-names: Jinshuo }
+  - { family-names: He,    given-names: Zhiwei }
+  - { family-names: Xie,   given-names: Xiaohua }
+keywords:
+  - amelogenesis imperfecta
+  - Smad4
+  - ameloblast
+  - RNA-seq
+  - SREBP2
+  - cholesterol biosynthesis
+identifiers:
+  - type: doi
+    value: "[[Zenodo DOI — insert on release]]"
+    description: "Zenodo archive of code and large primary data"
+preferred-citation:
+  type: article
+  title: "Epithelial Smad4 loss reprograms ameloblast identity and metabolism"
+  authors:
+    - { family-names: Zheng, given-names: Xinyu }
+    - { family-names: Su,    given-names: Dian }
+    - { family-names: Hu,    given-names: Fei }
+    - { family-names: Liu,   given-names: Xianghui }
+    - { family-names: Wu,    given-names: Jinshuo }
+    - { family-names: He,    given-names: Zhiwei }
+    - { family-names: Xie,   given-names: Xiaohua }
+  journal: "[[Journal of Molecular Medicine — update on acceptance]]"
+  year: 2026
