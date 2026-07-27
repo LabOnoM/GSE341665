@@ -37,7 +37,8 @@ plt.rcParams.update({"font.size": 8, "axes.titlesize": 9, "axes.titleweight": "b
 
 
 def _load():
-    deg = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False)
+    deg = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False,
+                     float_precision="round_trip")  # see note below
     for c in ["log2FoldChange", "padj", "baseMean"]:
         deg[c] = pd.to_numeric(deg[c], errors="coerce")
     tpm = pd.read_csv(os.path.join(OUT, "TPM_matrix.csv"), skiprows=1, low_memory=False)

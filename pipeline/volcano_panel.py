@@ -20,17 +20,27 @@ The fix is a three-band broken y-axis plus a real label placer, which is enough 
 that keeping it inside 07_figures.py would swamp that file. 07_figures.py imports
 `draw()` from here.
 
+PARSING (the reason this file was rewritten)
+--------------------------------------------
+DEG_table.csv writes very small adjusted P values in FULL DECIMAL notation — Amelx is
+stored as 0.000...0300196 with 91 leading zeros. Pandas' default float parser flushes
+such strings to 0.0. That made 420 genes look like underflow when only 5 genuinely are,
+and it produced a fake empty band between -log10 P of 30 and 200. An earlier version of
+this panel was built on that corrupted distribution and cut the "empty" band out — while
+it actually holds ~320 genes. Every read of the DEG table now passes
+float_precision="round_trip". DEG counts were never affected (all thresholds are
+padj < 0.05, and 0 < 0.05), only the P-value magnitudes.
+
 DESIGN NOTES
 ------------
-* The three bands are the three genuinely disjoint populations in the data:
-  the categorical padj = 0 row, a sparse "extreme but measurable" band, and the bulk.
-  The cut band is asserted empty at run time — if the data ever change so that genes
-  fall inside it, the assertion fails loudly rather than hiding them.
-* The underflow row carries NO y information. Points are given a deterministic
-  (seeded) vertical spread purely so they stop collapsing into a bar; the row is
-  labelled "padj = 0 (underflow)" and the manuscript legend states that its height is
-  not a measured quantity. This is a presentation choice that is disclosed, not a
-  silent transformation.
+* The corrected distribution is CONTINUOUS — there is no empty band to cut — so this
+  panel uses a single axis with a square-root y scale rather than a broken axis. A break
+  would assert a discontinuity the data do not contain. The square root is monotone, so
+  gene ranking is preserved; the scale change is stated in the legend.
+* Only 5 genes have padj that is genuinely 0 (not representable in double precision).
+  They cannot be placed on a -log10 axis, so they are drawn as triangles on a separate
+  labelled row above the finite maximum, and the legend says their height is not a
+  measured value.
 * Nothing is hard-coded: every count, tick and annotation is derived from the table at
   draw time (CLAUDE.md §6.2).
 """
@@ -248,90 +258,70 @@ def draw(fig, spec, deg, title_prefix="B"):
     n_uf_sig = int((d.underflow & d.sig).sum())
     n_off = int((d.log2FoldChange < XLO).sum() + (d.log2FoldChange > XHI).sum())
 
-    hi = d[(~d.underflow) & (d.nlp > BREAK)]
-    lo = d[(~d.underflow) & (d.nlp <= BREAK)]
-    assert len(hi) + len(lo) + n_uf == len(d)
-    # the excised band must genuinely be empty, or we would be hiding data
-    assert lo.nlp.max() < BREAK and hi.nlp.min() > 150.0, (
-        "the empty -log10 P band assumed by this panel no longer holds; "
-        "re-inspect the distribution before plotting")
+    finite = d[~d.underflow]
+    zeros = d[d.underflow]
+    assert len(finite) + len(zeros) == len(d)
+    ymax = float(finite.nlp.max())
+    # Row for the genuinely-unrepresentable genes, placed above the finite maximum.
+    zero_y = ymax * 1.14
 
-    gs = spec.subgridspec(3, 1, height_ratios=[1.15, 0.95, 3.05], hspace=0.18)
-    ax_uf, ax_hi, ax_lo = (fig.add_subplot(gs[0]), fig.add_subplot(gs[1]),
-                           fig.add_subplot(gs[2]))
+    ax = fig.add_subplot(spec)
 
-    def scatter(ax, sub, yvals):
+    def fwd(v):
+        return np.sqrt(np.clip(v, 0, None))
+
+    def inv(v):
+        return np.square(v)
+
+    ax.set_yscale("function", functions=(fwd, inv))
+
+    def scatter(sub, yvals, marker="o", size=None):
         x = sub.log2FoldChange.values
         y = np.asarray(yvals, dtype=float)
         off = (x < XLO) | (x > XHI)
         xc = np.clip(x, XLO + XPAD, XHI - XPAD)
-        groups = ((~sub.sig.values, GREY, 2.2, 0.28, 1),
+        groups = ((~sub.sig.values, GREY, 2.2, 0.30, 1),
                   (sub.sig.values & (x < 0), BLUE, 5.0, 0.75, 2),
                   (sub.sig.values & (x > 0), RED, 5.0, 0.75, 2))
-        for m, col, s, al, z in groups:
+        for m, col, s_, al, z in groups:
             mm = m & ~off
-            ax.scatter(xc[mm], y[mm], s=s, c=col, alpha=al, linewidths=0,
-                       rasterized=True, zorder=z)
-            for i in np.where(m & off)[0]:      # off-scale -> outward arrowhead
+            ax.scatter(xc[mm], y[mm], s=(size or s_), c=col, alpha=al, linewidths=0,
+                       marker=marker, rasterized=True, zorder=z)
+            for i in np.where(m & off)[0]:
                 ax.scatter(xc[i], y[i], s=13, c=col, alpha=0.9, zorder=z + 1,
                            marker=("<" if x[i] < 0 else ">"), linewidths=0)
 
-    uf = d[d.underflow].copy()
-    uf_y = np.random.default_rng(0).uniform(-JIT, JIT, len(uf))  # seeded, decorative
-    scatter(ax_uf, uf, uf_y)
-    scatter(ax_hi, hi, hi.nlp.values)
-    scatter(ax_lo, lo, lo.nlp.values)
+    scatter(finite, finite.nlp.values)
+    scatter(zeros, np.full(len(zeros), zero_y), marker="^", size=16)
 
-    for ax in (ax_uf, ax_hi, ax_lo):
-        ax.set_xlim(XLO, XHI)
-        ax.axvline(-1, ls="--", c="k", lw=0.5, zorder=0)
-        ax.axvline(1, ls="--", c="k", lw=0.5, zorder=0)
-        ax.spines["right"].set_visible(False)
-        ax.spines["top"].set_visible(False)
+    ax.set_xlim(XLO, XHI)
+    ax.set_ylim(-0.6, zero_y * 1.06)
+    ax.axvline(-1, ls="--", c="k", lw=0.5, zorder=0)
+    ax.axvline(1, ls="--", c="k", lw=0.5, zorder=0)
+    ax.axhline(-np.log10(0.05), ls="--", c="k", lw=0.5, zorder=0)
+    ax.spines["right"].set_visible(False)
+    ax.spines["top"].set_visible(False)
+    ax.set_yticks([0, 5, 20, 50, 100, 200])
+    ax.set_yticklabels([str(t) for t in [0, 5, 20, 50, 100, 200]])
+    # dotted rule + tick marking the non-representable row
+    ax.axhline(zero_y, ls=":", c="0.45", lw=0.6, zorder=0)
+    ax.text(XLO + 0.15, zero_y, f"padj = 0 ({len(zeros)})", fontsize=5.6, color="0.35",
+            va="center", ha="left",
+            bbox=dict(facecolor="white", edgecolor="none", pad=0.6), zorder=5)
+    ax.set_xlabel("log2 fold change (dcKO/CON)")
+    ax.set_ylabel("-log10 adjusted P  (square-root scale)")
 
-    ax_uf.set_ylim(-0.95, 1.15)
-    ax_uf.set_yticks([0.0])
-    ax_uf.set_yticklabels(["padj = 0\n(underflow)"], fontsize=6.0)
-    ax_uf.spines["left"].set_bounds(-JIT - 0.18, JIT + 0.18)
-    ax_uf.spines["bottom"].set_visible(False)
-    ax_uf.tick_params(axis="x", bottom=False, labelbottom=False)
+    ax_lo = ax_hi = ax_uf = ax        # single axes; keep names for the label placer below
 
-    # ticks derived from the data, so the topmost point always has a reference above it
-    # This band is physically short, so it gets at most three ticks, chosen to
-    # bracket the data (the topmost point must sit below the highest tick).
-    lo_t = int(np.floor(hi.nlp.min() / 20.0) * 20)
-    hi_t = int(np.ceil(hi.nlp.max() / 20.0) * 20)
-    ax_hi.set_ylim(lo_t - 6, hi_t + 6)
-    step = max(20, int(np.ceil((hi_t - lo_t) / 2.0 / 10.0) * 10))
-    ax_hi.set_yticks([t for t in range(lo_t, hi_t + 1, step)][:3])
-    ax_hi.spines["bottom"].set_visible(False)
-    ax_hi.tick_params(axis="x", bottom=False, labelbottom=False)
-
-    ax_lo.set_ylim(-0.85, float(lo.nlp.max()) * 1.09)
-    ax_lo.set_yticks([0, 4, 8, 12, 16])
-    ax_lo.axhline(-np.log10(0.05), ls="--", c="k", lw=0.5, zorder=0)
-    ax_lo.set_xlabel("log2 fold change (dcKO/CON)")
-
-    # conventional diagonal break marks on the left spine at each cut
-    bk = dict(marker=[(-1, -1), (1, 1)], markersize=3.2, linestyle="none",
-              color="k", mec="k", mew=0.6, clip_on=False, zorder=10)
-    uf_frac = (-JIT - 0.18 - ax_uf.get_ylim()[0]) / float(np.ptp(ax_uf.get_ylim()))
-    ax_uf.plot([0], [uf_frac], transform=ax_uf.transAxes, **bk)
-    ax_hi.plot([0, 0], [0, 1], transform=ax_hi.transAxes, **bk)
-    ax_lo.plot([0], [1], transform=ax_lo.transAxes, **bk)
-
-    ax_uf.set_title(f"{title_prefix}  Volcano ({n_sig} DEGs)", loc="left", pad=6)
-    ax_hi.set_ylabel("-log10 adjusted P", labelpad=6)
-    ax_hi.yaxis.set_label_coords(-0.155, 0.10, transform=ax_hi.transAxes)
+    ax.set_title(f"{title_prefix}  Volcano ({n_sig} DEGs)", loc="left", pad=6)
 
     # sits on the title line, right-aligned, so it never competes with the band
-    note = ax_uf.text(1.0, 1.06,
-                      f"{n_uf} genes ({n_uf_sig} DEGs)",
-                      transform=ax_uf.transAxes, ha="right", va="bottom",
-                      fontsize=6.0, color="0.30", zorder=5)
-    cnt_dn = ax_lo.text(0.02, 0.97, f"{n_dn} down", transform=ax_lo.transAxes,
+    note = ax.text(1.0, 1.01, "y axis: square-root scale",
+                   transform=ax.transAxes, ha="right", va="bottom",
+                   fontsize=5.8, color="0.35", zorder=5)
+    cnt_dn = ax.text(0.02, 0.885, f"{n_dn} down", transform=ax.transAxes,
                         ha="left", va="top", fontsize=6.2, color=BLUE, fontweight="bold")
-    cnt_up = ax_lo.text(0.98, 0.97, f"{n_up} up", transform=ax_lo.transAxes,
+    cnt_up = ax.text(0.98, 0.885, f"{n_up} up", transform=ax.transAxes,
                         ha="right", va="top", fontsize=6.2, color=RED, fontweight="bold")
 
     # ---- gene labels ----
@@ -341,11 +331,11 @@ def draw(fig, spec, deg, title_prefix="B"):
     for ax in (ax_uf, ax_hi, ax_lo):          # keep glyphs off the threshold rules
         placer.add_vline_obstacle(ax, -1.0)
         placer.add_vline_obstacle(ax, 1.0)
-    placer.add_point_cloud(ax_lo, np.clip(lo.log2FoldChange.values, XLO + XPAD, XHI - XPAD), lo.nlp.values)
-    placer.add_point_cloud(ax_hi, np.clip(hi.log2FoldChange.values, XLO + XPAD, XHI - XPAD), hi.nlp.values)
-    placer.add_point_cloud(ax_uf, np.clip(uf.log2FoldChange.values, XLO + XPAD, XHI - XPAD), uf_y)
+    placer.add_point_cloud(ax, np.clip(finite.log2FoldChange.values, XLO + XPAD, XHI - XPAD),
+                           finite.nlp.values)
+    placer.add_point_cloud(ax, np.clip(zeros.log2FoldChange.values, XLO + XPAD, XHI - XPAD),
+                           np.full(len(zeros), zero_y))
 
-    uf_ypos = dict(zip(uf.external_gene_name.values, uf_y))
     items = []
     for g in LABEL_GENES:
         r = d[d.external_gene_name == g]
@@ -353,17 +343,12 @@ def draw(fig, spec, deg, title_prefix="B"):
             raise RuntimeError(f"label gene {g!r} absent from the DEG table")
         r = r.iloc[0]
         xv = float(np.clip(r.log2FoldChange, XLO + XPAD, XHI - XPAD))
-        if r.underflow:
-            ax, yv, prio = ax_uf, float(uf_ypos[g]), 1
-        elif r.nlp > BREAK:
-            ax, yv, prio = ax_hi, float(r.nlp), 2
-        else:
-            ax, yv, prio = ax_lo, float(r.nlp), 3
-        items.append(dict(ax=ax, x=xv, y=yv, text=g, prio=prio))
+        yv = zero_y if r.underflow else float(r.nlp)
+        items.append(dict(ax=ax, x=xv, y=yv, text=g, prio=(1 if r.underflow else 2)))
     for it in items:
         placer.add_anchor(it["text"], it["ax"], it["x"], it["y"])
     placer.place(items)
 
     return dict(n_sig=n_sig, n_up=n_up, n_dn=n_dn, n_underflow=n_uf,
                 n_underflow_sig=n_uf_sig, n_offscale=n_off,
-                max_measured_nlp=float(hi.nlp.max()))
+                max_measured_nlp=ymax)

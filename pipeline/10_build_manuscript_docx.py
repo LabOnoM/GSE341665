@@ -163,6 +163,40 @@ def main():
 
     leftover = re.findall(r"\([A-Z][a-zA-Z'’-]+(?: (?:and|et al\.))?,? \d{4}[a-z]?\)", body)
     print("wrote", OUT_MD, "and Manuscript_JMM_Smad4.docx")
+    # STRUCTURAL GUARD. A markdown ATX heading needs a blank line before it; without
+    # one, pandoc silently folds it into the preceding paragraph. That is exactly how
+    # the "## Results" heading was lost from a built .docx (the 1,268 words of Results
+    # were still present, but ran on from Methods with no heading). Verify that every
+    # required section survived as a real heading, and fail loudly if not.
+    REQUIRED = ["Title Page", "Abstract", "Introduction", "Materials and Methods",
+                "Results", "Discussion", "Data Availability", "Figure Legends", "References"]
+    built = open(OUT_MD).read()
+    rendered = re.findall(r"^## (.+?)\s*$", built, flags=re.M)
+    missing = [h for h in REQUIRED if not any(r.startswith(h) for r in rendered)]
+    if missing:
+        raise RuntimeError(
+            f"section heading(s) lost in the build: {missing}. "
+            "Most likely a heading has no blank line before it in the source.")
+    # The actual precondition pandoc needs: a blank line before every ATX heading.
+    # Without it the heading is folded into the preceding paragraph and vanishes from
+    # the .docx, even though the markdown still *looks* correct line-by-line.
+    blines = built.split("\n")
+    unspaced = [f"line {i+1}: {ln[:60]}" for i, ln in enumerate(blines)
+                if i > 0 and ln.startswith("#") and blines[i - 1].strip() != ""]
+    if unspaced:
+        raise RuntimeError(
+            f"heading(s) with no blank line before them: {unspaced}. "
+            "Pandoc will fold these into the preceding paragraph and the heading will "
+            "be lost from the .docx.")
+
+    # Ground truth: confirm the headings actually survived into the .docx.
+    plain = subprocess.run(["pandoc", "Manuscript_JMM_Smad4.docx", "-t", "plain"],
+                           cwd=V2, capture_output=True, text=True, check=True).stdout
+    lost = [h for h in REQUIRED
+            if not re.search(rf"^{re.escape(h)}\s*$", plain, flags=re.M)]
+    if lost:
+        raise RuntimeError(f"section heading(s) absent from the built .docx: {lost}")
+    print(f"section headings present: {len(REQUIRED)}/{len(REQUIRED)}")
     print("references cited:", len(order))
     print("unmapped author-year citations:", leftover if leftover else "none")
     unused = [k for k in REFS if k not in num]

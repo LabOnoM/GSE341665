@@ -38,8 +38,23 @@ PROGRAMS = {
 }
 
 
+# CRITICAL PARSING NOTE (found 2026-07-27).
+# DEG_table.csv stores very small adjusted P values in FULL DECIMAL notation, e.g. Amelx is
+# written as 0.000...0300196 with 91 leading zeros. Pandas' default fast float parser
+# (xstrtod) cannot cope with that many leading zeros and silently flushes such values to
+# 0.0 — 420 genes were affected, versus only 5 that are genuinely 0. The exact parser
+# (float_precision="round_trip") reads them correctly. Every read of this file MUST pass
+# float_precision="round_trip".
+#
+# Impact when it was found: DEG counts were unaffected (every threshold is padj < 0.05 and
+# 0 < 0.05, so mis-parsed genes stayed on the correct side), but the -log10 P axis of
+# Figure 4B was completely wrong and Supplementary Data S1 shipped padj = 0 for 119 genes
+# whose true adjusted P was as small as 1e-103.
+
+
 def main():
-    df = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False)
+    df = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False,
+                     float_precision="round_trip")  # see note below
     for c in ["baseMean","log2FoldChange","pvalue","padj"]:
         df[c] = pd.to_numeric(df[c], errors="coerce")
     # NOTE: do NOT resolve AI genes through hsapiens_homolog_associated_gene_name.

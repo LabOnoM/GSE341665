@@ -88,7 +88,8 @@ def fisher_2x2(sig: pd.DataFrame, risk: pd.Series) -> tuple[int, int, int, int, 
 
 
 def main() -> None:
-    df = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False)
+    df = pd.read_csv(os.path.join(OUT, "DEG_table.csv"), skiprows=1, low_memory=False,
+                     float_precision="round_trip")  # see note below
     tested = df[df.padj.notna()].copy()
 
     log("=" * 78)
