@@ -6,7 +6,7 @@ Reads the working manuscript (doc/Manuscript_JDR_Smad4_Identity_Metabolism.md),
 (1) strips drafting-only meta, (2) converts author-year citations to JMM numbered
 [n] AUTOMATICALLY in order of first appearance, (3) emits the reference list in
 that citation order, (4) embeds Figures 1-6 and Supplementary Figures S1-S2,
-and writes 00.Manuscript/Version02/Manuscript_JMM_Smad4.md + .docx (via pandoc).
+and writes 00.Manuscript/Version02/4_Journal_JMM/Manuscript_JMM_Smad4.md + .docx.
 
 Numbering is derived, not hand-maintained: add a citation to CITES and the whole
 reference list renumbers itself. The script fails loudly if any author-year
@@ -16,7 +16,7 @@ import os, re, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, "doc", "Manuscript_JDR_Smad4_Identity_Metabolism.md")
-V2 = os.path.join(ROOT, "00.Manuscript", "Version02")
+V2 = os.path.join(ROOT, "00.Manuscript", "Version02", "4_Journal_JMM")
 OUT_MD = os.path.join(V2, "Manuscript_JMM_Smad4.md")
 
 # reference key -> Vancouver-style entry (all verified against PubMed)

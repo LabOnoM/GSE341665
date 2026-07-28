@@ -12,7 +12,7 @@ code). It is replaced by the Graphviz-rendered Figure S4 produced by
 14_workflow_diagram.py; the Mermaid source stays in the markdown for readers of
 the repository.
 
-Output: 00.Manuscript/Version02/Supplementary/Supplementary_Information.docx
+Output: 00.Manuscript/Version02/4_Journal_JMM/Supplementary/Supplementary_Information.docx
 """
 import os, re, shutil, subprocess, sys
 
@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ai_gene_provenance as prov
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-SUP = os.path.join(ROOT, "00.Manuscript", "Version02", "Supplementary")
+SUP = os.path.join(ROOT, "00.Manuscript", "Version02", "4_Journal_JMM", "Supplementary")
 FIGSRC = os.path.join(ROOT, "scripts", "JDR_reanalysis", "figures")
 BUILD = os.path.join(SUP, "_supplementary_build.md")
 OUT = "Supplementary_Information.docx"

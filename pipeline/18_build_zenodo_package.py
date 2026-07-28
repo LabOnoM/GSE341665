@@ -54,8 +54,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RAW = os.path.join(ROOT, "00.RawData", "Bulk-RNAseq")
 OUT_PIPE = os.path.join(ROOT, "scripts", "JDR_reanalysis", "output")
-SUP = os.path.join(ROOT, "00.Manuscript", "Version02", "Supplementary")
-DEST = os.path.join(ROOT, "00.Manuscript", "Version02", "Zenodo_submission")
+SUP = os.path.join(ROOT, "00.Manuscript", "Version02", "4_Journal_JMM", "Supplementary")
+DEST = os.path.join(ROOT, "00.Manuscript", "Version02", "3_Zenodo")
 
 SMALL_LIMIT = 60 * 1024 * 1024      # copy anything under this automatically
 
