@@ -40,7 +40,16 @@ The GTF was filtered before index building (`genome_filtered.gtf`); genes lackin
 
 ### A3. Read quality control and trimming
 
-- **FastQC** on raw reads, on trimmed reads, and on aligned BAM files.
+- **FastQC** on the provider-supplied reads, on trimmed reads, and on aligned BAM files.
+
+> **Processing level of the deposited sequence files.** The sequencing provider (LC-Bio)
+> returned adapter- and quality-filtered files, named `*_Clean_Data[12].fastq.gz`. Reads
+> prior to that filtering were not returned and cannot be deposited. These files are what
+> is deposited in GEO and what Trim Galore took as input, so the deposit represents the
+> rawest data available for this study rather than unfiltered instrument output. The
+> distinction matters when comparing read counts with studies that deposit unfiltered
+> reads.
+
 - **Trim Galore v0.6.10** (wrapping **cutadapt v4.9**) with default settings: quality
   Phred cutoff 20, ASCII+33 encoding, automatic adapter detection.
 

@@ -9,6 +9,13 @@ GEO requires (https://www.ncbi.nlm.nih.gov/geo/info/seq.html):
   * unique file names, restricted to A-Z a-z 0-9 hyphen underscore;
   * md5 checksums recorded on the "MD5 Checksums" tab of the metadata template.
 
+NOTE ON "RAW". The 12 deposited files are named *_Clean_Data[12].fastq.gz and are the
+adapter- and quality-filtered reads returned by the sequencing provider, not unfiltered
+instrument output (which was never returned). They are Trim Galore's input and the rawest
+data available, so they occupy the "raw" role in the GEO deposit; the metadata spreadsheet
+says so explicitly. Do NOT substitute Data.tar (a byte-identical duplicate) or the
+*_val_[12].fq.gz post-trimming output.
+
 This script writes the two processed matrices, collects the raw-FASTQ checksums
 supplied by the sequencing provider (verified against the files on disk), and
 computes checksums for the processed files.

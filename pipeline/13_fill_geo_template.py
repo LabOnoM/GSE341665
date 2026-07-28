@@ -91,8 +91,18 @@ PROTOCOLS = {
 }
 
 DATA_PROC = [
+ # State the processing level of the deposited files explicitly. They are named
+ # *_Clean_Data[12].fastq.gz and are the provider's adapter- and quality-filtered reads,
+ # not unfiltered instrument output; reads prior to that filtering were never returned.
+ # A reader comparing read counts with studies that deposit unfiltered reads needs this.
  ("*data processing step",
-  "Sequence files supplied by the sequencing provider were quality- and adapter-trimmed with "
+  "Processing level of the deposited sequence files: the raw files submitted here "
+  "(*_Clean_Data[12].fastq.gz) are the adapter- and quality-filtered reads returned by the "
+  "sequencing provider (LC-Bio, Hangzhou, China). Unfiltered instrument output was not "
+  "returned to the submitters and is therefore not available for deposit; these files are "
+  "the rawest data available for this study."),
+ ("data processing step",
+  "Provider-supplied sequence files were further quality- and adapter-trimmed with "
   "Trim Galore v0.6.10 (cutadapt v4.9), Phred quality cutoff 20, automatic adapter detection."),
  ("data processing step",
   "Trimmed reads were aligned to the mouse genome with STAR v2.7.10b in two-pass mode "
