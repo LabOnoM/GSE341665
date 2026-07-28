@@ -209,6 +209,27 @@ def panel_markdown() -> str:
     return h + rows
 
 
+def audit_footnote() -> str:
+    """Footnote defining the conventions used in Supplementary Table S1."""
+    return """
+**Table S1 footnote — how to read this table.** Each row is one gene from the retired
+hand-curated list. **Claimed MIM** and **Claimed PMID** are the identifiers that list
+asserted. **What that MIM is** classifies the claimed number against NCBI
+`mim2gene_medgen`: *phenotype (correct)* means it is a phenotype entry mapping to the
+stated gene; *gene MIM* means a gene entry was given where a phenotype entry is required;
+*different gene* means it maps to another gene entirely; *wrong disease* means it is a
+phenotype of the right gene but not the disease named. **What that PMID cites** is the
+actual subject of the claimed PubMed record, confirmed via NCBI E-utilities. **Verified
+PMID** is the correct primary report where one was identified; an em dash with
+"(excluded)" means the gene is not GREEN-rated on the PanelApp panel and is therefore not
+used in this study, so no replacement was sought. **On panel** indicates whether the gene
+is among the 31 GREEN-rated genes actually used (Supplementary Table S2).
+
+Abbreviations: **MIM**, Mendelian Inheritance in Man identifier; **PMID**, PubMed
+identifier; **AI**, amelogenesis imperfecta.
+"""
+
+
 def panel_footnote() -> str:
     """Footnote defining every abbreviation that appears in Supplementary Table S2.
 

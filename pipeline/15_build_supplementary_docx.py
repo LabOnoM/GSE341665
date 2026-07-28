@@ -129,7 +129,7 @@ def main():
         "(MIM class). Because of this, the analysis was moved to the versioned external panel "
         "documented in Supplementary Table S2. Genes marked “on panel: no” are not "
         "GREEN-rated on that panel and are not used here.\n\n"
-        + prov.audit_markdown() +
+        + prov.audit_markdown() + prov.audit_footnote() +
         "\n\n**Supplementary Table S2. Verified provenance of the 31 genes used in the "
         "amelogenesis-imperfecta enrichment.** Genes are the GREEN-rated (high-evidence) members of "
         "the Genomics England PanelApp “Amelogenesis imperfecta” panel (269 v4.37; retrieved "

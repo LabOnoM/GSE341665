@@ -23,39 +23,39 @@ OUT_MD = os.path.join(V2, "Manuscript_JMM_Smad4.md")
 REFS = {
  "lacruz":  "Lacruz RS, Habelitz S, Wright JT, Paine ML. Dental enamel formation and implications for oral health and disease. Physiol Rev. 2017;97(3):939–993.",
  "bartlett":"Bartlett JD. Dental enamel development: proteinases and their enamel matrix substrates. ISRN Dent. 2013;2013:684607.",
- "smith":   "Smith CEL, Poulter JA, Antanaviciute A, Kirkham J, Brookes SJ, Inglehearn CF, Mighell AJ. Amelogenesis imperfecta; genes, proteins, and pathways. Front Physiol. 2017;8:435.",
+ "smith":   "Smith CEL, Poulter JA, Antanaviciute A, Kirkham J, Brookes SJ, Inglehearn CF, et al. Amelogenesis imperfecta; genes, proteins, and pathways. Front Physiol. 2017;8:435.",
  "massague":"Massagué J. TGFβ signalling in context. Nat Rev Mol Cell Biol. 2012;13(10):616–630.",
- "yokozeki":"Yokozeki M, Afanador E, Nishi M, Kaneko K, Shimokawa H, Yokote K, Deng C, Tsuchida K, Sugino H, Moriyama K. Smad3 is required for enamel biomineralization. Biochem Biophys Res Commun. 2003;305(3):684–690.",
+ "yokozeki":"Yokozeki M, Afanador E, Nishi M, Kaneko K, Shimokawa H, Yokote K, et al. Smad3 is required for enamel biomineralization. Biochem Biophys Res Commun. 2003;305(3):684–690.",
  "huang":   "Huang X, Xu X, Bringas P Jr, Hung YP, Chai Y. Smad4-Shh-Nfic signaling cascade-mediated epithelial-mesenchymal interaction is crucial in regulating tooth root development. J Bone Miner Res. 2010;25(5):1167–1178.",
- "arrive":  "Percie du Sert N, Hurst V, Ahluwalia A, et al. The ARRIVE guidelines 2.0. PLoS Biol. 2020;18(7):e3000410.",
- "star":    "Dobin A, Davis CA, Schlesinger F, et al. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013;29(1):15–21.",
+ "arrive":  "Percie du Sert N, Hurst V, Ahluwalia A, Alam S, Avey MT, Baker M, et al. The ARRIVE guidelines 2.0. PLoS Biol. 2020;18(7):e3000410.",
+ "star":    "Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, et al. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013;29(1):15–21.",
  "salmon":  "Patro R, Duggal G, Love MI, Irizarry RA, Kingsford C. Salmon provides fast and bias-aware quantification of transcript expression. Nat Methods. 2017;14(4):417–419.",
  "stringtie":"Pertea M, Pertea GM, Antonescu CM, Chang TC, Mendell JT, Salzberg SL. StringTie enables improved reconstruction of a transcriptome from RNA-seq reads. Nat Biotechnol. 2015;33(3):290–295.",
  "tximport":"Soneson C, Love MI, Robinson MD. Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences. F1000Res. 2015;4:1521.",
  "ruvseq":  "Risso D, Ngai J, Speed TP, Dudoit S. Normalization of RNA-seq data using factor analysis of control genes or samples. Nat Biotechnol. 2014;32(9):896–902.",
- "seurat":  "Hao Y, Hao S, Andersen-Nissen E, et al. Integrated analysis of multimodal single-cell data. Cell. 2021;184(13):3573–3587.e29.",
+ "seurat":  "Hao Y, Hao S, Andersen-Nissen E, Mauck WM 3rd, Zheng S, Butler A, et al. Integrated analysis of multimodal single-cell data. Cell. 2021;184(13):3573–3587.e29.",
  "deseq2":  "Love MI, Huber W, Anders S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biol. 2014;15(12):550.",
  "balic":   "Balic A, Thesleff I. Tissue interactions regulating tooth development and renewal. Curr Top Dev Biol. 2015;115:157–186.",
- "zhang15": "Zhang Z, Tian H, Lv P, Wang W, Jia Z, Wang S, Zhou C, Gao X. Transcriptional factor DLX3 promotes the gene expression of enamel matrix proteins during amelogenesis. PLoS One. 2015;10(3):e0121288.",
- "rhodes":  "Rhodes CS, Yoshitomi Y, Burbelo PD, Freese NH, Nakamura T, Chiba Y, Yamada Y. Sp6/Epiprofin is a master regulator in the developing tooth. Biochem Biophys Res Commun. 2021;581:89–95.",
+ "zhang15": "Zhang Z, Tian H, Lv P, Wang W, Jia Z, Wang S, et al. Transcriptional factor DLX3 promotes the gene expression of enamel matrix proteins during amelogenesis. PLoS One. 2015;10(3):e0121288.",
+ "rhodes":  "Rhodes CS, Yoshitomi Y, Burbelo PD, Freese NH, Nakamura T, Chiba Y, et al. Sp6/Epiprofin is a master regulator in the developing tooth. Biochem Biophys Res Commun. 2021;581:89–95.",
  "lee18":   "Lee DS, Roh SY, Park JC. The Nfic-osterix pathway regulates ameloblast differentiation and enamel formation. Cell Tissue Res. 2018;374(3):531–540.",
  "werner":  "Werner S, Grose R. Regulation of wound healing by growth factors and cytokines. Physiol Rev. 2003;83(3):835–870.",
- "ge":      "Ge Y, Gomez NC, Adam RC, et al. Stem cell lineage infidelity drives wound repair and cancer. Cell. 2017;169(4):636–650.e14.",
- "horton":  "Horton JD, Shah NA, Warrington JA, et al. Combined analysis of oligonucleotide microarray data from transgenic and knockout mice identifies direct SREBP target genes. Proc Natl Acad Sci U S A. 2003;100(21):12027–12032.",
- "interferome":"Rusinova I, Forster S, Yu S, et al. Interferome v2.0: an updated database of annotated interferon-regulated genes. Nucleic Acids Res. 2013;41(Database issue):D1040–D1046.",
- "leez":    "Lee E, Chuang H-Y, Kim J-W, Ideker T, Lee D. Inferring pathway activity toward precise disease classification. PLoS Comput Biol. 2008;4(11):e1000217.",
+ "ge":      "Ge Y, Gomez NC, Adam RC, Nikolova M, Yang H, Verma A, et al. Stem cell lineage infidelity drives wound repair and cancer. Cell. 2017;169(4):636–650.e14.",
+ "horton":  "Horton JD, Shah NA, Warrington JA, Anderson NN, Park SW, Brown MS, et al. Combined analysis of oligonucleotide microarray data from transgenic and knockout mice identifies direct SREBP target genes. Proc Natl Acad Sci U S A. 2003;100(21):12027–12032.",
+ "interferome":"Rusinova I, Forster S, Yu S, Kannan A, Masse M, Cumming H, et al. Interferome v2.0: an updated database of annotated interferon-regulated genes. Nucleic Acids Res. 2013;41(Database issue):D1040–D1046.",
+ "leez":    "Lee E, Chuang HY, Kim JW, Ideker T, Lee D. Inferring pathway activity toward precise disease classification. PLoS Comput Biol. 2008;4(11):e1000217.",
  "chiba":   "Chiba Y, Saito K, Martin D, Boger ET, Rhodes C, Yoshizaki K, et al. Single-cell RNA-sequencing from mouse incisor reveals dental epithelial cell-type specific genes. Front Cell Dev Biol. 2020;8:841.",
- "li11":    "Li J, Huang X, Xu X, Mayo J, Bringas P Jr, Jiang R, Wang S, Chai Y. SMAD4-mediated WNT signaling controls the fate of cranial neural crest cells during tooth morphogenesis. Development. 2011;138(10):1977–1989.",
- "kotzka":  "Kotzka J, Lehr S, Roth G, Avci H, Knebel B, Müller-Wieland D. Insulin-activated Erk-mitogen-activated protein kinases phosphorylate sterol regulatory element-binding protein-2 at serine residues 432 and 455 in vivo. J Biol Chem. 2004;279(21):22404–22411.",
+ "li11":    "Li J, Huang X, Xu X, Mayo J, Bringas P Jr, Jiang R, et al. SMAD4-mediated WNT signaling controls the fate of cranial neural crest cells during tooth morphogenesis. Development. 2011;138(10):1977–1989.",
+ "kotzka":  "Kotzka J, Lehr S, Roth G, Avci H, Knebel B, Muller-Wieland D. Insulin-activated Erk-mitogen-activated protein kinases phosphorylate sterol regulatory element-binding protein-2 at serine residues 432 and 455 in vivo. J Biol Chem. 2004;279(21):22404–22411.",
  "zhang21": "Zhang J, Xu Y, Zhao Y, Bai J, Xu M, Li C, et al. The absence of muscle segment homeobox 2 leads to the pyroptosis of ameloblasts by inducing squamous epithelial hyperplasia in the enamel organ. J Cell Mol Med. 2021;25(13):6429–6437.",
- "klein":   "Klein OD, Lyons DB, Balooch G, Marshall GW, Basson MA, Peterka M, Boran T, Peterkova R, Martin GR. An FGF signaling loop sustains the generation of differentiated progeny from stem cells in mouse incisors. Development. 2008;135(2):377–385.",
+ "klein":   "Klein OD, Lyons DB, Balooch G, Marshall GW, Basson MA, Peterka M, et al. An FGF signaling loop sustains the generation of differentiated progeny from stem cells in mouse incisors. Development. 2008;135(2):377–385.",
  "goldberg":"Goldberg M, Septier D. Phospholipids in amelogenesis and dentinogenesis. Crit Rev Oral Biol Med. 2002;13(3):276–290.",
- "wang":    "Wang S, Link F, Han M, et al. The interplay of TGF-β1 and cholesterol orchestrating hepatocyte cell fate. Cell Mol Gastroenterol Hepatol. 2024;17(4):567–587.",
- "olczak":  "Olczak-Kowalczyk D, Gozdowski D, Krasuska-Sławińska E, et al. Smith–Lemli–Opitz syndrome: oral characteristics and risk factors for caries development. Biomedicines. 2025;13(3):574.",
+ "wang":    "Wang S, Link F, Han M, Chaudhary R, Asimakopoulos A, Liebe R, et al. The interplay of TGF-β1 and cholesterol orchestrating hepatocyte cell fate. Cell Mol Gastroenterol Hepatol. 2024;17(4):567–587.",
+ "olczak":  "Olczak-Kowalczyk D, Witt-Porczyk A, Piekoszewska-Ziętek P, Krajewska-Walasek M. Smith–Lemli–Opitz syndrome: oral characteristics and risk factors for caries development. Biomedicines. 2025;13(3):574.",
  "engelking":"Engelking LJ, Evers BM, Richardson JA, Goldstein JL, Brown MS, Liang G. Severe facial clefting in Insig-deficient mouse embryos caused by sterol accumulation and reversed by lovastatin. J Clin Invest. 2006;116(9):2356–2365.",
  "iwaya":   "Iwaya C, Suzuki A, Shim J, Kim A, Iwata J. Craniofacial bone anomalies related to cholesterol synthesis defects. Sci Rep. 2024;14(1):5371.",
- "york":    "York AG, Williams KJ, Argus JP, et al. Limiting cholesterol biosynthetic flux spontaneously engages type I IFN signaling. Cell. 2015;163(7):1716–1729.",
- "blanc":   "Blanc M, Hsieh WY, Robertson KA, et al. Host defense against viral infection involves interferon-mediated down-regulation of sterol biosynthesis. PLoS Biol. 2011;9(3):e1000598.",
+ "york":    "York AG, Williams KJ, Argus JP, Zhou QD, Brar G, Vergnes L, et al. Limiting cholesterol biosynthetic flux spontaneously engages type I IFN signaling. Cell. 2015;163(7):1716–1729.",
+ "blanc":   "Blanc M, Hsieh WY, Robertson KA, Watterson S, Shui G, Lacaze P, et al. Host defense against viral infection involves interferon-mediated down-regulation of sterol biosynthesis. PLoS Biol. 2011;9(3):e1000598.",
 }
 
 # (draft author-year text in the manuscript, [ref keys], optional replacement template)
@@ -169,7 +169,8 @@ def main():
     # were still present, but ran on from Methods with no heading). Verify that every
     # required section survived as a real heading, and fail loudly if not.
     REQUIRED = ["Title Page", "Abstract", "Introduction", "Materials and Methods",
-                "Results", "Discussion", "Data Availability", "Figure Legends", "References"]
+                "Results", "Discussion", "Data Availability", "Declarations",
+                "Figure Legends", "References"]
     built = open(OUT_MD).read()
     rendered = re.findall(r"^## (.+?)\s*$", built, flags=re.M)
     missing = [h for h in REQUIRED if not any(r.startswith(h) for r in rendered)]

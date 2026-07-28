@@ -11,10 +11,16 @@ The three archives have different jobs, and duplicating between them is a mistak
                are the provider's adapter/quality-filtered *_Clean_Data* reads — the
                rawest available; unfiltered output was never returned.)
   * GitHub   — the analysis code, live and versioned (LabOnoM/smad4kotooth).
-  * Zenodo   — everything that is IRREPLACEABLE but has no other home: the de-novo
-               transcriptome assembly, the saved pipeline objects, and the exploratory
-               analyses (circRNA, isoform switching, differential exon usage) that the
-               manuscript does not interpret but that the analysis report exposes.
+  * Zenodo   — a PURE DATA record: the de-novo transcriptome assembly, the saved pipeline
+               objects, and the exploratory analyses (circRNA, isoform switching,
+               differential exon usage) that the manuscript does not interpret. It holds
+               NO code. An earlier version copied the pipeline in here, which duplicated
+               all 24 scripts byte-for-byte against GitHub and created two things to keep
+               in step. The citable code snapshot is produced instead by Zenodo's GitHub
+               integration: publishing a release makes Zenodo archive that tag and mint a
+               SEPARATE DOI for it — two records, two DOIs, no manual copying. The
+               integration only sees PUBLIC repositories, so the code DOI can be minted
+               once the repository is made public at publication.
 
 Deliberately NOT deposited, with reasons:
   * FASTQ (15.4 GB)              -> belongs in GEO/SRA; depositing twice is redundant.
@@ -61,26 +67,26 @@ SMALL_LIMIT = 60 * 1024 * 1024      # copy anything under this automatically
 
 # (destination subfolder, source path, one-line description)
 LARGE_ITEMS = [
-    ("03_denovo_assembly", os.path.join(RAW, "00.Downloadable_Content",
+    ("02_denovo_assembly", os.path.join(RAW, "00.Downloadable_Content",
                                         "DeNovoAssemblyTranscriptome.gtf.gz"),
      "StringTie-merged, SQANTI3-annotated de-novo transcriptome. Not reproducible without "
      "this exact pipeline run; every quantification depends on it."),
-    ("05_pipeline_objects", os.path.join(RAW, "00.Results", "DESeq2_Processing.Rdata"),
+    ("04_pipeline_objects", os.path.join(RAW, "00.Results", "DESeq2_Processing.Rdata"),
      "DESeqDataSet, RUVSeq covariate W_1 per sample, and the log2 TPM matrix."),
-    ("05_pipeline_objects", os.path.join(RAW, "00.Results", "DESeq2_Results.Rdata"),
+    ("04_pipeline_objects", os.path.join(RAW, "00.Results", "DESeq2_Results.Rdata"),
      "DESeq2 likelihood-ratio-test results for all 15,803 tested genes."),
-    ("05_pipeline_objects", os.path.join(RAW, "00.Results", "Parameters.Rdata"),
+    ("04_pipeline_objects", os.path.join(RAW, "00.Results", "Parameters.Rdata"),
      "Recorded pipeline parameters, including Par_ReN, Par_SaN and Par_UseFDR4FEA."),
-    ("04_exploratory_analyses", os.path.join(RAW, "00.Results", "circRNA_Results.Rdata"),
+    ("03_exploratory_analyses", os.path.join(RAW, "00.Results", "circRNA_Results.Rdata"),
      "circRNAprofiler output: 184 circRNAs detected, none differential. Not interpreted "
      "in the manuscript."),
-    ("04_exploratory_analyses", os.path.join(RAW, "00.Results", "aSwitchList.Rdata"),
+    ("03_exploratory_analyses", os.path.join(RAW, "00.Results", "aSwitchList.Rdata"),
      "IsoformSwitchAnalyzeR switch list with functional consequences. Not interpreted "
      "in the manuscript."),
-    ("04_exploratory_analyses", os.path.join(RAW, "00.Results", "DEXseqResOut.Rdata"),
+    ("03_exploratory_analyses", os.path.join(RAW, "00.Results", "DEXseqResOut.Rdata"),
      "DEXSeq differential exon usage. Not interpreted in the manuscript."),
 ]
-BAM_ITEM = ("06_alignments", os.path.join(RAW, "00.Downloadable_Content", "BAM_Files.zip"),
+BAM_ITEM = ("05_alignments", os.path.join(RAW, "00.Downloadable_Content", "BAM_Files.zip"),
             "STAR two-pass alignments for all six libraries. Derivable from the FASTQ in "
             "GEO plus the public reference; included only for convenience.")
 
@@ -111,28 +117,16 @@ def main() -> None:
 
     items = list(LARGE_ITEMS) + ([BAM_ITEM] if args.with_bam else [])
 
-    for sub in ("01_code", "02_processed_data", "03_denovo_assembly",
-                "04_exploratory_analyses", "05_pipeline_objects"):
+    for sub in ("01_processed_data", "02_denovo_assembly",
+                "03_exploratory_analyses", "04_pipeline_objects"):
         os.makedirs(os.path.join(DEST, sub), exist_ok=True)
     if args.with_bam:
-        os.makedirs(os.path.join(DEST, "06_alignments"), exist_ok=True)
+        os.makedirs(os.path.join(DEST, "05_alignments"), exist_ok=True)
 
     staged, pending = [], []
 
-    # ---- 01 code snapshot -------------------------------------------------
-    code_dst = os.path.join(DEST, "01_code")
-    src_code = os.path.join(ROOT, "scripts", "JDR_reanalysis")
-    n_code = 0
-    for f in sorted(os.listdir(src_code)):
-        if f.endswith((".py", ".R", ".sh")):
-            shutil.copy2(os.path.join(src_code, f), os.path.join(code_dst, f))
-            n_code += 1
-    shutil.copy2(os.path.join(SUP, "Supplementary_Methods_Pipeline.md"),
-                 os.path.join(code_dst, "SUPPLEMENTARY_METHODS.md"))
-    print(f"  01_code            : {n_code} scripts + supplementary methods")
-
     # ---- 02 processed data ------------------------------------------------
-    proc_dst = os.path.join(DEST, "02_processed_data")
+    proc_dst = os.path.join(DEST, "01_processed_data")
     n_proc = 0
     for src_dir, names in ((SUP, [f for f in os.listdir(SUP) if f.startswith("Supplementary_Data_")]),
                            (OUT_PIPE, ["AI_panel_PanelApp_v4.37.csv",
@@ -146,7 +140,7 @@ def main() -> None:
             if os.path.exists(p):
                 shutil.copy2(p, os.path.join(proc_dst, f))
                 n_proc += 1
-    print(f"  02_processed_data  : {n_proc} tables")
+    print(f"  01_processed_data  : {n_proc} tables")
 
     # ---- large items ------------------------------------------------------
     for sub, src, desc in items:
