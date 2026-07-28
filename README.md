@@ -230,6 +230,16 @@ uses the constitutive *K14-cre* line.
   splicing / DEU arms not interpreted in the manuscript) — <http://smad4kotooth.bs-gou.com/>.
 - **Single-cell reference** — GEO GSE146855 (Chiba et al. 2020), public.
 
+## Questions, feedback and reuse
+
+- **Discussions** — questions about the biology or the analysis, and ideas for extensions
+- **Issues** — bugs, numbers that do not reproduce, and data-access requests (templates provided)
+- **[](docs/)** — data-access map, known issues and caveats, FAQ
+
+Please read [](docs/known-issues.md) before running the pipeline or
+interpreting the tables; it lists the caveats that change how the outputs should be read.
+See [](CONTRIBUTING.md) for what to post where.
+
 ## Citation
 
 See `CITATION.cff`. Please cite the manuscript and the Zenodo archive.
