@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-10_build_manuscript_docx.py -- assemble the Version02 submission package.
+10_build_manuscript_docx.py -- assemble the Submission_02_JMM_2026-07 submission package.
 
 Reads the working manuscript (doc/Manuscript_JDR_Smad4_Identity_Metabolism.md),
 (1) strips drafting-only meta, (2) converts author-year citations to JMM numbered
 [n] AUTOMATICALLY in order of first appearance, (3) emits the reference list in
 that citation order, (4) embeds Figures 1-6 and Supplementary Figures S1-S2,
-and writes 00.Manuscript/Version02/4_Journal_JMM/Manuscript_JMM_Smad4.md + .docx.
+and writes 00.Manuscript/Submission_02_JMM_2026-07/4_Journal_JMM/Manuscript_JMM_Smad4.md + .docx.
 
 Numbering is derived, not hand-maintained: add a citation to CITES and the whole
 reference list renumbers itself. The script fails loudly if any author-year
@@ -16,7 +16,7 @@ import os, re, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, "doc", "Manuscript_JDR_Smad4_Identity_Metabolism.md")
-V2 = os.path.join(ROOT, "00.Manuscript", "Version02", "4_Journal_JMM")
+V2 = os.path.join(ROOT, "00.Manuscript", "Submission_02_JMM_2026-07", "4_Journal_JMM")
 OUT_MD = os.path.join(V2, "Manuscript_JMM_Smad4.md")
 
 # reference key -> Vancouver-style entry (all verified against PubMed)
@@ -112,7 +112,7 @@ SUPP = [("S1", "FigureS1_inducible_phenotype.png", "5in"),
 
 def _sync_figures():
     """AUTO-SYNC: copy freshly generated computational figures (4-6) from the
-    pipeline output into Version02/Figures, so the packaged figures can never be
+    pipeline output into 4_Journal_JMM/Figures, so the packaged figures can never be
     stale relative to the analysis."""
     import shutil
     src = os.path.join(ROOT, "scripts", "JDR_reanalysis", "figures")

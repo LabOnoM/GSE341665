@@ -27,8 +27,9 @@ USAGE
     python3 scripts/JDR_reanalysis/19_sync_github_repo.py            # sync, report diff
     python3 scripts/JDR_reanalysis/19_sync_github_repo.py --push     # sync, commit, push
 
-The working copy defaults to  <project>/.repo_smad4kotooth  (gitignored, so the outer
-project never tries to track a nested repository). Override with --workdir.
+The working copy lives at  Submission_02_JMM_2026-07/1_GitHub/repo/  — i.e. inside the
+submission folder where you would expect to find it, and gitignored so the outer project
+never tries to track a nested repository. Override with --workdir.
 """
 
 from __future__ import annotations
@@ -42,12 +43,12 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PIPE = os.path.join(ROOT, "scripts", "JDR_reanalysis")
-V2 = os.path.join(ROOT, "00.Manuscript", "Version02")
+V2 = os.path.join(ROOT, "00.Manuscript", "Submission_02_JMM_2026-07")
 JOURNAL = os.path.join(V2, "4_Journal_JMM")
 SUP = os.path.join(JOURNAL, "Supplementary")
 FIGS = os.path.join(PIPE, "figures")
 REMOTE = "https://github.com/LabOnoM/smad4kotooth.git"
-DEFAULT_WORKDIR = os.path.join(ROOT, ".repo_smad4kotooth")
+DEFAULT_WORKDIR = os.path.join(V2, "1_GitHub", "repo")
 
 # repo-relative destination  <-  source
 FIGURE_FILES = ["Figure4_transcriptome.png", "Figure5_identity_switch.png",

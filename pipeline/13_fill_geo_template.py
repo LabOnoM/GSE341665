@@ -10,18 +10,18 @@ lists (instrument model, library strategy) are preserved by editing in place.
 Fields the authors must supply are written as "[[AUTHOR: ...]]" so they are
 impossible to miss, rather than being invented here.
 
-Input : seq_template.xlsx (blank GEO template; 2_GEO/ or Version02/ root)
-Output: 00.Manuscript/Version02/2_GEO/GEO_metadata_Smad4_dcKO.xlsx
+Input : seq_template.xlsx (blank GEO template; 2_GEO/ or Submission_02_JMM_2026-07/ root)
+Output: 00.Manuscript/Submission_02_JMM_2026-07/2_GEO/GEO_metadata_Smad4_dcKO.xlsx
 """
 import os, csv, shutil
 import openpyxl
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-V2 = os.path.join(ROOT, "00.Manuscript", "Version02")
+V2 = os.path.join(ROOT, "00.Manuscript", "Submission_02_JMM_2026-07")
 GEO_DIR = os.path.join(V2, "2_GEO")
 OUT = GEO_DIR
 os.makedirs(OUT, exist_ok=True)
-# the blank template may sit at the Version02 root or inside 2_GEO/
+# the blank template may sit at the Submission_02_JMM_2026-07 root or inside 2_GEO/
 SRC = next((c for c in (os.path.join(OUT, "seq_template.xlsx"),
                         os.path.join(V2, "seq_template.xlsx"))
             if os.path.exists(c)), os.path.join(OUT, "seq_template.xlsx"))

@@ -20,7 +20,7 @@ This script writes the two processed matrices, collects the raw-FASTQ checksums
 supplied by the sequencing provider (verified against the files on disk), and
 computes checksums for the processed files.
 
-Outputs (in 00.Manuscript/Version02/2_GEO/):
+Outputs (in 00.Manuscript/Submission_02_JMM_2026-07/2_GEO/):
   GSE_processed_gene_raw_counts.txt
   GSE_processed_gene_TPM.txt
   GEO_checksums.tsv
@@ -31,7 +31,7 @@ import pandas as pd
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PIPE = os.path.join(ROOT, "scripts", "JDR_reanalysis", "output")
 RAWD = os.path.join(ROOT, "00.RawData", "Bulk-RNAseq")
-OUT = os.path.join(ROOT, "00.Manuscript", "Version02", "2_GEO")
+OUT = os.path.join(ROOT, "00.Manuscript", "Submission_02_JMM_2026-07", "2_GEO")
 os.makedirs(OUT, exist_ok=True)
 
 LIBS = ["CON1", "CON2", "CON3", "dcKO1", "dcKO2", "dcKO3"]
