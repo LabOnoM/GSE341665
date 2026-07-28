@@ -234,11 +234,11 @@ uses the constitutive *K14-cre* line.
 
 - **Discussions** — questions about the biology or the analysis, and ideas for extensions
 - **Issues** — bugs, numbers that do not reproduce, and data-access requests (templates provided)
-- **[](docs/)** — data-access map, known issues and caveats, FAQ
+- **[`docs/`](docs/)** — data-access map, known issues and caveats, FAQ
 
-Please read [](docs/known-issues.md) before running the pipeline or
+Please read [`docs/known-issues.md`](docs/known-issues.md) before running the pipeline or
 interpreting the tables; it lists the caveats that change how the outputs should be read.
-See [](CONTRIBUTING.md) for what to post where.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for what to post where.
 
 ## Citation
 
