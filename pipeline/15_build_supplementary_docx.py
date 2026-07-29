@@ -103,11 +103,15 @@ FIGURES = [
      "sequencing behind Figures 4–6 and Supplementary Figures S3 and S5. The E16.5 dissection "
      "in the Methods feeds no figure and is not drawn. Group sizes are given in the "
      "individual figure legends. "
-     "*Two points marked on the panel are unresolved: † the current Figure 1 artwork is labelled "
+     "*Three points marked on the panel are unresolved: † the current Figure 1 artwork is labelled "
      "K14-Cre^ER^;Smad4^f/f^, contradicting its own legend, the Results and the Methods; and "
      "‡ the inhibitor panels (Figure 3C–E) are placed in the K14-creER arm by the Methods but "
-     "recorded as wild-type germs in the original submission. Both are drawn as the Methods "
-     "state them; neither is settled here.*"),
+     "recorded as wild-type germs in the original submission; and § the stock number recorded "
+     "for K14-cre, 016230, is not a Cre line — Jackson Laboratory 016230 is "
+     "B6;129S4-*Bmp2*^tm1Jfm^/J, a floxed *Bmp2* allele, whereas the K14-cre transgene used in "
+     "tooth studies is stock 004782, Tg(KRT14-cre)1Amc (stocks 005107 and 017462 were checked "
+     "and are correct). All three are drawn as recorded rather than corrected; none is settled "
+     "here, and each needs the laboratory's own breeding record.*"),
 ]
 
 DATA_TABLE = """

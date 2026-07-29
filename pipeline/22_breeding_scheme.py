@@ -162,7 +162,16 @@ CROSS = 'shape=hexagon, fillcolor="white", margin="0.02,0.02"'
 NODES = [
     # --- parental lines -----------------------------------------------------
     ("LINE_CRE", "line",
-     ["**K14-cre**", "constitutive epithelial Cre", "JAX stock 016230"], LINE_BOX),
+     # The stock number the authors give for this line does not identify a Cre line.
+     # Verified against the live Jackson Laboratory strain pages on 2026-07-29:
+     #   016230 -> B6;129S4-Bmp2^tm1Jfm/J, a floxed Bmp2 allele  (NOT a Cre driver)
+     #   004782 -> Tg(KRT14-cre)1Amc, the K14-cre used throughout the tooth literature
+     #   005107 -> K14-CreER(tam)   [correct as given]
+     #   017462 -> Smad4^Co         [correct as given]
+     # Drawn with the stock number marked, not silently corrected: several K14-cre
+     # transgenic lines exist and differ in recombination pattern, so only the authors'
+     # records can say which was used.
+     ["**K14-cre**", "constitutive epithelial Cre", "JAX stock 016230 §"], LINE_BOX),
     ("LINE_FL", "line",
      ["**_Smad4_^{fl/fl}**", "floxed allele", "JAX stock 017462"], LINE_BOX),
     ("LINE_CREER", "line",
@@ -336,10 +345,10 @@ FOOTER_PARAS = [
     (f"{DDAGGER} ", "The material for the inhibitor panels is recorded as K14-creER "
      "germs in this manuscript's Methods and as germs from wild-type mice in the "
      "original submission. Drawn as this manuscript states it. Unresolved."),
+    ("§ ", "JAX 016230 is a floxed Bmp2 allele, not a Cre line. Shown as recorded; see legend."),
     ("", "Both controls are Cre-negative littermates that still carry the floxed "
      "allele, which is why control libraries also contain loxP reads (Supplementary "
-     "Figure S5). Group sizes are given in the individual figure legends. Housing, "
-     "genotyping and the floxed-exon coordinates are given in the legend."),
+     "Figure S5). Group sizes are given in the individual figure legends."),
 ]
 
 
