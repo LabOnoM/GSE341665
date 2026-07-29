@@ -132,12 +132,23 @@ def figure_S5():
     txt = txt.split("\n---\n")[0]                                  # drop the footer
     # bold lead-in instead of a heading level that would enter the ToC
     txt = re.sub(r"^#+\s*", "", txt, flags=re.M)
-    body = ("**Supplementary Figure S5. Read-level genotyping of the conditional *Smad4* "
-            "allele: the floxed allele is identified in the RNA-seq reads and the Cre "
-            "excision product is not detected.** " + txt.strip())
-    if "Cre excision is not" not in body:
-        raise RuntimeError("the generated Figure S5 legend no longer contains its headline "
-                           "claim; refusing to embed it")
+    # The legend carries its own bold headline, so prepend only the figure number.
+    # Prepending a second headline here would duplicate it, and would also freeze a
+    # wording that the figure script is free to change.
+    body = "**Supplementary Figure S5.** " + txt.strip()
+    # Guard on MEANING, not on an exact phrase: the panel exists to show that RNA-seq
+    # cannot settle excision, and that the excision product was not observed. Check both
+    # are still stated, so a legend rewrite cannot silently drop the point of the figure.
+    missing = [need for need, alts in (
+        ("the limit it demonstrates", ("cannot determine", "cannot decide", "cannot settle")),
+        ("the zero result",           ("0 skip reads", "0 reads", "not detected")),
+    ) if not any(a in body for a in alts)]
+    if missing:
+        raise RuntimeError(
+            "the generated Figure S5 legend no longer states " + " and ".join(missing) +
+            "; refusing to embed it. Figure S5 exists to show that RNA-seq alone cannot "
+            "determine whether the floxed exon was excised - if that is no longer in the "
+            "legend, fix the legend rather than this guard.")
     return f"![]({S5_PNG}){{width=6.5in}}\n\n{body}\n\n"
 
 

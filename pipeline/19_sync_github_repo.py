@@ -53,7 +53,12 @@ DEFAULT_WORKDIR = os.path.join(V2, "1_GitHub", "repo")
 # repo-relative destination  <-  source
 FIGURE_FILES = ["Figure4_transcriptome.png", "Figure5_identity_switch.png",
                 "Figure6_metabolic_convergence.png", "FigureS3_scref_umap_dotplot.png",
-                "FigureS4A_pipeline.png", "FigureS4B_reanalysis.png"]
+                "FigureS4A_pipeline.png", "FigureS4B_reanalysis.png",
+                "FigureS5_smad4_loxp.png"]
+# Figure S5 is the only figure whose legend is itself generated (by step 21) rather than
+# written into the manuscript by hand, so the legend travels with it - otherwise a reader
+# of the repository gets the panel with no way to read it.
+FIGURE_LEGENDS = ["FigureS5_smad4_loxp_legend.md"]
 DATA_FILES = ["AI_panel_PanelApp_v4.37.csv", "AI_enrichment_sensitivity.csv"]
 
 
@@ -83,7 +88,7 @@ def sync(workdir: str) -> list[str]:
         put(sm, "pipeline/SUPPLEMENTARY_METHODS.md")
 
     # ---- figures (outputs, small; the PDFs stay out of the repo) ----
-    for f in FIGURE_FILES:
+    for f in FIGURE_FILES + FIGURE_LEGENDS:
         p = os.path.join(FIGS, f)
         if os.path.exists(p):
             put(p, f"results/figures/{f}")
