@@ -10,7 +10,7 @@ The three archives have different jobs, and duplicating between them is a mistak
                reader expects RNA-seq data, and where the journal will look. (The files
                are the provider's adapter/quality-filtered *_Clean_Data* reads — the
                rawest available; unfiltered output was never returned.)
-  * GitHub   — the analysis code, live and versioned (LabOnoM/smad4kotooth).
+  * GitHub   — the analysis code, live and versioned (LabOnoM/GSE341665).
   * Zenodo   — a PURE DATA record: the de-novo transcriptome assembly, the saved pipeline
                objects, and the exploratory analyses (circRNA, isoform switching,
                differential exon usage) that the manuscript does not interpret. It holds

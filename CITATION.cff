@@ -1,13 +1,13 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite the associated manuscript and this repository."
-title: "smad4kotooth: reproducible analysis of epithelial Smad4 loss in the dental epithelium"
+title: "GSE341665: reproducible analysis of epithelial Smad4 loss in the dental epithelium"
 abstract: >-
   Code and processed data for the study of how epithelial Smad4 deletion reprograms
   ameloblast identity and metabolism, from bulk RNA-seq differential expression through
   gene-program scoring, single-cell deconvolution, and figure generation.
 type: software
 license: MIT
-repository-code: "https://github.com/LabOnoM/smad4kotooth"
+repository-code: "https://github.com/LabOnoM/GSE341665"
 version: "0.1.0"
 # date-released: [[insert on release]]
 # [[Author list mirrors the manuscript byline; confirm it matches the final submission.]]
@@ -28,7 +28,7 @@ keywords:
   - cholesterol biosynthesis
 identifiers:
   - type: doi
-    value: "[[Zenodo DOI — insert on release]]"
+    value: "10.5281/zenodo.21637766"
     description: "Zenodo archive of code and large primary data"
 preferred-citation:
   type: article

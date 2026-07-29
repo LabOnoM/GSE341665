@@ -1,4 +1,4 @@
-# smad4kotooth
+# GSE341665
 
 **Epithelial *Smad4* loss reprograms ameloblast identity and metabolism**
 
@@ -14,9 +14,9 @@ a change in tissue composition.
 ![data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey)
 ![reproducible](https://img.shields.io/badge/pipeline-deterministic%20(seeded)-success)
 
-> **Repository name.** This repo is named `smad4kotooth` for now and will be renamed to the
-> GEO accession (`GSExxxxxx`) once issued. Large primary data live on **Zenodo**
-> (DOI `[[insert on release]]`); the interactive primary-analysis report is at
+> **Repository name.** This repository is named for the GEO accession `GSE341665`.
+> Large primary data live on **Zenodo** (data DOI `10.5281/zenodo.21637766`); the interactive
+> primary-analysis report is at
 > <http://smad4kotooth.bs-gou.com/>.
 
 ---
@@ -114,7 +114,7 @@ flowchart TD
 ## Repository layout
 
 ```
-smad4kotooth/
+GSE341665/
 ├── README.md                 ← you are here
 ├── LICENSE                   ← MIT (code); data are CC-BY-4.0
 ├── CITATION.cff              ← how to cite
@@ -150,7 +150,7 @@ folder structure under version control while the multi-gigabyte primary data liv
 
 ```bash
 # 1. clone
-git clone https://github.com/LabOnoM/smad4kotooth.git && cd smad4kotooth
+git clone https://github.com/LabOnoM/GSE341665.git && cd GSE341665
 
 # 2. fetch large data from Zenodo into the matching data/ and reference/ folders
 #    (see each FILELIST.md; DOI on release)
@@ -223,9 +223,9 @@ uses the constitutive *K14-cre* line.
 
 ## Data availability
 
-- **Sequencing data & processed matrices** — NCBI GEO `[[GSExxxxxx — on release]]`.
+- **Sequencing data & processed matrices** — NCBI GEO [`GSE341665`](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE341665).
 - **Large intermediate data** (BAM, GTF, quantification, exploratory-arm outputs) — Zenodo
-  `[[DOI — on release]]`.
+  [`10.5281/zenodo.21637766`](https://doi.org/10.5281/zenodo.21637766).
 - **Interactive primary-analysis report** (including the exploratory circRNA / alternative-
   splicing / DEU arms not interpreted in the manuscript) — <http://smad4kotooth.bs-gou.com/>.
 - **Single-cell reference** — GEO GSE146855 (Chiba et al. 2020), public.

@@ -4,7 +4,7 @@
 
 WHY THIS EXISTS
 ---------------
-The repository LabOnoM/smad4kotooth was previously kept in step by hand-copying files
+The repository LabOnoM/GSE341665 was previously kept in step by hand-copying files
 into a working copy that lived in a session scratchpad. Two problems: the working copy
 was not durable, and "which files belong in the repo" existed only in whoever's head was
 running the copies. This script makes the mapping explicit and repeatable.
@@ -47,7 +47,7 @@ V2 = os.path.join(ROOT, "00.Manuscript", "Submission_02_JMM_2026-07")
 JOURNAL = os.path.join(V2, "4_Journal_JMM")
 SUP = os.path.join(JOURNAL, "Supplementary")
 FIGS = os.path.join(PIPE, "figures")
-REMOTE = "https://github.com/LabOnoM/smad4kotooth.git"
+REMOTE = "https://github.com/LabOnoM/GSE341665.git"
 DEFAULT_WORKDIR = os.path.join(V2, "1_GitHub", "repo")
 
 # repo-relative destination  <-  source

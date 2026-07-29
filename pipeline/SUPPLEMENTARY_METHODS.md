@@ -388,6 +388,106 @@ At the |log2 fold change| > 1 cutoff used to define the DEG list, only one panel
 reaches significance and the test is uninformative. The two significant up-regulated panel
 genes are *ODAPH* (C4orf26; log2 fold change +1.94) and *ORAI1* (+0.72).
 
+### B7. The conditional allele, resolved from the aligned reads
+
+Because gene-level counts showed *Smad4* modestly **increased** in the mutant libraries
+(log2 fold change +0.32, adjusted *P* = 2.7 × 10⁻³) — the opposite of the naive
+expectation for a knockout — the locus was examined directly in the alignments rather
+than inferred. Two scripts perform this analysis: `20_smad4_loxp_evidence.py` (evidence
+tables) and `21_smad4_loxp_figure.py` (Supplementary Figure S5). Both re-derive every
+value from the BAM files at run time and raise rather than proceed if any assertion fails.
+
+**Allele structure.** loxP-containing reads are present in all six libraries, carried in
+the *soft-clipped* portion of reads that straddle each insertion point (the loxP core is
+not in the reference genome, so it cannot align). Fifteen such reads were recovered by
+scanning both orientations of the 34-base loxP core across chr18:73,778,000–73,792,000.
+One CON1 read (POS 73,784,710, CIGAR `70S79M`) carries genomic sequence, a linker, the
+complete loxP core, a second linker and genomic sequence resuming — fixing that
+breakpoint unambiguously. Both breakpoints were confirmed against `genome.fa`.
+
+| Field | Value |
+|---|---|
+| Floxed exon | chr18:73,782,797–73,782,980 (184 bp), entirely coding |
+| Exon identity | exon 9 of ENSMUST00000025393 (canonical); exon 8 in the conventional 11-exon numbering |
+| Exon accession | ENSMUSE00000143011 in 19 of the 22 transcripts containing this interval; the same interval is labelled ENSMUSE00001829774 (2 transcripts) and ENSMUSE00001829814 (1). **The unambiguous identifier is the coordinate interval, not the accession or the ordinal.** |
+| loxP site A | inserted chr18:73,782,242/73,782,243 (±3 bp; `AAC` microhomology), intron 9/10 |
+| loxP site B | inserted chr18:73,784,709/73,784,710 (exact; one read spans both flanks), intron 8/9 |
+| Floxed interval | 2,467 bp, containing exactly one exon |
+| Protein consequence | residues 318–379, amino-terminal MH2 domain; 184 mod 3 = 1, so excision is frameshifting and introduces a premature termination codon in the following exon |
+
+Note that loxP reads occur in **both** genotypes. This is expected: CON animals are
+Cre-negative *Smad4*^fl/fl^ and carry the cassette; only Cre is absent.
+
+**The excision product is not detected.** Excision would splice the flanking exons
+directly together, creating a junction (chr18:73,782,125–73,790,265) absent from the
+control genome. That junction has **zero** supporting reads in all six libraries, against
+121–187 uniquely-mapped reads supporting each flanking junction per library
+(percent-spliced-in = 1.000 in every sample). By the rule of three, ≥99.4 % of dcKO
+*Smad4* mRNA retains the exon. The result is not an aligner artefact: it reproduces in
+STAR's `SJ.out.tab`, by direct parsing of `N` CIGAR operations, and by an
+alignment-free *k*-mer search, and an unbiased scan of every junction across
+chr18:73,780,000–73,792,000 found no dcKO-specific junction anywhere in the gene.
+
+**Exon-level coverage.** Each exon's share of that sample's total *Smad4* exonic signal
+was computed under two normalisations (per-base depth and read count), both reported so
+that neither the figure nor the text can select the more favourable one. The floxed exon
+carries the lowest ratio in the gene (0.92 depth-fraction, 0.889 read-count) and is the
+only exon whose CON and dcKO values separate completely under both. This is a weak,
+non-significant indication in the expected direction, not evidence: the effect is
+8–11 %, it cannot exceed the exact permutation floor of *P* = 0.10 at three-versus-three,
+and exon 6 deviates as far in the opposite direction under the depth normalisation.
+Coverage cannot in principle settle this question — if the recombined transcript is
+degraded, the surviving mRNA is entirely wild-type and a genuinely deleted allele still
+reads near 1.0.
+
+**Predicted fate of the recombined transcript.** The coding consequence of excision was
+computed directly from the reference sequence rather than assumed. The floxed exon
+contributes 184 nucleotides of coding sequence to the canonical transcript (spanning
+residues 318–379 of the 551-residue protein, of which 319–378 are encoded entirely
+within it); because 184 is not a multiple of three,
+its removal shifts the reading frame from the exon 8 | exon 10 junction onward. In the
+reconstructed mutant coding sequence that junction falls mid-codon (after coding
+nucleotide 952, within codon 318), and the first in-frame termination codon appears at
+**codon 321 — only 8 nucleotides into exon 10**. The predicted product is therefore a
+320-residue truncation: residues 1–317 of wild-type SMAD4 followed by three
+frameshifted residues (Gly-Cys-Thr) and a stop, removing the entire MH2 domain required
+for Smad complex formation.
+
+This places the premature termination codon **299 nucleotides upstream of the final
+exon–exon junction**, far beyond the 50–55 nucleotide threshold at which a terminating
+ribosome fails to displace the downstream exon-junction complex. The recombined
+transcript is therefore a **canonical substrate for nonsense-mediated decay** and would
+be expected to be degraded rather than to accumulate. Consistent with this, Ensembl
+annotates *Smad4* transcripts lacking this exon with the `nonsense_mediated_decay`
+biotype.
+
+**Transcription is not prematurely terminated.** An alternative explanation for the
+absent junction — that the recombined allele terminates transcription at the loxP scar,
+so the downstream exons are never transcribed — was tested and rejected. Premature
+termination predicts progressive depletion of the exons downstream of the deletion, with
+the final exon most affected. The observed dcKO/CON coverage ratios instead *recover*
+across that interval (exon 10, 0.937; exon 11, 0.991; exon 12, 0.989), and exon 8,
+which lies upstream of the deletion and cannot be affected by any downstream terminator,
+is lower (0.910) than the final exon. Transcription therefore proceeds through the
+entire locus in both genotypes. This is expected on first principles as well: the loxP
+cassette is present in the control allele too, so were it a terminator the control
+libraries would show the same truncation, and they do not.
+
+**Interpretation and its limit.** Two explanations remain compatible with these
+observations and cannot be separated by RNA sequencing: nonsense-mediated decay of the
+frameshifted recombined transcript, which the analysis above shows is expected to be
+efficient, or incomplete recombination in this short-cultured explant material. We note
+that decay alone is not a complete explanation, because degradation of a substantial
+recombined pool would be expected to *reduce* total *Smad4* transcript, whereas it is
+modestly increased; reconciling efficient recombination with these data would require an
+additional, untested assumption of transcriptional compensation at the locus. Under either, the mutant libraries are a mixture of recombined and
+non-recombined cells in unknown proportion, so the reported effect sizes are
+conservative. Quantifying recombination requires an assay independent of transcript
+fate — genomic PCR across the floxed interval, an RT-qPCR amplicon spanning the excision
+junction, or SMAD4 immunostaining of the sequenced tissue. Note that the RT-qPCR
+amplicon used in this study lies in exon 2 (Supplementary Table S3) and is therefore also
+unable to report the deletion.
+
 ---
 
 ## Part C — Workflow diagram
