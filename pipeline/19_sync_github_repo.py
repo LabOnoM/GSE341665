@@ -54,7 +54,7 @@ DEFAULT_WORKDIR = os.path.join(V2, "1_GitHub", "repo")
 FIGURE_FILES = ["Figure4_transcriptome.png", "Figure5_identity_switch.png",
                 "Figure6_metabolic_convergence.png", "FigureS3_scref_umap_dotplot.png",
                 "FigureS4A_pipeline.png", "FigureS4B_reanalysis.png",
-                "FigureS5_smad4_loxp.png"]
+                "FigureS5_smad4_loxp.png", "FigureS6_breeding_scheme.png"]
 # Figure S5 is the only figure whose legend is itself generated (by step 21) rather than
 # written into the manuscript by hand, so the legend travels with it - otherwise a reader
 # of the repository gets the panel with no way to read it.
