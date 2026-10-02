@@ -16,29 +16,65 @@ The current repository is private during manuscript preparation. The GEO and Zen
 
 The provider's `*_Clean_Data*.fastq.gz` files are adapter- and quality-filtered reads, the rawest files returned to the authors. They are not unfiltered instrument output. The website is a supplementary browsing resource, not a versioned code or data archive.
 
-## Reproduce the current manuscript
+## Run every retained workflow
 
-Install Python dependencies from `requirements-reproduction.txt`. Download the data snapshot matching `data/INPUT_MANIFEST.json`. From the repository root:
+Use Python 3.12 and the exact tested library. Install R 4.3.2 separately for the single-cell reference. On macOS/Linux, from the repository root:
 
 ```bash
-python reproduce.py --data-root /path/to/unpacked/zenodo \
+python3.12 -m venv /path/to/isolated/python-env
+/path/to/isolated/python-env/bin/python -m pip install -r environment/python-lock.txt
+Rscript environment/setup_reference.R --library /path/to/isolated/R-library --install
+export R_LIBS_USER=/path/to/isolated/R-library
+```
+
+The R installer prints its plan and writes only to the specified library. It restores 149 tested package versions, including the six originally recorded reference packages. CRAN source builds require a C/C++/Fortran toolchain and the system libraries requested by those packages. This tested dependency lock is separate from the incompletely recorded original primary-fit environment. The lightweight `requirements-reproduction.txt` pins the direct Python dependencies; `environment/python-lock.txt` also pins their tested transitive dependencies.
+
+Obtain and unpack the **matching** data snapshot from Zenodo. Its 71 inputs must match `data/INPUT_MANIFEST.json`; the local staged snapshot has not yet been synchronized to the live record. All computation uses those declared files after software installation:
+
+```bash
+/path/to/isolated/python-env/bin/python reproduce.py \
+  --data-root /path/to/unpacked/zenodo \
   --work-dir /path/to/new/scratch/workspace \
-  --destination /path/to/new/results --mode manuscript
+  --destination /path/to/new/results --mode all
 ```
 
-The command extracts the source workbooks, recomputes exact program tests, NNLS fractions/reference specificity and pinned-panel enrichment, regenerates Figures 4–7, exports all six Data S8 CSVs, recalculates the 195 inhibitor values and 52 ANOVA/Dunnett comparisons, and writes Additional files 2–9 including the Data S8 workbook. The workbook uses public openpyxl. Supply `--geo-root /path/to/GEO` to cross-check the entire retained TPM matrix against GEO.
+`--mode all` rebuilds the reference from the original GSE146855 count archive, regenerates Figure S3, rebuilds the AI panel from original pinned PanelApp/MGI records, extracts source workbooks, recomputes program tests and NNLS fractions, renders Figures 4–7, exports Additional files 2–9 and all Data S8 CSVs/workbook, re-extracts Figure S5 evidence from six deposited regional BAMs, and renders Figures S4–S6. Missing/mismatched inputs, environments or scientific benchmarks stop execution. No data downloads or private project helpers are required. Working and output directories must be empty, separate from each other and outside both the repository and data directory. The caller's current directory is unrestricted. Use `--rscript /path/to/Rscript` if multiple R installations exist.
+
+Outputs include `Figures/`, `Additional_files/`, `Supplementary/`, `Reference/`, `Panel/`, `Locus/`, individual command logs, `EXECUTION.json` and `VALIDATION.json`. The final validation compares 28 scientific tables/sheets, verifies all 15,803 retained genes and adjusted-P masks, and checks 18 PNG/PDF files. It does not claim pixel-identical layouts across operating systems.
+
+| Mode | Purpose | Extra environment |
+|---|---|---|
+| `manuscript` | Figures 4–7, all current computational numerical exports/workbook | Python |
+| `supplement` | Figures S4–S6 from archived locus evidence | Python |
+| `reference` | Raw reference rebuild, signature, labels and Figure S3 | Recorded R library |
+| `reference-figure` | Figure S3 from the captured annotated reference object | Recorded R library |
+| `panel` | Rebuild the panel from explicit original source records | Python |
+| `locus` | Re-extract Figure S5 evidence and render it | Python/pysam |
+| `all` | Every retained scientific workflow in dependency order | Python and recorded R library |
+
+Use the same data/work/output arguments with any mode. `--bam-dir /path/to/full/alignments` optionally tests the original six full BAMs, indexes and STAR junction files. The deposited regional BAMs preserve all original alignment records overlapping chr18:73,768,343–73,837,915; full and regional extraction were independently checked against the same archived evidence. These subsets support this locus analysis and do not reconstruct genome-wide alignments. The exact 69,573-base Ensembl-116 sequence and locus GTF are included; neither a complete genome FASTA nor a separate samtools executable is required. Pysam 0.24.1 executes the actual bundled samtools 1.24 subcommands with the original flags.
+
+Supply `--geo-root /path/to/unpacked/GEO` to cross-check all 15,803 × six retained TPM values against `GSE_processed_gene_TPM.txt` after the recorded four-decimal GEO export rounding. The source workbooks retain full precision. This optional check also passed on 2 October 2026.
+
+## Settings and independent checks
+
+The reference uses genes detected in at least three cells, >200 and <7,000 features/cell, <25% mitochondrial counts, LogNormalize at 10,000, 2,000 vst variable features, 30 PCs, the first 20 downstream PCs, k=20 Annoy neighbors with 50 trees, and Louvain clustering at resolution 0.6. Global seed is 1; PCA/UMAP seed is 42; clustering seed is 0. UMAP uses uwot/cosine, 30 neighbors and min.dist 0.3. Cross-cluster marker z-score means are rounded to two decimals before choosing the first maximum. The maturation marker set includes **Gm17660**. Additional file 1 has been corrected to state these previously omitted details.
 
 ```bash
-python reproduce.py --data-root /path/to/unpacked/zenodo \
-  --work-dir /path/to/new/scratch/supplement \
-  --destination /path/to/new/supplement --mode supplement
+/path/to/isolated/python-env/bin/python validate.py \
+  --data-root /path/to/unpacked/zenodo \
+  --work-dir /path/to/completed/workspace \
+  --destination /path/to/completed/results --mode all
+/path/to/isolated/python-env/bin/python -m unittest discover -s tests -v
 ```
 
-This regenerates Figures S4–S6 from the archived evidence. `--mode reference` downloads GSE146855 and regenerates the Seurat analysis/Figure S3; it additionally requires R/Seurat and network access. `--mode locus --bam-dir ... --reference-dir ...` re-extracts Figure S5 evidence from aligned reads and requires samtools and the named BAM/reference inputs. See [the reproduction map](docs/reproduction-map.md) for every retained script/input/output and the validation limits.
+Seven regression checks protect input/output separation, existing work, interrupted downloads, missing source records, and tiny/missing probability states. GitHub Actions runs those checks and syntax validation; it does not obtain restricted study data or certify a complete scientific rerun.
 
-These commands reproduce archived-result analyses and figures. They do not execute a complete FASTQ-to-DESeq2 refit. Exact package versions missing from the original primary analysis remain unrecorded. The original alignment/quantification/model-fitting commands are described in Additional file 1 and the linked primary report; a complete executable upstream workflow has not been recovered into this repository.
+To deliberately re-download the public reference or panel, use `PYTHON=/path/to/python bash pipeline/04_download_scref.sh --download --destination /new/reference` or `python pipeline/17_fetch_ai_panel.py --download --save-sources /new/sources --output-dir /new/panel`. Both live routes were executed in the audit. Downloads verify the fixed reference SHA-256; the API explicitly requests panel v4.37. MGI changes over time, so live retrieval records its source hash and is separate from frozen manuscript reproduction. Offline runs explicitly read archived original records and never silently substitute a hard-coded panel.
 
-Read adjusted P values with `float_precision="round_trip"`. Five source zeros represent numerical underflow; 613 missing adjusted P values remain missing. Gene-level inference uses the archived RUV-adjusted count model; heatmaps/PCA use unadjusted TPM. Program scores use exact label permutations, with a minimum two-sided P of 0.10 for three libraries per genotype.
+These commands reproduce the computational evidence in the current manuscript. They do not refit the original FASTQ-to-DESeq2 model. Its executable upstream commands and some original primary-fit package versions have not been recovered. Wet-laboratory Figures 1–3/S1/S2/S7 and Tables S3–S5 are experimental artwork/records; plotting code cannot recover missing raw scans, Ct values or band intensities. See [the complete dependency map](docs/reproduction-map.md), [validation](docs/reproduction-validation.json) and [remaining limitations](docs/known-issues.md).
+
+Read adjusted P values with `float_precision="round_trip"`. Five source zeros represent numerical underflow; 613 missing adjusted P values remain missing. Nonzero probability checks use zero absolute tolerance. Gene-level inference uses the archived RUV-adjusted count model; heatmaps/PCA use unadjusted TPM. Program scores use exact label permutations, with a minimum two-sided P of 0.10 for three libraries per genotype.
 
 ## Scope and citation
 

@@ -42,8 +42,9 @@ Human -> mouse orthologs come from the MGI vertebrate homology report
 column in the DEG table (which is empty for ~41 % of tested genes — the defect that
 corrupted the previous enrichment; see 16_ai_gene_enrichment.py).
 
-FAILS LOUDLY: if PanelApp or MGI is unreachable, or if a GREEN gene cannot be mapped
-to a mouse ortholog, this script raises. It never falls back to a stored table.
+FAILS LOUDLY: live retrieval errors and unresolved GREEN-gene orthologs raise.
+Offline reproduction explicitly reads original source records declared in the
+data manifest. It never falls back implicitly or substitutes a hand-typed panel.
 That rule exists because a hard-coded fallback is what produced the retired
 fabricated Figure 7 (.wiki/system/lessons-learned.md §1).
 
@@ -52,18 +53,20 @@ Outputs
     output/AI_panel_PanelApp_v<version>.csv   the pinned, mapped panel
     output/AI_panel_provenance.txt            retrieval record for the Methods
 
-Run from the project root:
-    python3 scripts/JDR_reanalysis/17_fetch_ai_panel.py
+Run via reproduce.py --mode panel, or request --download explicitly.
 """
 
 from __future__ import annotations
 
 import csv
+import argparse
+import hashlib
 import io
 import json
 import os
 import sys
 import urllib.request
+from pathlib import Path
 from collections import defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -74,7 +77,7 @@ PANEL_NAME = "Amelogenesis imperfecta"
 # Pinned. Changing this changes the reported gene set — do so deliberately.
 PANEL_VERSION = "4.37"
 
-PANELAPP = f"https://panelapp.genomicsengland.co.uk/api/v1/panels/{PANEL_ID}/"
+PANELAPP = f"https://panelapp.genomicsengland.co.uk/api/v1/panels/{PANEL_ID}/?version={PANEL_VERSION}"
 MGI_HOM = "https://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt"
 
 GREEN = 3  # PanelApp confidence_level: 3 = green/high, 2 = amber, 1/0 = red
@@ -130,8 +133,8 @@ def fetch(url: str, what: str) -> bytes:
         ) from exc
 
 
-def load_panel() -> dict:
-    data = json.loads(fetch(PANELAPP, "PanelApp panel").decode())
+def load_panel(source: bytes | None = None) -> dict:
+    data = json.loads((source if source is not None else fetch(PANELAPP, "PanelApp panel")).decode())
     got = str(data.get("version"))
     if got != PANEL_VERSION:
         raise SourceUnavailable(
@@ -142,9 +145,9 @@ def load_panel() -> dict:
     return data
 
 
-def load_mgi_orthologs() -> dict[str, str]:
+def load_mgi_orthologs(source: bytes | None = None) -> dict[str, str]:
     """Return {human_symbol: mouse_symbol} from the MGI homology classes."""
-    txt = fetch(MGI_HOM, "MGI homology report").decode("utf-8", "replace")
+    txt = (source if source is not None else fetch(MGI_HOM, "MGI homology report")).decode("utf-8", "replace")
     rows = list(csv.DictReader(io.StringIO(txt), delimiter="\t"))
     by_class: dict[str, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
     for r in rows:
@@ -166,7 +169,28 @@ def load_mgi_orthologs() -> dict[str, str]:
 
 
 def main() -> None:
-    panel = load_panel()
+    ap = argparse.ArgumentParser(description="Build the pinned panel from original source records; no implicit fallback.")
+    sources = ap.add_mutually_exclusive_group(required=True)
+    sources.add_argument('--sources-dir', type=Path, help='Explicit archived PanelApp JSON and MGI report')
+    sources.add_argument('--download', action='store_true', help='Fetch the pinned API version and current MGI report')
+    ap.add_argument('--save-sources', type=Path, help='Save original fetched records when using --download')
+    ap.add_argument('--output-dir', type=Path, default=Path(__file__).resolve().parent/'output')
+    args = ap.parse_args()
+    if args.sources_dir:
+        panel_raw = (args.sources_dir/'PanelApp_269_v4.37.json').read_bytes()
+        mgi_raw = (args.sources_dir/'HOM_MouseHumanSequence.rpt').read_bytes()
+    else:
+        panel_raw = fetch(PANELAPP, "pinned PanelApp panel")
+        mgi_raw = fetch(MGI_HOM, "MGI homology report")
+    if args.save_sources:
+        if not args.download: ap.error('--save-sources requires --download')
+        args.save_sources.mkdir(parents=True, exist_ok=True)
+        (args.save_sources/'PanelApp_269_v4.37.json').write_bytes(panel_raw)
+        (args.save_sources/'HOM_MouseHumanSequence.rpt').write_bytes(mgi_raw)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    global OUT
+    OUT = str(args.output_dir)
+    panel = load_panel(panel_raw)
     version = str(panel["version"])
     created = str(panel.get("version_created", ""))[:10]
 
@@ -185,7 +209,7 @@ def main() -> None:
     print(f"PanelApp panel {PANEL_ID} '{panel['name']}' v{version} ({created})")
     print(f"  total genes {len(genes)}   GREEN {len(green)}   excluded (amber/red) {len(other)}")
 
-    ortho = load_mgi_orthologs()
+    ortho = load_mgi_orthologs(mgi_raw)
     print(f"  MGI 1:1 human->mouse ortholog classes: {len(ortho)}")
 
     unmapped = [r["human"] for r in green
@@ -229,6 +253,11 @@ def main() -> None:
         )
     print(f"  wrote {path}")
     print(f"  wrote {prov}")
+    (args.output_dir/'AI_panel_source_hashes.json').write_text(json.dumps({
+        'panel_url':PANELAPP, 'panel_version':PANEL_VERSION, 'mgi_url':MGI_HOM,
+        'source_mode':'explicit archived records' if args.sources_dir else 'live download',
+        'panel_sha256':hashlib.sha256(panel_raw).hexdigest(),
+        'mgi_sha256':hashlib.sha256(mgi_raw).hexdigest()},indent=2))
     print()
     print("  excluded (amber/red): " + ", ".join(sorted(r["human"] for r in other)))
 

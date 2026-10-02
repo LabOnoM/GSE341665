@@ -22,7 +22,8 @@ so <- readRDS(file.path(OUT, "GSE146855_seurat.rds"))
 cat("cells:", ncol(so), " cell types:", length(unique(so$celltype)), "\n")
 
 # UMAP on the same 20 PCs used for clustering in 05_scref_annotate.R
-so <- RunUMAP(so, dims = 1:20, verbose = FALSE)
+so <- RunUMAP(so, dims = 1:20, umap.method = "uwot", metric = "cosine",
+              n.neighbors = 30, min.dist = 0.3, seed.use = 42, verbose = FALSE)
 
 ct_order <- c("Ameloblast_secretory", "Ameloblast_maturation", "Epithelial_IEE_SI",
               "Mesenchyme", "Immune", "Endothelial", "Erythroid")
@@ -76,3 +77,4 @@ writeLines(c(paste("R", getRversion()),
            file.path(OUT, "scref_umap_versions.txt"))
 cat("\nversions:\n"); print(v)
 cat("DONE\n")
+saveRDS(so, file.path(OUT,"GSE146855_seurat_umap.rds"))

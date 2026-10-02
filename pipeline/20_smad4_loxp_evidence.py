@@ -111,8 +111,6 @@ SCRIPT_DIR = PROJECT_ROOT / "scripts" / "JDR_reanalysis"
 OUT_DIR = SCRIPT_DIR / "output"
 DATA_DIR = SCRIPT_DIR / "data"
 
-GENOME_FA = BAM_DIR / "genome.fa"
-GENOME_GTF = BAM_DIR / "genome.gtf"           # 3.5 GB - only scanned to build the cache
 SMAD4_GTF_CACHE = DATA_DIR / "smad4_locus.gtf"  # small cached subset, committed
 DEG_TABLE = OUT_DIR / "DEG_table.csv"
 
@@ -234,10 +232,11 @@ def require(path: Path, what: str) -> Path:
 
 
 def run(cmd: list[str]) -> str:
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    if proc.returncode != 0:
-        raise RuntimeError(f"command failed: {' '.join(cmd)}\nSTDERR:\n{proc.stderr}")
-    return proc.stdout
+    if cmd[0] != "samtools":raise ValueError("Only samtools subcommands are supported")
+    # Pinned pysam exposes the actual bundled samtools subcommands. This avoids
+    # a second executable dependency and preserves the original samtools flags.
+    import pysam
+    return getattr(pysam.samtools, cmd[1])(*cmd[2:])
 
 
 def revcomp(s: str) -> str:
@@ -267,39 +266,18 @@ def lead_trail_clip(cigar: str) -> tuple[int, int]:
 # Reference sequence + exon model
 # ---------------------------------------------------------------------------
 def fetch_reference_window(start: int, end: int) -> str:
-    require(GENOME_FA, "genome FASTA")
-    out = run(["samtools", "faidx", str(GENOME_FA), f"{CHROM}:{start}-{end}"])
-    seq = "".join(line.strip() for line in out.splitlines() if not line.startswith(">"))
-    if len(seq) != end - start + 1:
-        raise RuntimeError(f"faidx returned {len(seq)} bp for {CHROM}:{start}-{end}")
-    return seq.upper()
+    cache = require(DATA_DIR / "smad4_reference_sequence.json", "exact deposited reference sequence")
+    reference = json.loads(cache.read_text())
+    if (reference["chrom"] != CHROM or start < reference["start"]
+            or end > reference["end"] or end < start
+            or len(reference["sequence"]) != reference["end"]-reference["start"]+1):
+        raise ValueError(f"Invalid deposited reference interval: {CHROM}:{start}-{end}")
+    return reference["sequence"][start-reference["start"]:end-reference["start"]+1].upper()
 
 
 def ensure_smad4_gtf_cache() -> Path:
-    """Small, committed subset of the Ensembl GTF covering only Smad4.
-
-    Built once from genome.gtf (3.5 GB).  Never fabricated: if neither the
-    cache nor genome.gtf exists, this raises.
-    """
-    if SMAD4_GTF_CACHE.exists() and SMAD4_GTF_CACHE.stat().st_size > 0:
-        return SMAD4_GTF_CACHE
-    require(GENOME_GTF, "Ensembl GTF (needed once to build the Smad4 subset cache)")
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    sys.stderr.write(
-        f"[20] {SMAD4_GTF_CACHE} not found; extracting {SMAD4_GENE_ID} from "
-        f"{GENOME_GTF} (one-time full scan)...\n"
-    )
-    tmp = SMAD4_GTF_CACHE.with_suffix(".gtf.tmp")
-    with open(tmp, "w") as fout:
-        proc = subprocess.run(["grep", "-F", SMAD4_GENE_ID, str(GENOME_GTF)],
-                              stdout=fout, stderr=subprocess.PIPE, text=True)
-    if proc.returncode not in (0, 1):
-        tmp.unlink(missing_ok=True)
-        raise RuntimeError(f"grep on {GENOME_GTF} failed:\n{proc.stderr}")
-    tmp.replace(SMAD4_GTF_CACHE)
-    if SMAD4_GTF_CACHE.stat().st_size == 0:
-        raise RuntimeError(f"{SMAD4_GENE_ID} not found in {GENOME_GTF}")
-    return SMAD4_GTF_CACHE
+    """Require the exact, checksum-pinned Smad4 subset of Ensembl release 116."""
+    return require(SMAD4_GTF_CACHE, "deposited Smad4 locus GTF")
 
 
 ATTR_RE = re.compile(r'(\S+) "([^"]*)"')

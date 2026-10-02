@@ -1,7 +1,9 @@
 {
+  "date": "2026-10-02",
   "passed": true,
-  "scope": "Archived-result reproduction, not a raw-count-model refit",
-  "csv_and_workbook_checks": [
+  "scope": "Every retained manuscript workflow; includes source-reference rebuild, live/pinned panel retrieval and BAM extraction; excludes unrecovered upstream FASTQ-to-DESeq2 refit",
+  "input_files_verified": 71,
+  "numerical_checks": [
     {
       "file": "Additional_file_2.csv",
       "rows": 195,
@@ -107,134 +109,173 @@
       "passed": true
     },
     {
-      "sheet": "Displayed genes",
+      "file": "workbook/Displayed genes",
       "rows": 157,
-      "checked_cells": 2370,
-      "rounding_differences": 134,
+      "columns": 15,
+      "checked_cells": 2355,
+      "max_absolute_difference": 3.637978807091713e-12,
       "passed": true
     },
     {
-      "sheet": "Text claims",
+      "file": "workbook/Text claims",
       "rows": 102,
-      "checked_cells": 1133,
-      "rounding_differences": 166,
+      "columns": 11,
+      "checked_cells": 1122,
+      "max_absolute_difference": 3.637978807091713e-12,
       "passed": true
     },
     {
-      "sheet": "All genes",
+      "file": "workbook/All genes",
       "rows": 15803,
-      "checked_cells": 363492,
-      "rounding_differences": 20812,
+      "columns": 23,
+      "checked_cells": 363469,
+      "max_absolute_difference": 3.637978807091713e-12,
       "passed": true
     },
     {
-      "sheet": "Program tests",
+      "file": "workbook/Program tests",
       "rows": 4,
-      "checked_cells": 40,
-      "rounding_differences": 4,
+      "columns": 8,
+      "checked_cells": 32,
+      "max_absolute_difference": 4.440892098500626e-16,
       "passed": true
     },
     {
-      "sheet": "Deconvolution tests",
+      "file": "workbook/Deconvolution tests",
       "rows": 3,
-      "checked_cells": 16,
-      "rounding_differences": 9,
+      "columns": 4,
+      "checked_cells": 12,
+      "max_absolute_difference": 3.296918293926865e-12,
       "passed": true
     },
     {
-      "sheet": "Nonretained genes",
+      "file": "workbook/Nonretained genes",
       "rows": 12,
-      "checked_cells": 78,
-      "rounding_differences": 0,
+      "columns": 6,
+      "checked_cells": 72,
+      "max_absolute_difference": 0.0,
       "passed": true
     },
     {
-      "sheet": "Read me",
+      "file": "GSE146855_signature_cpm.csv",
+      "rows": 21059,
+      "columns": 8,
+      "checked_cells": 168472,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "GSE146855_celltype_specificity.csv",
+      "rows": 17,
+      "columns": 8,
+      "checked_cells": 136,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "scref_celltype_counts.csv",
+      "rows": 7,
+      "columns": 3,
+      "checked_cells": 21,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "smad4_loxp_reads.csv",
       "rows": 15,
-      "scientific_sheet": false,
+      "columns": 22,
+      "checked_cells": 330,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "smad4_exon_coverage.csv",
+      "rows": 72,
+      "columns": 15,
+      "checked_cells": 1080,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "smad4_exon_ratio.csv",
+      "rows": 12,
+      "columns": 23,
+      "checked_cells": 276,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "smad4_junctions.csv",
+      "rows": 12,
+      "columns": 24,
+      "checked_cells": 288,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "smad4_locus_depth.csv",
+      "rows": 7206,
+      "columns": 8,
+      "checked_cells": 57648,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "AI_panel_PanelApp_v4.37.csv",
+      "rows": 31,
+      "columns": 6,
+      "checked_cells": 186,
+      "max_absolute_difference": 0.0,
       "passed": true
     }
   ],
-  "retained_genes": 15803,
-  "missing_adjusted_P_values": 613,
-  "source_underflow_zeros": 5,
-  "probability_validation": "Exact zero and missing masks; nonzero probabilities relative tolerance 1e-12 and zero absolute tolerance. Descriptive NNLS t tests use 1e-10 relative tolerance.",
-  "run_records": [
-    {
-      "mode": "manuscript",
-      "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
-      "repository_code_hashes": {
-        "pipeline/._01_extract_tables.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._03_module_scores.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._04_download_scref.sh": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._05_scref_annotate.R": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._06_deconvolution.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._07_figures.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._11_scref_umap_dotplot.R": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._14_workflow_diagram.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._16_ai_gene_enrichment.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._17_fetch_ai_panel.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._20_smad4_loxp_evidence.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._21_smad4_loxp_figure.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._22_breeding_scheme.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._24_september_inhibitor_audit.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._ai_gene_provenance.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._ai_genes.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._export_additional_data.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._programs.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/._volcano_panel.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
-        "pipeline/01_extract_tables.py": "fcc94d8f07987968452744ab9a62c485c4eb9477d48129c3491f5dda897f91e2",
-        "pipeline/03_module_scores.py": "2c3ebfbf5c5baa913a2ae31fb9ccda265747de66234f9b4857e14ef8f23b8c2d",
-        "pipeline/04_download_scref.sh": "8ad663614444811f6d43a0ff4b7a66f3b73da089a5602daf366a967b87098387",
-        "pipeline/05_scref_annotate.R": "b4fc7a0a65d2ebe9c3cb8a704b3787bcb794da09c741d76e047abc32832cc10f",
-        "pipeline/06_deconvolution.py": "6b555014a3d4a61dbbec8d327e5829b924ceb28ab22a975ae49f9c45e293ea07",
-        "pipeline/07_figures.py": "81180b2e126568d5c9c28c36e1a718a40c3fcdaf228ccce7a93f33f92027de1a",
-        "pipeline/11_scref_umap_dotplot.R": "55b2e742597517d3be0c7f62fb7d3223b635be0b31007db055f65045da0ba257",
-        "pipeline/14_workflow_diagram.py": "397779c7147829b92f4530270cd9e763a7b60218abbc51e45604752fcaec07d0",
-        "pipeline/16_ai_gene_enrichment.py": "ac5184735fe4f59dcb090e3a6b87189240b6034b61d2d7912e34776754a3dcd0",
-        "pipeline/17_fetch_ai_panel.py": "a6f591d253a77603e01145a43ea12143d0e2148584bd56b3cfdb2237640bcb3d",
-        "pipeline/20_smad4_loxp_evidence.py": "abf0da5ef6203bfd524b714fd15b292800a51a01df03467b46a1ebe357005d13",
-        "pipeline/21_smad4_loxp_figure.py": "491ec5150b418585b89227ec611173852ae68828dcf2fb26c98b3e91bfbdef1c",
-        "pipeline/22_breeding_scheme.py": "1927460521a5f99109aad9e4af41ffb99b74a1ea2d1f0b57b371c4ce43c0ff85",
-        "pipeline/24_september_inhibitor_audit.py": "b9b29903ed3e1e556747e829793df465570f9d5b9efbe869df52ad2039748aef",
-        "pipeline/ai_gene_provenance.py": "b2ea5a5fa863c1dab6a0350a1df5880bfb179630b0910d70d90416a4d1ffbd78",
-        "pipeline/ai_genes.py": "ec6a00f06c822e587ac3bdcccf0d0067b511df4c28e37877bb804cdb20457bcd",
-        "pipeline/export_additional_data.py": "dd1ec221d3219542d3f9a445c0fa956d0a387666c2f28174d26a41c20995f39c",
-        "pipeline/programs.py": "bca193e4b95bf97c1028db9823d5d5801f9ebcb78a2cc1253b93797c1ef5df7a",
-        "pipeline/vendor/._figstyle.py": "78e7f69ec9d0b8940a283d7d0feecaaadd74f509d6a6d9b8c374cb2dc33a422a",
-        "pipeline/vendor/figstyle.py": "6e55fb5833d0466ab4d91206c9a8d419b5ff398cf9166494eca3265a5a59ecb1",
-        "pipeline/volcano_panel.py": "50c854e76506e16ceefbbede33508e641c037ef7ce05fb5cf15cec846545f28e"
-      },
-      "data_inputs_verified": 48,
-      "raw_count_model_refit": false
-    },
-    {
-      "mode": "supplement",
-      "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
-      "repository_code_hashes": {
-        "pipeline/01_extract_tables.py": "fcc94d8f07987968452744ab9a62c485c4eb9477d48129c3491f5dda897f91e2",
-        "pipeline/03_module_scores.py": "2c3ebfbf5c5baa913a2ae31fb9ccda265747de66234f9b4857e14ef8f23b8c2d",
-        "pipeline/04_download_scref.sh": "8ad663614444811f6d43a0ff4b7a66f3b73da089a5602daf366a967b87098387",
-        "pipeline/05_scref_annotate.R": "b4fc7a0a65d2ebe9c3cb8a704b3787bcb794da09c741d76e047abc32832cc10f",
-        "pipeline/06_deconvolution.py": "6b555014a3d4a61dbbec8d327e5829b924ceb28ab22a975ae49f9c45e293ea07",
-        "pipeline/07_figures.py": "81180b2e126568d5c9c28c36e1a718a40c3fcdaf228ccce7a93f33f92027de1a",
-        "pipeline/11_scref_umap_dotplot.R": "55b2e742597517d3be0c7f62fb7d3223b635be0b31007db055f65045da0ba257",
-        "pipeline/14_workflow_diagram.py": "397779c7147829b92f4530270cd9e763a7b60218abbc51e45604752fcaec07d0",
-        "pipeline/16_ai_gene_enrichment.py": "ac5184735fe4f59dcb090e3a6b87189240b6034b61d2d7912e34776754a3dcd0",
-        "pipeline/17_fetch_ai_panel.py": "a6f591d253a77603e01145a43ea12143d0e2148584bd56b3cfdb2237640bcb3d",
-        "pipeline/20_smad4_loxp_evidence.py": "abf0da5ef6203bfd524b714fd15b292800a51a01df03467b46a1ebe357005d13",
-        "pipeline/21_smad4_loxp_figure.py": "491ec5150b418585b89227ec611173852ae68828dcf2fb26c98b3e91bfbdef1c",
-        "pipeline/22_breeding_scheme.py": "f52ed7835e3476e961f07bd8a0170f0d0061c79a246437823e5ea757af842e11",
-        "pipeline/24_september_inhibitor_audit.py": "b9b29903ed3e1e556747e829793df465570f9d5b9efbe869df52ad2039748aef",
-        "pipeline/ai_gene_provenance.py": "b2ea5a5fa863c1dab6a0350a1df5880bfb179630b0910d70d90416a4d1ffbd78",
-        "pipeline/ai_genes.py": "ec6a00f06c822e587ac3bdcccf0d0067b511df4c28e37877bb804cdb20457bcd",
-        "pipeline/export_additional_data.py": "dd1ec221d3219542d3f9a445c0fa956d0a387666c2f28174d26a41c20995f39c",
-        "pipeline/programs.py": "bca193e4b95bf97c1028db9823d5d5801f9ebcb78a2cc1253b93797c1ef5df7a",
-        "pipeline/vendor/figstyle.py": "6e55fb5833d0466ab4d91206c9a8d419b5ff398cf9166494eca3265a5a59ecb1",
-        "pipeline/volcano_panel.py": "50c854e76506e16ceefbbede33508e641c037ef7ce05fb5cf15cec846545f28e"
-      },
-      "data_inputs_verified": 48,
-      "raw_count_model_refit": false
-    }
-  ]
+  "figure_files": [
+    "Figures/Figure4_transcriptome.pdf",
+    "Figures/Figure4_transcriptome.png",
+    "Figures/Figure5_identity_switch.pdf",
+    "Figures/Figure5_identity_switch.png",
+    "Figures/Figure6_metabolic_convergence.pdf",
+    "Figures/Figure6_metabolic_convergence.png",
+    "Figures/Figure7_signaling_gene_evidence.pdf",
+    "Figures/Figure7_signaling_gene_evidence.png",
+    "Figures/FigureS3_scref_umap_dotplot.pdf",
+    "Figures/FigureS3_scref_umap_dotplot.png",
+    "Figures/FigureS5_smad4_loxp.pdf",
+    "Figures/FigureS5_smad4_loxp.png",
+    "Figures/FigureS4A_pipeline.pdf",
+    "Figures/FigureS4A_pipeline.png",
+    "Figures/FigureS4B_reanalysis.pdf",
+    "Figures/FigureS4B_reanalysis.png",
+    "Figures/FigureS6_breeding_scheme.pdf",
+    "Figures/FigureS6_breeding_scheme.png"
+  ],
+  "reference_validation": {
+    "passed": true,
+    "cells": 6248,
+    "barcode_order_exact": true,
+    "celltype_labels_exact": true,
+    "cluster_labels_exact": true,
+    "pca_first_20_sign_aligned_max_difference": 9.671818901324514e-12
+  },
+  "full_BAM_and_regional_BAM_evidence_agreement": "All five current evidence CSVs agree exactly with archived evidence in both runs.",
+  "live_panel_agreement": "Pinned v4.37 and live MGI produce the archived 31-row mapped panel exactly.",
+  "python": "3.12.14",
+  "R": "4.3.2",
+  "reference_package_versions": {
+    "Seurat": "5.3.1",
+    "SeuratObject": "5.2.0",
+    "Matrix": "1.6.5",
+    "ggplot2": "4.0.0",
+    "patchwork": "1.3.2",
+    "uwot": "0.2.3"
+  },
+  "locked_R_packages": 149,
+  "python_environment": "environment/python-lock.txt",
+  "alignment_backend": "pysam 0.24.1, bundled samtools 1.24",
+  "regression_tests_passed": 7,
+  "network_for_analysis": false,
+  "data_access_verified_public": false,
+  "remote_Zenodo_synchronized": false,
+  "tolerances": "Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.",
+  "rendered_AF1_pages": 31
 }

@@ -10,14 +10,31 @@ import json
 import shutil
 import subprocess
 import sys
+import os
+import time
+from datetime import datetime, timezone
+from importlib.metadata import distributions
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent
+STEPS = []
+LOG_DIR = None
 
 
 def run(command, cwd):
     print('Running:', ' '.join(map(str, command)), flush=True)
-    subprocess.run(list(map(str, command)), cwd=cwd, check=True)
+    start=time.monotonic()
+    record={'command':list(map(str,command)),'started_utc':datetime.now(timezone.utc).isoformat()}
+    STEPS.append(record)
+    logfile=LOG_DIR/f'{len(STEPS):02d}_{Path(command[1]).name}.log'
+    with logfile.open('w') as log:
+        process=subprocess.Popen(record['command'],cwd=cwd,stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT,text=True)
+        for line in process.stdout:
+            print(line,end='',flush=True);log.write(line);log.flush()
+        status=process.wait()
+    record.update(exit_code=status,seconds=round(time.monotonic()-start,3),log=str(logfile.name))
+    if status:raise subprocess.CalledProcessError(status,record['command'])
 
 
 def main():
@@ -25,24 +42,39 @@ def main():
     ap.add_argument('--data-root', type=Path, required=True, help='Unpacked Zenodo data root')
     ap.add_argument('--work-dir', type=Path, required=True, help='New empty working directory')
     ap.add_argument('--destination', type=Path, required=True, help='New output directory')
-    ap.add_argument('--mode', choices=['manuscript', 'supplement', 'reference', 'locus'], default='manuscript')
+    ap.add_argument('--mode', choices=['manuscript', 'supplement', 'reference', 'locus', 'panel', 'all', 'reference-figure'], default='manuscript')
+    ap.add_argument('--rscript', default='Rscript', help='Rscript executable for the recorded R 4.3.2 environment')
+    ap.add_argument('--reference-archive', type=Path, help='Explicit original GSE146855 tar; defaults to deposited archive')
     ap.add_argument('--geo-root', type=Path, help='Optional unpacked GEO processed matrices')
     ap.add_argument('--bam-dir', type=Path, help='BAM, indexes and STAR junction files for locus mode')
-    ap.add_argument('--reference-dir', type=Path, help='genome.fa, .fai and genome.gtf for locus mode')
     args = ap.parse_args()
     data = args.data_root.resolve()
+    work = args.work_dir.resolve(); dest = args.destination.resolve()
+    def overlaps(a,b):return a==b or a in b.parents or b in a.parents
+    for a,b in [(work,dest),(work,data),(dest,data),(work,REPO),(dest,REPO)]:
+        if overlaps(a,b):raise ValueError(f'Input, repository, work and output directories must be separate: {a}; {b}')
+    for p in [work,dest]:
+        if p.exists() and (not p.is_dir() or any(p.iterdir())):
+            raise ValueError(f'Refusing to overwrite nonempty directory: {p}')
     manifest = json.loads((REPO/'data/INPUT_MANIFEST.json').read_text())
     for item in manifest:
         p = data/item['path']
+        if data not in p.resolve().parents:raise ValueError(f'Input manifest escapes data root: {p}')
         if not p.is_file(): raise FileNotFoundError(f'Required deposited input missing: {p}')
-        if hashlib.sha256(p.read_bytes()).hexdigest() != item['sha256']:
+        with p.open('rb') as f:actual=hashlib.file_digest(f,'sha256').hexdigest()
+        if p.stat().st_size != item['bytes'] or actual != item['sha256']:
             raise ValueError(f'Deposited input checksum mismatch: {p}')
-    work = args.work_dir.resolve(); dest = args.destination.resolve()
     for p in [work, dest]:
-        if p.exists() and any(p.iterdir()): raise ValueError(f'Refusing to overwrite nonempty directory: {p}')
         p.mkdir(parents=True, exist_ok=True)
+    global LOG_DIR
+    LOG_DIR=dest/'logs';LOG_DIR.mkdir()
+    for variable in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS']:
+        os.environ[variable]='1'
+    os.environ['MPLBACKEND']='Agg'
+    os.environ['PYTHON']=sys.executable
     pipe = work/'scripts/JDR_reanalysis'
-    shutil.copytree(REPO/'pipeline', pipe)
+    shutil.copytree(REPO/'pipeline', pipe,ignore=shutil.ignore_patterns('._*','__pycache__'))
+    shutil.copytree(REPO/'environment',pipe/'environment',ignore=shutil.ignore_patterns('._*','__pycache__'))
     source = data/'01_processed_data/reproduction_inputs'
     shutil.copytree(source/'output', pipe/'output')
     shutil.copytree(source/'data', pipe/'data')
@@ -71,7 +103,19 @@ def main():
             raise ValueError('Archived TPM values do not agree with GEO processed matrix')
     py=sys.executable
     def step(name): run([py,pipe/name],work)
-    if args.mode=='manuscript':
+    if args.mode in ('reference','all'):
+        run([args.rscript,pipe/'check_reference_environment.R'],work)
+        archive=args.reference_archive or data/'06_single_cell_reference/GSE146855_RAW.tar'
+        run(['bash',pipe/'04_download_scref.sh','--archive',archive],work)
+        for script in ['05_scref_annotate.R','11_scref_umap_dotplot.R']:run([args.rscript,pipe/script],work)
+        from validate import check_reference
+        check_reference(data,work)
+        shutil.copytree(pipe/'figures',dest/'Figures',dirs_exist_ok=True)
+    if args.mode in ('panel','all'):
+        run([py,pipe/'17_fetch_ai_panel.py','--sources-dir',data/'03_external_panel_sources'],work)
+        from validate import compare_csv
+        compare_csv(source/'output/AI_panel_PanelApp_v4.37.csv',pipe/'output/AI_panel_PanelApp_v4.37.csv')
+    if args.mode in ('manuscript','all'):
         # Extract the actual source workbooks, recompute four program scores,
         # NNLS fractions, reference specificity and pinned-panel enrichment.
         for script in ['01_extract_tables.py','03_module_scores.py','06_deconvolution.py','16_ai_gene_enrichment.py']:
@@ -81,21 +125,39 @@ def main():
         step('24_september_inhibitor_audit.py')
         run([py,pipe/'export_additional_data.py','--workspace',work,'--destination',dest,
              '--payload',work/'payload/workbook_payload.json'],work)
-    elif args.mode=='supplement':
-        for script in ['14_workflow_diagram.py','21_smad4_loxp_figure.py','22_breeding_scheme.py']:step(script)
-        shutil.copytree(pipe/'figures',dest/'Figures')
-    elif args.mode=='reference':
-        run(['bash',pipe/'04_download_scref.sh'],work)
-        for script in ['05_scref_annotate.R','11_scref_umap_dotplot.R']:run(['Rscript',pipe/script],work)
-        shutil.copytree(pipe/'figures',dest/'Figures')
-    elif args.mode=='locus':
-        if args.bam_dir is None or args.reference_dir is None:raise ValueError('Locus mode requires --bam-dir and --reference-dir')
-        for p in args.bam_dir.resolve().glob('*'):
+    if args.mode in ('locus','all'):
+        bam_dir=(args.bam_dir or data/'08_locus_alignments').resolve()
+        for sample in ['CON1','CON2','CON3','dcKO1','dcKO2','dcKO3']:
+            for suffix in ['.STAR.Aligned.sortedByCoord.out.bam','.STAR.Aligned.sortedByCoord.out.bam.bai','.STAR.SJ.out.tab']:
+                if not (bam_dir/(sample+suffix)).is_file():raise FileNotFoundError(f'Missing locus input: {bam_dir/(sample+suffix)}')
+        for p in bam_dir.glob('*'):
             if p.name.endswith(('.bam','.bai','.SJ.out.tab')):(raw/p.name).symlink_to(p)
-        for name in ['genome.fa','genome.fa.fai','genome.gtf']:(raw/name).symlink_to(args.reference_dir.resolve()/name)
         step('20_smad4_loxp_evidence.py');step('21_smad4_loxp_figure.py')
+        from validate import check_locus
+        check_locus(data,work)
+        shutil.copytree(pipe/'figures',dest/'Figures',dirs_exist_ok=True)
+    if args.mode in ('supplement','all'):
+        scripts=['14_workflow_diagram.py','22_breeding_scheme.py'] if args.mode=='all' else ['14_workflow_diagram.py','21_smad4_loxp_figure.py','22_breeding_scheme.py']
+        for script in scripts:step(script)
+        shutil.copytree(pipe/'figures',dest/'Figures',dirs_exist_ok=True)
+    if args.mode=='reference-figure':
+        run([args.rscript,pipe/'check_reference_environment.R'],work)
+        run([args.rscript,pipe/'11_scref_umap_dotplot.R'],work)
         shutil.copytree(pipe/'figures',dest/'Figures')
-    (dest/'EXECUTION.json').write_text(json.dumps({'mode':args.mode,'python':sys.version,
+    for name,patterns in [('Reference',['GSE146855*csv','GSE146855*umap.rds','reference*json','reference*txt','scref*csv','scref*txt']),
+                          ('Panel',['AI_panel*']),('Locus',['smad4*'])]:
+        mode={'Reference':['reference','reference-figure','all'],'Panel':['panel','all'],'Locus':['locus','all']}[name]
+        if args.mode in mode:
+            target=dest/name;target.mkdir()
+            for pattern in patterns:
+                for p in (pipe/'output').glob(pattern):shutil.copy2(p,target/p.name)
+    run([py,REPO/'validate.py','--data-root',data,'--work-dir',work,'--destination',dest,'--mode',args.mode],work)
+    (dest/'EXECUTION.json').write_text(json.dumps({'passed':True,'mode':args.mode,'python':sys.version,
+        'steps':STEPS,'data_manifest_sha256':hashlib.sha256((REPO/'data/INPUT_MANIFEST.json').read_bytes()).hexdigest(),
+        'python_packages':{d.metadata['Name']:d.version for d in distributions()},
+        'environment_hashes':{str(p.relative_to(REPO)):hashlib.sha256(p.read_bytes()).hexdigest()
+           for p in sorted((REPO/'environment').rglob('*')) if p.is_file() and not p.name.startswith('._')},
+        'threads':1,'entrypoint_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'repository_code_hashes':{str(p.relative_to(REPO)):hashlib.sha256(p.read_bytes()).hexdigest()
           for p in sorted((REPO/'pipeline').rglob('*')) if p.is_file() and '__pycache__' not in p.parts and not p.name.startswith('._')},
         'data_inputs_verified':len(manifest),'raw_count_model_refit':False},indent=2))
