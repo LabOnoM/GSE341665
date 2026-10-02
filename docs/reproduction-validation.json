@@ -5,7 +5,7 @@
   "input_files_verified": 71,
   "numerical_checks": [
     {
-      "file": "Additional_file_2.csv",
+      "file": "Supplementary_Data_S6_inhibitor_normalized_values.csv",
       "rows": 195,
       "columns": 8,
       "checked_cells": 1560,
@@ -13,7 +13,7 @@
       "passed": true
     },
     {
-      "file": "Additional_file_3.csv",
+      "file": "Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv",
       "rows": 52,
       "columns": 20,
       "checked_cells": 1040,
@@ -21,7 +21,7 @@
       "passed": true
     },
     {
-      "file": "Additional_file_5.csv",
+      "file": "Additional_file_3.csv",
       "rows": 31,
       "columns": 5,
       "checked_cells": 155,
@@ -29,7 +29,7 @@
       "passed": true
     },
     {
-      "file": "Additional_file_6.csv",
+      "file": "Additional_file_4.csv",
       "rows": 563,
       "columns": 28,
       "checked_cells": 15764,
@@ -37,7 +37,7 @@
       "passed": true
     },
     {
-      "file": "Additional_file_7.csv",
+      "file": "Additional_file_5.csv",
       "rows": 6,
       "columns": 6,
       "checked_cells": 36,
@@ -45,7 +45,7 @@
       "passed": true
     },
     {
-      "file": "Additional_file_8.csv",
+      "file": "Additional_file_6.csv",
       "rows": 6,
       "columns": 8,
       "checked_cells": 48,
@@ -53,7 +53,7 @@
       "passed": true
     },
     {
-      "file": "Additional_file_9.csv",
+      "file": "Additional_file_7.csv",
       "rows": 4,
       "columns": 8,
       "checked_cells": 32,
@@ -277,5 +277,13 @@
   "data_access_verified_public": false,
   "remote_Zenodo_synchronized": false,
   "tolerances": "Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.",
-  "rendered_AF1_pages": 31
+  "rendered_AF1_pages": 31,
+  "packaging_revision": "Journal Additional files renumbered 1–7; unchanged Data S6/S7 CSVs retained in Zenodo and results/inhibitor_data.",
+  "latest_packaging_validation": {
+    "mode": "manuscript",
+    "passed": true,
+    "numerical_checks": 19,
+    "figure_files": 8,
+    "all_seven_regression_tests": "passed"
+  }
 }

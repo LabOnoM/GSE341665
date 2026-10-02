@@ -59,12 +59,12 @@ def main():
     args=ap.parse_args();checks=[]
     output=args.work_dir/'scripts/JDR_reanalysis/output'
     if args.mode in ('manuscript','all'):
-        for folder,target in [('additional_files','Additional_files'),('source_csv','Supplementary')]:
+        for folder,target in [('additional_files','Additional_files'),('source_csv','Supplementary'),('inhibitor_data','Inhibitor_data')]:
             for p in sorted((REPO/'results'/folder).glob('*.csv')):
                 if p.name.startswith('._'):continue
                 checks.append(compare_csv(p,args.destination/target/p.name,descriptive_t=True))
-        a=load_workbook(args.data_root/'07_latest_results/Additional_file_4.xlsx',read_only=True,data_only=True)
-        b=load_workbook(args.destination/'Additional_files/Additional_file_4.xlsx',read_only=True,data_only=True)
+        a=load_workbook(args.data_root/'07_latest_results/Additional_file_2.xlsx',read_only=True,data_only=True)
+        b=load_workbook(args.destination/'Additional_files/Additional_file_2.xlsx',read_only=True,data_only=True)
         if a.sheetnames != b.sheetnames:raise ValueError('Workbook sheet names changed')
         for name in a.sheetnames:
             if name=='Read me':continue

@@ -25,12 +25,13 @@ def main():
     deg['hs']=deg['hsapiens_homolog_associated_gene_name'].astype(str).str.upper()
     strict=deg[(deg.padj<.05)&(deg.log2FoldChange.abs()>1)].sort_values('log2FoldChange')
     assert len(strict)==563
-    strict.to_csv(target/'Additional_file_6.csv',index=False)
-    mapping={5:'AI_gene_directions.csv',7:'module_scores.csv',8:'deconv_proportions.csv',9:'program_celltype_specificity.csv'}
+    strict.to_csv(target/'Additional_file_4.csv',index=False)
+    mapping={3:'AI_gene_directions.csv',5:'module_scores.csv',6:'deconv_proportions.csv',7:'program_celltype_specificity.csv'}
     for number,name in mapping.items():shutil.copy2(out/name,target/f'Additional_file_{number}.csv')
     inhibitor=args.workspace/'00.Manuscript/Submission_02_JMM_2026-07/4_Journal_JMM/Supplementary'
-    for number,name in [(2,'Supplementary_Data_S6_inhibitor_normalized_values.csv'),(3,'Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv')]:
-        shutil.copy2(inhibitor/name,target/f'Additional_file_{number}.csv')
+    inhibitor_target=args.destination/'Inhibitor_data';inhibitor_target.mkdir(parents=True,exist_ok=True)
+    for name in ['Supplementary_Data_S6_inhibitor_normalized_values.csv','Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv']:
+        shutil.copy2(inhibitor/name,inhibitor_target/name)
     payload=json.loads(args.payload.read_text())
     wb=Workbook();wb.remove(wb.active)
     for index,info in enumerate(payload['sheets'],1):
@@ -56,7 +57,7 @@ def main():
             for row in ws.iter_rows(min_row=2):
                 for c in row:c.alignment=Alignment(wrap_text=True,vertical='top')
                 ws.row_dimensions[row[0].row].height=42
-    wb.save(target/'Additional_file_4.xlsx')
+    wb.save(target/'Additional_file_2.xlsx')
     import ai_gene_provenance as provenance
     (target/'Supplementary_Tables_S1_S2.md').write_text(
         '# Supplementary Table S1\n\n'+provenance.audit_markdown()+provenance.audit_footnote()

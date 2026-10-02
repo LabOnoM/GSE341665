@@ -1,16 +1,16 @@
 # Current manuscript reproduction map
 
-Authority: BMC Word manuscript dated 2 October 2026 and current Additional files 1–9. `reproduce.py` stages the deposited data in a new working directory, verifies all 71 input/export hashes, and invokes the scripts below. No unused historical analysis is part of this map.
+Authority: BMC Word manuscript dated 2 October 2026 and current Additional files 1–7. `reproduce.py` stages the deposited data in a new working directory, verifies all 71 input/export hashes, and invokes the scripts below. No unused historical analysis is part of this map.
 
 | Figure, table or result | Retained code | Required source and purpose |
 |---|---|---|
 | Main Figures 4–7; full Data S8 | 01_extract_tables.py, 03_module_scores.py, 06_deconvolution.py, 07_figures.py; volcano_panel.py, vendor/figstyle.py | Two source workbooks; DEG/TPM and captured claim-source JSON; seven-cell-type CPM signature. Preserves original gene-level model statistics and all displayed genes |
-| Four scored programs; Additional file 7 | programs.py, 03_module_scores.py | The single definition of 16 identity, 20 sterol, 14 wound/stress and 18 interferon genes; full-precision TPM; exhaustive 20 label assignments |
-| Reference fractions/specificity; Additional files 8–9 | 06_deconvolution.py | Captured GSE146855 CPM signature; full-precision bulk TPM; sorted markers before NNLS |
-| AI enrichment, Additional file 5 and Methods B6 | 16_ai_gene_enrichment.py, ai_genes.py, ai_gene_provenance.py | Pinned PanelApp 269 v4.37 GREEN panel and gene-level statistics; three reported threshold sensitivity tests |
+| Four scored programs; Additional file 5 | programs.py, 03_module_scores.py | The single definition of 16 identity, 20 sterol, 14 wound/stress and 18 interferon genes; full-precision TPM; exhaustive 20 label assignments |
+| Reference fractions/specificity; Additional files 6–7 | 06_deconvolution.py | Captured GSE146855 CPM signature; full-precision bulk TPM; sorted markers before NNLS |
+| AI enrichment, Additional file 3 and Methods B6 | 16_ai_gene_enrichment.py, ai_genes.py, ai_gene_provenance.py | Pinned PanelApp 269 v4.37 GREEN panel and gene-level statistics; three reported threshold sensitivity tests |
 | Pinned-panel source reconstruction | 17_fetch_ai_panel.py | Original PanelApp v4.37 JSON and MGI report in the deposit; explicit live download also tested. `all` reconstructs the mapped panel before enrichment |
-| Additional files 2–3; Figure 3C/E statistical evidence | 24_september_inhibitor_audit.py | The two September normalized PZFX files; 195 values and 52 ANOVA/two-sided Dunnett comparisons. The author-provided wet-laboratory artwork is preserved |
-| Additional file 4 workbook; files 2–9; Tables S1–S2 | export_additional_data.py, ai_gene_provenance.py | Latest regenerated CSV/payload; public openpyxl. Table S1's retired-list provenance is retained because it is explicitly part of current Additional file 1 |
+| Zenodo Data S6/S7; Figure 3C/E statistical evidence | 24_september_inhibitor_audit.py | The two September normalized PZFX files; 195 values and 52 ANOVA/two-sided Dunnett comparisons. The author-provided wet-laboratory artwork is preserved |
+| Additional file 2 workbook; files 2–7; Tables S1–S2 | export_additional_data.py, ai_gene_provenance.py | Latest regenerated CSV/payload; public openpyxl. Table S1's retired-list provenance is retained because it is explicitly part of current Additional file 1 |
 | Supplementary Figure S3 / reference reannotation | 04_download_scref.sh, 05_scref_annotate.R, 11_scref_umap_dotplot.R | Original deposited GSE146855 raw archive; exact R/library lock; fresh labels/signatures checked against captured reference before downstream use |
 | Supplementary Figure S4 | 14_workflow_diagram.py | Recorded primary methods in Additional file 1 and current retained-code map; public matplotlib renderer |
 | Supplementary Figure S5 rendering | 21_smad4_loxp_figure.py | Archived locus GTF/evidence CSVs/summary JSON and exact Ensembl-116 locus sequence; missing evidence stops execution |
