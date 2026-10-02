@@ -1,96 +1,79 @@
 #!/usr/bin/env python3
+"""Current Figure S4 workflow, aligned with the retained reproduction scripts.
+
+Panel A records archived primary analysis, without claiming a new raw-read fit.
+Panel B maps the current executable analyses.
 """
-14_workflow_diagram.py -- render the analysis workflow as publication figures.
+from pathlib import Path
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
-The Supplementary Methods carries the workflow as a Mermaid block, which is
-readable in markdown viewers but is NOT rendered by pandoc when building the
-.docx. This script renders the identical workflow with Graphviz so the Word
-supplementary contains real figures rather than a code listing.
+OUT=Path(__file__).resolve().parent/'figures';OUT.mkdir(parents=True,exist_ok=True)
+plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'pdf.fonttype':42,'svg.fonttype':'none'})
 
-The workflow is drawn as TWO panels. A single combined diagram is ~16 inches
-wide; scaled into a portrait Word page its type falls to ~4 pt, which is not
-legible in print. Splitting keeps each panel near page width with ~8 pt type.
+def canvas(height):
+    fig,ax=plt.subplots(figsize=(170/25.4,height/25.4))
+    ax.set_xlim(0,170);ax.set_ylim(height,0);ax.axis('off')
+    fig.subplots_adjust(left=0,right=1,bottom=0,top=1)
+    return fig,ax
 
-  Panel A : primary bulk RNA-sequencing pipeline (Part A of the Methods)
-  Panel B : re-analysis performed for this manuscript (Part B)
+def box(ax,x,y,width,height,text,accent=False):
+    ax.add_patch(FancyBboxPatch((x-width/2,y-height/2),width,height,
+        boxstyle='round,pad=0.8,rounding_size=1.5',linewidth=.9,
+        edgecolor='#0072B2' if accent else '#707070',
+        facecolor='#EAF3F9' if accent else '#F7F7F7'))
+    ax.text(x,y,text,ha='center',va='center',fontsize=10,linespacing=1.15)
 
-Output: figures/FigureS4A_pipeline.{png,pdf}, figures/FigureS4B_reanalysis.{png,pdf}
-"""
-import os, subprocess
+def arrow(ax,start,end):
+    ax.add_patch(FancyArrowPatch(start,end,arrowstyle='-|>',mutation_scale=10,
+        linewidth=.9,color='#555555',connectionstyle='arc3,rad=0'))
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-FIG = os.path.join(ROOT, "scripts", "JDR_reanalysis", "figures")
-os.makedirs(FIG, exist_ok=True)
+def save(fig,name):
+    for suffix in ['pdf','svg','png']:
+        fig.savefig(OUT/f'{name}.{suffix}',dpi=300,facecolor='white')
+    plt.close(fig)
 
-RED, GREY = "#B2182B", "#8A8A8A"
-HEAD = """
-digraph g {
-  graph [rankdir=TB, splines=polyline, nodesep=0.22, ranksep=0.30,
-         fontname="Helvetica", bgcolor="white"];
-  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13,
-         margin="0.12,0.08", color="#666666", penwidth=1.0, fillcolor="#F4F7FB"];
-  edge  [color="#555555", arrowsize=0.6, penwidth=1.0];
-"""
+def primary():
+    fig,ax=canvas(204)
+    nodes=[
+      'Provider-filtered paired-end FASTQ, 150 bp\n3 CON + 3 dcKO; 21.0–22.5 million pairs per sample',
+      'FastQC → Trim Galore 0.6.10 / Cutadapt 4.9\nPhred 20; adapter detection; post-trimming FastQC',
+      'STAR 2.7.10b two-pass alignment\nEnsembl 116 GRCm39; sjdbOverhang 149\n93.66–93.84% uniquely mapped',
+      'StringTie merge → Salmon 1.10.0 (ISR) → tximport\nGene-level counts and TPM',
+      'Retain ≥10 reads in ≥3 samples: 15,803 genes\nRUVSeq: one factor of unwanted variation (W₁)',
+      'DESeq2 likelihood-ratio test\nFull: ~W₁ + genotype; reduced: ~W₁',
+      'BH-adjusted P < 0.05 and |log₂ fold change| > 1\n563 DEGs: 209 upregulated, 354 downregulated',
+      'Primary GO / KEGG: uncorrected P < 0.05\nQualitative corroboration; not multiplicity-corrected']
+    ys=[15+24*i for i in range(len(nodes))]
+    for i,(y,text) in enumerate(zip(ys,nodes)):
+        box(ax,85,y,154,20,text,accent=i==6)
+        if i:arrow(ax,(85,ys[i-1]+10.8),(85,y-10.8))
+    ax.text(85,198,'Archived primary processing; the current repository does not refit this model.',
+        ha='center',va='center',fontsize=8.5)
+    save(fig,'FigureS4A_pipeline')
 
-PANEL_A = HEAD + r"""
-  FQ  [label="Paired-end FASTQ, 150 bp\n3 CON + 3 dcKO; 21.0–22.5 M read pairs/sample", fillcolor="#EFEFEF"];
-  TG  [label="A3  FastQC → Trim Galore 0.6.10 / cutadapt 4.9\n(Phred 20, adapter auto-detected) → FastQC"];
-  ST  [label="A4  STAR 2.7.10b two-pass alignment\nEnsembl 116 GRCm39 index (--sjdbOverhang 149)\n93.66–93.84 % uniquely mapped"];
-  SQ  [label="A5  StringTie merge → Salmon 1.10.0 (ISR)\n→ tximport → gene-level counts\n(featureCounts -s 2 -p -Q 20 -O also computed)", fillcolor="#E8F0FB"];
-  FLT [label="A6  Filter ≥10 reads in ≥3 samples → 15,803 genes\nRUVSeq: 1 factor of unwanted variation (W_1)"];
-  LRT [label="DESeq2 likelihood-ratio test\n~W_1 + genotype   vs   ~W_1"];
-  SIG [label="padj < 0.05  and  |log2FC| > 1\n563 DEGs: 209 up, 354 down",
-       fillcolor="#FBE9E9", color="__RED__", penwidth=2.0];
-  GO  [label="A7  GO + KEGG enrichment at uncorrected P < 0.05\n— qualitative corroboration only",
-       fillcolor="#F7F7F7", color="__GREY__", style="rounded,filled,dashed", fontcolor="#555555"];
-  UN  [label="A8  Run but NOT used here (reasons in Supplementary Methods):\nDEXSeq · IsoformSwitchAnalyzeR · LeafCutter · CIRCexplorer2 · WGCNA",
-       fillcolor="#F2F2F2", color="#AAAAAA", style="rounded,filled,dashed", fontcolor="#555555"];
-  OUT [label="→ continues in Panel B", shape=plaintext, fillcolor="white", fontcolor="__RED__"];
+def reanalysis():
+    fig,ax=canvas(193)
+    box(ax,49,16,83,25,'All retained gene statistics\nand full-precision TPM\nfrom archived primary results')
+    box(ax,133,16,65,25,'GSE146855\nP7 incisor reference\n(public GEO)')
+    box(ax,49,51,83,25,'01  Extract source workbooks\nPreserve model statistics\nand all 15,803 gene rows')
+    box(ax,133,51,65,25,'04 / 05  Download; Seurat\nQC and clustering\nSpecificity-based annotation')
+    box(ax,49,87,83,25,'03  Four program scores\n16 identity; 20 sterol\n14 wound/stress; 18 interferon')
+    box(ax,133,87,65,25,'06  NNLS deconvolution\nReference cell-type fractions\nand program specificity')
+    box(ax,49,122,83,25,'17 / 16  Pinned PanelApp 269 v4.37\nMouse orthologs; directional\nFisher enrichment (GREEN genes)')
+    box(ax,133,122,65,25,'pipeline/programs.py\nSingle program definition\nImported by 03 / 06 / 07',accent=True)
+    box(ax,85,157,154,22,'07  Current Figures 4–7 and complete Data S8 source CSVs\nExact program tests; descriptive fractions; all displayed genes',accent=True)
+    for x in [49,133]:
+        arrow(ax,(x,29.5),(x,37.5));arrow(ax,(x,64.5),(x,73.5))
+    arrow(ax,(49,100.5),(49,108.5));arrow(ax,(49,135.5),(66,145))
+    # Route reference output around the program-definition note.
+    ax.plot([166.5,168.5,168.5],[87,87,138],color='#555555',linewidth=.9)
+    arrow(ax,(168.5,138),(150,145));arrow(ax,(133,135.5),(103,145))
+    ax.text(85,179,'export_additional_data.py → Additional files and Tables S1–S2',ha='center',va='center',fontsize=10)
+    arrow(ax,(85,169),(85,174))
+    ax.text(85,189,'Current reproduction uses archived gene-level results, without a new count-model fit.',ha='center',va='center',fontsize=8.5)
+    save(fig,'FigureS4B_reanalysis')
 
-  FQ -> TG -> ST -> SQ -> FLT -> LRT -> SIG -> GO -> UN -> OUT;
-}
-""".replace("__RED__", RED).replace("__GREY__", GREY)
-
-PANEL_B = HEAD + r"""
-  IN  [label="563 DEGs + gene-level TPM matrix (Panel A)", fillcolor="#EFEFEF"];
-  P1  [label="01  Extract DEG and TPM tables", fillcolor="#E8F0FB"];
-  P2  [label="02  DEG summary; enrichment of human amelogenesis-\nimperfecta genes, PanelApp 269 v4.37 GREEN\n(OR 9.21, P = 1.7e-4)", fillcolor="#E8F0FB"];
-  P3  [label="03  Program scores (combined gene-set z-score)", fillcolor="#E8F0FB"];
-  PR  [label="programs.py — single source of truth\nIdentity 16 · Sterol 20 · Wound 14 · IFN 18",
-       shape=note, fillcolor="#FBE9E9", color="__RED__", penwidth=1.8];
-  D1  [label="04  Download GSE146855 (P7 incisor, 6,248 cells)", fillcolor="#E8F0FB"];
-  D2  [label="05  Seurat QC → PCA (20 PCs) → clusters (res 0.6)\n→ specificity-based de-novo annotation\n→ cell-type CPM signature", fillcolor="#E8F0FB"];
-  D3  [label="11  UMAP + marker dot plot (Suppl. Figure S3)", fillcolor="#E8F0FB"];
-  D4  [label="06  NNLS deconvolution (542 marker genes)", fillcolor="#E8F0FB"];
-  F   [label="07  Figures 4–6", fillcolor="#E8F0FB"];
-  DOC [label="10  Assemble manuscript\n(auto-numbered citations + embedded figures)", fillcolor="#E8F0FB"];
-  GEO [label="12 / 13  GEO submission package", fillcolor="#E8F0FB"];
-
-  IN -> P1 -> P2 -> PR -> P3 -> D1 -> D2;
-  D2 -> D3; D2 -> D4;
-  D3 -> F [style=invis]; D4 -> F;
-  F -> DOC -> GEO;
-  {rank=same; D3; D4;}
-}
-""".replace("__RED__", RED)
-
-def render(name, dot):
-    dp = os.path.join(FIG, f"{name}.dot")
-    open(dp, "w").write(dot)
-    for fmt, extra in (("png", ["-Gdpi=300"]), ("pdf", [])):
-        out = os.path.join(FIG, f"{name}.{fmt}")
-        subprocess.run(["dot", f"-T{fmt}", *extra, dp, "-o", out], check=True)
-    from PIL import Image
-    w, h = Image.open(os.path.join(FIG, f"{name}.png")).size
-    print(f"  {name}: {w/300:.1f} x {h/300:.1f} in  ->  at 6.5in wide, type ≈ "
-          f"{13*6.5/(w/300):.1f} pt")
-
-
-if __name__ == "__main__":
-    render("FigureS4A_pipeline", PANEL_A)
-    render("FigureS4B_reanalysis", PANEL_B)
-    # remove the superseded single-panel version so it cannot be embedded by mistake
-    for ext in ("png", "pdf", "dot"):
-        old = os.path.join(FIG, f"FigureS4_analysis_workflow.{ext}")
-        if os.path.exists(old):
-            os.remove(old)
+if __name__=='__main__':primary();reanalysis()

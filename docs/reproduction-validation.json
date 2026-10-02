@@ -1,0 +1,240 @@
+{
+  "passed": true,
+  "scope": "Archived-result reproduction, not a raw-count-model refit",
+  "csv_and_workbook_checks": [
+    {
+      "file": "Additional_file_2.csv",
+      "rows": 195,
+      "columns": 8,
+      "checked_cells": 1560,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Additional_file_3.csv",
+      "rows": 52,
+      "columns": 20,
+      "checked_cells": 1040,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Additional_file_5.csv",
+      "rows": 31,
+      "columns": 5,
+      "checked_cells": 155,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Additional_file_6.csv",
+      "rows": 563,
+      "columns": 28,
+      "checked_cells": 15764,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Additional_file_7.csv",
+      "rows": 6,
+      "columns": 6,
+      "checked_cells": 36,
+      "max_absolute_difference": 4.440892098500626e-16,
+      "passed": true
+    },
+    {
+      "file": "Additional_file_8.csv",
+      "rows": 6,
+      "columns": 8,
+      "checked_cells": 48,
+      "max_absolute_difference": 5.839773109528323e-14,
+      "passed": true
+    },
+    {
+      "file": "Additional_file_9.csv",
+      "rows": 4,
+      "columns": 8,
+      "checked_cells": 32,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S8_all_gene_statistics.csv",
+      "rows": 15803,
+      "columns": 23,
+      "checked_cells": 363469,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S8_deconvolution_tests.csv",
+      "rows": 3,
+      "columns": 4,
+      "checked_cells": 12,
+      "max_absolute_difference": 3.296918293926865e-12,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S8_displayed_genes.csv",
+      "rows": 157,
+      "columns": 25,
+      "checked_cells": 3925,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S8_nonretained_gene_counts.csv",
+      "rows": 12,
+      "columns": 6,
+      "checked_cells": 72,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S8_program_tests.csv",
+      "rows": 4,
+      "columns": 8,
+      "checked_cells": 32,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S8_text_claim_index.csv",
+      "rows": 102,
+      "columns": 11,
+      "checked_cells": 1122,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sheet": "Displayed genes",
+      "rows": 157,
+      "checked_cells": 2370,
+      "rounding_differences": 134,
+      "passed": true
+    },
+    {
+      "sheet": "Text claims",
+      "rows": 102,
+      "checked_cells": 1133,
+      "rounding_differences": 166,
+      "passed": true
+    },
+    {
+      "sheet": "All genes",
+      "rows": 15803,
+      "checked_cells": 363492,
+      "rounding_differences": 20812,
+      "passed": true
+    },
+    {
+      "sheet": "Program tests",
+      "rows": 4,
+      "checked_cells": 40,
+      "rounding_differences": 4,
+      "passed": true
+    },
+    {
+      "sheet": "Deconvolution tests",
+      "rows": 3,
+      "checked_cells": 16,
+      "rounding_differences": 9,
+      "passed": true
+    },
+    {
+      "sheet": "Nonretained genes",
+      "rows": 12,
+      "checked_cells": 78,
+      "rounding_differences": 0,
+      "passed": true
+    },
+    {
+      "sheet": "Read me",
+      "rows": 15,
+      "scientific_sheet": false,
+      "passed": true
+    }
+  ],
+  "retained_genes": 15803,
+  "missing_adjusted_P_values": 613,
+  "source_underflow_zeros": 5,
+  "probability_validation": "Exact zero and missing masks; nonzero probabilities relative tolerance 1e-12 and zero absolute tolerance. Descriptive NNLS t tests use 1e-10 relative tolerance.",
+  "run_records": [
+    {
+      "mode": "manuscript",
+      "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+      "repository_code_hashes": {
+        "pipeline/._01_extract_tables.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._03_module_scores.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._04_download_scref.sh": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._05_scref_annotate.R": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._06_deconvolution.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._07_figures.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._11_scref_umap_dotplot.R": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._14_workflow_diagram.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._16_ai_gene_enrichment.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._17_fetch_ai_panel.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._20_smad4_loxp_evidence.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._21_smad4_loxp_figure.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._22_breeding_scheme.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._24_september_inhibitor_audit.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._ai_gene_provenance.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._ai_genes.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._export_additional_data.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._programs.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/._volcano_panel.py": "23b8ec399dcac716df14d4145e0131dbc96323553e99c29d9d5e0404cc338b1a",
+        "pipeline/01_extract_tables.py": "fcc94d8f07987968452744ab9a62c485c4eb9477d48129c3491f5dda897f91e2",
+        "pipeline/03_module_scores.py": "2c3ebfbf5c5baa913a2ae31fb9ccda265747de66234f9b4857e14ef8f23b8c2d",
+        "pipeline/04_download_scref.sh": "8ad663614444811f6d43a0ff4b7a66f3b73da089a5602daf366a967b87098387",
+        "pipeline/05_scref_annotate.R": "b4fc7a0a65d2ebe9c3cb8a704b3787bcb794da09c741d76e047abc32832cc10f",
+        "pipeline/06_deconvolution.py": "6b555014a3d4a61dbbec8d327e5829b924ceb28ab22a975ae49f9c45e293ea07",
+        "pipeline/07_figures.py": "81180b2e126568d5c9c28c36e1a718a40c3fcdaf228ccce7a93f33f92027de1a",
+        "pipeline/11_scref_umap_dotplot.R": "55b2e742597517d3be0c7f62fb7d3223b635be0b31007db055f65045da0ba257",
+        "pipeline/14_workflow_diagram.py": "397779c7147829b92f4530270cd9e763a7b60218abbc51e45604752fcaec07d0",
+        "pipeline/16_ai_gene_enrichment.py": "ac5184735fe4f59dcb090e3a6b87189240b6034b61d2d7912e34776754a3dcd0",
+        "pipeline/17_fetch_ai_panel.py": "a6f591d253a77603e01145a43ea12143d0e2148584bd56b3cfdb2237640bcb3d",
+        "pipeline/20_smad4_loxp_evidence.py": "abf0da5ef6203bfd524b714fd15b292800a51a01df03467b46a1ebe357005d13",
+        "pipeline/21_smad4_loxp_figure.py": "491ec5150b418585b89227ec611173852ae68828dcf2fb26c98b3e91bfbdef1c",
+        "pipeline/22_breeding_scheme.py": "1927460521a5f99109aad9e4af41ffb99b74a1ea2d1f0b57b371c4ce43c0ff85",
+        "pipeline/24_september_inhibitor_audit.py": "b9b29903ed3e1e556747e829793df465570f9d5b9efbe869df52ad2039748aef",
+        "pipeline/ai_gene_provenance.py": "b2ea5a5fa863c1dab6a0350a1df5880bfb179630b0910d70d90416a4d1ffbd78",
+        "pipeline/ai_genes.py": "ec6a00f06c822e587ac3bdcccf0d0067b511df4c28e37877bb804cdb20457bcd",
+        "pipeline/export_additional_data.py": "dd1ec221d3219542d3f9a445c0fa956d0a387666c2f28174d26a41c20995f39c",
+        "pipeline/programs.py": "bca193e4b95bf97c1028db9823d5d5801f9ebcb78a2cc1253b93797c1ef5df7a",
+        "pipeline/vendor/._figstyle.py": "78e7f69ec9d0b8940a283d7d0feecaaadd74f509d6a6d9b8c374cb2dc33a422a",
+        "pipeline/vendor/figstyle.py": "6e55fb5833d0466ab4d91206c9a8d419b5ff398cf9166494eca3265a5a59ecb1",
+        "pipeline/volcano_panel.py": "50c854e76506e16ceefbbede33508e641c037ef7ce05fb5cf15cec846545f28e"
+      },
+      "data_inputs_verified": 48,
+      "raw_count_model_refit": false
+    },
+    {
+      "mode": "supplement",
+      "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+      "repository_code_hashes": {
+        "pipeline/01_extract_tables.py": "fcc94d8f07987968452744ab9a62c485c4eb9477d48129c3491f5dda897f91e2",
+        "pipeline/03_module_scores.py": "2c3ebfbf5c5baa913a2ae31fb9ccda265747de66234f9b4857e14ef8f23b8c2d",
+        "pipeline/04_download_scref.sh": "8ad663614444811f6d43a0ff4b7a66f3b73da089a5602daf366a967b87098387",
+        "pipeline/05_scref_annotate.R": "b4fc7a0a65d2ebe9c3cb8a704b3787bcb794da09c741d76e047abc32832cc10f",
+        "pipeline/06_deconvolution.py": "6b555014a3d4a61dbbec8d327e5829b924ceb28ab22a975ae49f9c45e293ea07",
+        "pipeline/07_figures.py": "81180b2e126568d5c9c28c36e1a718a40c3fcdaf228ccce7a93f33f92027de1a",
+        "pipeline/11_scref_umap_dotplot.R": "55b2e742597517d3be0c7f62fb7d3223b635be0b31007db055f65045da0ba257",
+        "pipeline/14_workflow_diagram.py": "397779c7147829b92f4530270cd9e763a7b60218abbc51e45604752fcaec07d0",
+        "pipeline/16_ai_gene_enrichment.py": "ac5184735fe4f59dcb090e3a6b87189240b6034b61d2d7912e34776754a3dcd0",
+        "pipeline/17_fetch_ai_panel.py": "a6f591d253a77603e01145a43ea12143d0e2148584bd56b3cfdb2237640bcb3d",
+        "pipeline/20_smad4_loxp_evidence.py": "abf0da5ef6203bfd524b714fd15b292800a51a01df03467b46a1ebe357005d13",
+        "pipeline/21_smad4_loxp_figure.py": "491ec5150b418585b89227ec611173852ae68828dcf2fb26c98b3e91bfbdef1c",
+        "pipeline/22_breeding_scheme.py": "f52ed7835e3476e961f07bd8a0170f0d0061c79a246437823e5ea757af842e11",
+        "pipeline/24_september_inhibitor_audit.py": "b9b29903ed3e1e556747e829793df465570f9d5b9efbe869df52ad2039748aef",
+        "pipeline/ai_gene_provenance.py": "b2ea5a5fa863c1dab6a0350a1df5880bfb179630b0910d70d90416a4d1ffbd78",
+        "pipeline/ai_genes.py": "ec6a00f06c822e587ac3bdcccf0d0067b511df4c28e37877bb804cdb20457bcd",
+        "pipeline/export_additional_data.py": "dd1ec221d3219542d3f9a445c0fa956d0a387666c2f28174d26a41c20995f39c",
+        "pipeline/programs.py": "bca193e4b95bf97c1028db9823d5d5801f9ebcb78a2cc1253b93797c1ef5df7a",
+        "pipeline/vendor/figstyle.py": "6e55fb5833d0466ab4d91206c9a8d419b5ff398cf9166494eca3265a5a59ecb1",
+        "pipeline/volcano_panel.py": "50c854e76506e16ceefbbede33508e641c037ef7ce05fb5cf15cec846545f28e"
+      },
+      "data_inputs_verified": 48,
+      "raw_count_model_refit": false
+    }
+  ]
+}

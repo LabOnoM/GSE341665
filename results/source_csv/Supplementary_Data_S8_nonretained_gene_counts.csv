@@ -1,0 +1,13 @@
+gene,ensembl_gene_id,sample,alignment_feature_count,source_file,interpretation
+Sox2,ENSMUSG00000074637,CON1,10,CON1.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Sox2,ENSMUSG00000074637,CON2,18,CON2.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Sox2,ENSMUSG00000074637,CON3,26,CON3.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Sox2,ENSMUSG00000074637,dcKO1,14,dcKO1.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Sox2,ENSMUSG00000074637,dcKO2,6,dcKO2.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Sox2,ENSMUSG00000074637,dcKO3,8,dcKO3.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Lgr5,ENSMUSG00000020140,CON1,5,CON1.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Lgr5,ENSMUSG00000020140,CON2,16,CON2.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Lgr5,ENSMUSG00000020140,CON3,28,CON3.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Lgr5,ENSMUSG00000020140,dcKO1,8,dcKO1.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Lgr5,ENSMUSG00000020140,dcKO2,10,dcKO2.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available
+Lgr5,ENSMUSG00000020140,dcKO3,24,dcKO3.STAR.counts,Auxiliary alignment counts; not DESeq2 input; no differential-expression test available

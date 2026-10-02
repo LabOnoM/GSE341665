@@ -18,14 +18,14 @@ Methods B7 -- not in prose boxes drawn inside the axes.
 
 Every DATA value -- number, coordinate, count, sequence, restriction-site name,
 direction word -- is read or derived at run time from the outputs of
-20_smad4_loxp_evidence.py and from genome.fa. If an input is missing the script
+20_smad4_loxp_evidence.py and from the archived Ensembl-116 locus sequence. If an input is missing the script
 RAISES rather than substituting a value (project rule -- this repository once
 shipped a figure built on fabricated fallback values).
 
 Inputs : output/smad4_loxp_reads.csv, output/smad4_exon_coverage.csv,
          output/smad4_exon_ratio.csv, output/smad4_junctions.csv,
          output/smad4_locus_depth.csv, output/smad4_loxp_summary.json
-         00.RawData/Bulk-RNAseq/genome.fa (+ .fai)
+         scripts/JDR_reanalysis/data/smad4_reference_sequence.json
 Outputs: figures/FigureS5_smad4_loxp.{png,pdf}
          figures/FigureS5_smad4_loxp_legend.md
 """
@@ -47,7 +47,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 OUT = os.path.join(HERE, "output")
 FIG = os.path.join(HERE, "figures")
-FASTA = os.path.join(ROOT, "00.RawData", "Bulk-RNAseq", "genome.fa")
 os.makedirs(FIG, exist_ok=True)
 
 # ---- house style (identical to 07_figures.py) -------------------------------
@@ -103,30 +102,20 @@ def load_inputs():
 
 
 class Fasta:
-    """Minimal random-access FASTA reader driven by the .fai index."""
+    """Read the exact archived reference window used by the figure.
 
-    def __init__(self, path):
-        _require(path)
-        _require(path + ".fai")
-        self.path = path
-        self.idx = {}
-        for line in open(path + ".fai"):
-            p = line.rstrip("\n").split("\t")
-            self.idx[p[0]] = (int(p[1]), int(p[2]), int(p[3]), int(p[4]))
+    This deposited sequence is extracted from the original Ensembl-116 FASTA.
+    Missing or out-of-window sequence raises; no substitute is generated.
+    """
+    def __init__(self):
+        cache = _require(os.path.join(HERE, "data", "smad4_reference_sequence.json"))
+        self.data = json.load(open(cache))
+        assert len(self.data["sequence"]) == self.data["end"] - self.data["start"] + 1
 
     def fetch(self, chrom, start, end):
-        """1-based inclusive."""
-        if chrom not in self.idx:
-            raise KeyError(f"{chrom!r} absent from {self.path}.fai")
-        length, offset, linebases, linewidth = self.idx[chrom]
-        if start < 1 or end > length or end < start:
-            raise ValueError(f"bad interval {chrom}:{start}-{end}")
-        n = end - start + 1
-        seek = offset + (start - 1) // linebases * linewidth + (start - 1) % linebases
-        with open(self.path, "rb") as fh:
-            fh.seek(seek)
-            raw = fh.read(n + n // linebases + 4).decode("ascii")
-        return raw.replace("\n", "")[:n].upper()
+        if chrom != self.data["chrom"] or start < self.data["start"] or end > self.data["end"] or end < start:
+            raise ValueError(f"Reference interval absent from archived window: {chrom}:{start}-{end}")
+        return self.data["sequence"][start-self.data["start"]:end-self.data["start"]+1]
 
 
 def fmt(x):
@@ -788,11 +777,12 @@ def panel_B_sequence(ax, fig, j, reads, fa, caption):
         spans = draw_seq_row(ax, 0.0075, 0.9925, ytop, 0.085, segs, fs, edge="#8A8A8A")
         # staggered labels so neighbouring captions cannot collide
         for i, (sp, sg) in enumerate(zip(spans, segs)):
-            dy = 0.055 if i % 2 == 0 else 0.135
+            dy = 0.045 + 0.095 * (i % 3)
             xl = min(max(sp[0], 0.045), 0.955)     # keep captions inside the panel
             ax.annotate(sg["lab"], xy=(sp[0], ytop - 0.045),
                         xytext=(xl, ytop - dy), ha="center", va="top",
                         fontsize=6.0, linespacing=1.3,
+                        xycoords='axes fraction', textcoords='axes fraction',
                         arrowprops=dict(arrowstyle="-", lw=0.35, color="#777777",
                                         shrinkA=0.5, shrinkB=0.5))
     return picks, n_eligible
@@ -1203,7 +1193,7 @@ derived at run time. Details: Supplementary Methods B7.
 
 if __name__ == "__main__":
     j, reads, cov, ratio, junc, depth = load_inputs()
-    fa = Fasta(FASTA)
+    fa = Fasta()
     sanity(j, reads, ratio, junc, fa)
     fig, r, zw, stats = build(j, reads, cov, ratio, junc, depth, fa)
     clashes = text_collisions(fig, _SEQ_TEXT_IDS)

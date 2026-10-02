@@ -105,7 +105,7 @@ import pandas as pd
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-PROJECT_ROOT = Path("/mnt/Disk1/ZXY_2026")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BAM_DIR = PROJECT_ROOT / "00.RawData" / "Bulk-RNAseq"
 SCRIPT_DIR = PROJECT_ROOT / "scripts" / "JDR_reanalysis"
 OUT_DIR = SCRIPT_DIR / "output"

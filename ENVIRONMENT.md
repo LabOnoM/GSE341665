@@ -1,36 +1,7 @@
 # Software environment
 
-The pipeline is deterministic (fixed seeds). Step 05 (`05_scref_annotate.R`) is the only
-stochastic step and sets `set.seed(1)`. Versions below are those used for the reported
-analysis; the manuscript Supplementary Methods is the authoritative record.
+`requirements-reproduction.txt` pins the environment used for the October Python reproduction check. Python 3.12.14 is used for that check. It is separate from the historical analysis environment in Additional file 1. No primary-model package version is inferred from this new environment.
 
-## Primary bulk RNA-seq processing (upstream; see the analysis report)
+The supplement mode uses the same public matplotlib environment; Graphviz is not required. Reference mode needs R 4.3.2, Seurat 5.3.1, SeuratObject 5.2.0, Matrix 1.6.5, uwot 0.2.3, ggplot2 4.0.0 and patchwork 1.3.2, as recorded in Additional file 1. Locus mode needs samtools and the exact alignment/reference inputs. These optional modes are documented separately from the Python archived-result check.
 
-| Tool | Version | Role |
-|---|---|---|
-| Trim Galore / Cutadapt | 0.6.10 / 4.9 | adapter + quality trimming |
-| STAR | 2.7.10b | two-pass alignment to GRCm39 (Ensembl 116, `--sjdbOverhang 149`) |
-| StringTie | — | de novo transcriptome assembly + merge |
-| SQANTI3 | — | assembly annotation |
-| Salmon | 1.10.0 | quasi-mapping quantification (libType A → ISR) |
-| tximport | — | transcript → gene summarisation |
-| RUVSeq | — | one factor of unwanted variation (k = 1, covariate `W_1`) |
-| DESeq2 | — | likelihood-ratio test (`~W_1 + genotype` vs `~W_1`) |
-| DEXSeq | — | differential exon usage (exploratory) |
-| IsoformSwitchAnalyzeR | — | isoform switching + consequences (exploratory) |
-| CIRCexplorer2 / circRNAprofiler | — | circular-RNA detection (exploratory) |
-
-## This repository's re-analysis pipeline
-
-**Python** (`pandas`, `numpy`, `scipy`, `matplotlib`) — steps 01–03, 06, 07, 10, 12–17.
-**R** (`Seurat` 5.3.1, `Matrix`) — steps 05, 11.
-**Pandoc** — `.docx` assembly (steps 10, 15).
-**Graphviz** — workflow diagrams (step 14; Pandoc cannot render the Mermaid source directly).
-
-External resources retrieved at run time (the code fails loudly rather than using a stored fallback):
-- Genomics England **PanelApp** panel 269 "Amelogenesis imperfecta" v4.37 (pinned) — `17_fetch_ai_panel.py`
-- **MGI** `HOM_MouseHumanSequence.rpt` for mouse↔human orthologs — `17_fetch_ai_panel.py`
-- Public single-cell reference **GSE146855** — `04_download_scref.sh`
-
-> Exact package versions not recorded by the original pipeline are marked as unrecorded in
-> the Supplementary Methods rather than guessed.
+The primary model used STAR 2.7.10b, Salmon 1.10.0, Ensembl 116 GRCm39, Trim Galore 0.6.10 and Cutadapt 4.9; original versions unrecorded for other tools remain unrecorded. `07_figures.py` and `export_additional_data.py` require no proprietary office or plotting runtime. NNLS marker iteration is sorted; Seurat scripts use seed 1; exact permutation tests enumerate all allocations.

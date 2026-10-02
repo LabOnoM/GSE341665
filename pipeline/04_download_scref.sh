@@ -14,7 +14,7 @@ URL="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE146nnn/GSE146855/suppl/GSE146855
 mkdir -p "$DEST"
 if [ ! -f "$DEST/GSE146855_RAW.tar" ]; then
   echo "Downloading GSE146855_RAW.tar (~75 MB)..."
-  curl -sSL -o "$DEST/GSE146855_RAW.tar" "$URL"
+  curl --fail -sSL -o "$DEST/GSE146855_RAW.tar" "$URL"
 fi
 tar -xf "$DEST/GSE146855_RAW.tar" -C "$DEST"
 # standardise 10x filenames into $DEST/mtx (Read10X expects barcodes/features/matrix)

@@ -3,6 +3,7 @@
 data/**
 !data/**/
 !data/**/FILELIST.md
+!data/INPUT_MANIFEST.json
 reference/**
 !reference/FILELIST.md
 
@@ -25,3 +26,6 @@ __pycache__/
 # ── Office lock/temp files ───────────────────────────────────────────
 .~lock.*#
 ~$*
+
+# macOS metadata on the external volume
+._*

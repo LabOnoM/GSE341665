@@ -31,8 +31,8 @@ from programs import PROGRAMS
 
 
 def main():
-    sig = pd.read_csv(os.path.join(OUT, "GSE146855_signature_cpm.csv"), index_col=0)
-    t = pd.read_csv(os.path.join(OUT, "TPM_matrix.csv"), skiprows=1, low_memory=False)
+    sig = pd.read_csv(os.path.join(OUT, "GSE146855_signature_cpm.csv"), index_col=0, float_precision="round_trip")
+    t = pd.read_csv(os.path.join(OUT, "TPM_matrix.csv"), skiprows=1, low_memory=False, float_precision="round_trip")
     for s in SAMP:
         t[s] = pd.to_numeric(t[s], errors="coerce")
     bulk = t.dropna(subset=["external_gene_name"]).groupby("external_gene_name")[SAMP].mean()
@@ -45,7 +45,7 @@ def main():
         cand = [g for g in spec[ct].sort_values(ascending=False).index
                 if S.loc[g, ct] > 20 and spec.loc[g, ct] > 2][:120]
         markers.update(cand)
-    markers = [g for g in markers if g in bulk.index]
+    markers = sorted(g for g in markers if g in bulk.index)
 
     Sm = S.reindex(markers)[S.columns].values
     Bm = bulk.reindex(markers)[SAMP].values

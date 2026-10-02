@@ -1,7 +1,0 @@
-threshold,lfc_cutoff,resolution,risk_down,nonrisk_down,risk_up,nonrisk_up,odds_ratio,p_one_sided
-"padj<0.05, no LFC cutoff",0.0,as-published,13,2065,1,2108,13.270702179176755,0.000823054454859442
-"padj<0.05, no LFC cutoff",0.0,CORRECTED,18,2060,2,2107,9.205339805825243,0.00017315251335720956
-padj<0.05 & |log2FC|>0.25,0.25,as-published,11,1782,1,1657,10.228395061728396,0.004624129244267494
-padj<0.05 & |log2FC|>0.25,0.25,CORRECTED,15,1778,2,1656,6.985376827896513,0.001908160780017624
-padj<0.05 & |log2FC|>1 (DEG rule),1.0,as-published,0,354,0,209,,1.0
-padj<0.05 & |log2FC|>1 (DEG rule),1.0,CORRECTED,0,354,1,208,0.0,1.0
