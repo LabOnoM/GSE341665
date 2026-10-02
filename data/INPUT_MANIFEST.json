@@ -170,14 +170,9 @@
     "bytes": 88347149
   },
   {
-    "path": "05_Raw_data_for_Figures/inhibitor_normalized/抑制剂-20260916.pzfx",
-    "sha256": "1a0d4e0202f3d82f7b273efb5e97fefa031c7954b5adf511795f9bc3b4058243",
-    "bytes": 72538
-  },
-  {
-    "path": "05_Raw_data_for_Figures/inhibitor_normalized/抑制剂PCR20260916.pzfx",
-    "sha256": "f2c7a5fc8823d9d185ed5b0709444eade7389b77e953c19884439c4322eec602",
-    "bytes": 99422
+    "path": "05_Raw_data_for_Figures/prism_projects/Figure_3.prism",
+    "sha256": "569ad40e99e9085b6d0d7285f2754aed504b2df8d2d2fa9b9df89387ca0bd977",
+    "bytes": 739367
   },
   {
     "path": "06_single_cell_reference/GSE146855_RAW.tar",
@@ -221,13 +216,13 @@
   },
   {
     "path": "07_latest_results/Supplementary_Data_S6_inhibitor_normalized_values.csv",
-    "sha256": "8845ba656e987cc7b2cdaaf0b28026d2c615a16e369bc92c5155f261a17ae338",
-    "bytes": 29453
+    "sha256": "a77c80697ddf3244baff73d2630ec71666ebbaad80625226d97f14ec5063b21d",
+    "bytes": 27923
   },
   {
     "path": "07_latest_results/Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv",
-    "sha256": "4bed58d56e1f595ac8ad388330eae223a44a2dd3c5df066a3ca0bb41cde13a5a",
-    "bytes": 13499
+    "sha256": "d5c6b51d9a3c5e8fcf25ceff5b6a1c8599b34ec670940cbfd022c4668bac4121",
+    "bytes": 13091
   },
   {
     "path": "07_latest_results/Supplementary_Data_S8_all_gene_statistics.csv",

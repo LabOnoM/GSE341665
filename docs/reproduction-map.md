@@ -1,6 +1,6 @@
 # Current manuscript reproduction map
 
-Authority: BMC Word manuscript dated 2 October 2026 and current Additional files 1–7. `reproduce.py` stages the deposited data in a new working directory, verifies all 71 input/export hashes, and invokes the scripts below. No unused historical analysis is part of this map.
+Authority: BMC Word manuscript dated 2 October 2026 and current Additional files 1–7. `reproduce.py` stages the deposited data in a new working directory, verifies all 70 input/export hashes, and invokes the scripts below. No unused historical analysis is part of this map.
 
 | Figure, table or result | Retained code | Required source and purpose |
 |---|---|---|
@@ -9,7 +9,7 @@ Authority: BMC Word manuscript dated 2 October 2026 and current Additional files
 | Reference fractions/specificity; Additional files 6–7 | 06_deconvolution.py | Captured GSE146855 CPM signature; full-precision bulk TPM; sorted markers before NNLS |
 | AI enrichment, Additional file 3 and Methods B6 | 16_ai_gene_enrichment.py, ai_genes.py, ai_gene_provenance.py | Pinned PanelApp 269 v4.37 GREEN panel and gene-level statistics; three reported threshold sensitivity tests |
 | Pinned-panel source reconstruction | 17_fetch_ai_panel.py | Original PanelApp v4.37 JSON and MGI report in the deposit; explicit live download also tested. `all` reconstructs the mapped panel before enrichment |
-| Zenodo Data S6/S7; Figure 3C/E statistical evidence | 24_september_inhibitor_audit.py | The two September normalized PZFX files; 195 values and 52 ANOVA/two-sided Dunnett comparisons. The author-provided wet-laboratory artwork is preserved |
+| Zenodo Data S6/S7; Figure 3C/E statistical evidence | 24_september_inhibitor_audit.py | The declared inhibitor data sheets in Figure_3.prism; 195 values and 52 ANOVA/two-sided Dunnett comparisons. The author-provided wet-laboratory artwork is preserved |
 | Additional file 2 workbook; files 2–7; Tables S1–S2 | export_additional_data.py, ai_gene_provenance.py | Latest regenerated CSV/payload; public openpyxl. Table S1's retired-list provenance is retained because it is explicitly part of current Additional file 1 |
 | Supplementary Figure S3 / reference reannotation | 04_download_scref.sh, 05_scref_annotate.R, 11_scref_umap_dotplot.R | Original deposited GSE146855 raw archive; exact R/library lock; fresh labels/signatures checked against captured reference before downstream use |
 | Supplementary Figure S4 | 14_workflow_diagram.py | Recorded primary methods in Additional file 1 and current retained-code map; public matplotlib renderer |
@@ -21,7 +21,7 @@ Authority: BMC Word manuscript dated 2 October 2026 and current Additional files
 
 Main Figures 1–3 and supplementary S1, S2 and S7 are author-supplied experimental artwork, not bioinformatics outputs. No code or normalized values reconstruct the missing complete raw scans, raw Ct values or raw band intensities. Tables S3–S5 transcribe experimental records, with unresolved source checks explicitly retained in Additional file 1.
 
-`results/additional_files/` contains the seven current Additional-file CSVs; `results/source_csv/` contains all six Data S8 CSVs. Publication PDFs and the Excel workbook belong to the journal/data package; both Python execution modes produce their stated figure outputs. No duplicate binary publication artwork is needed in this code repository.
+`results/additional_files/` contains the five current Additional-file CSVs; `results/source_csv/` contains all six Data S8 CSVs. Publication PDFs and the Excel workbook belong to the journal/data package; both Python execution modes produce their stated figure outputs. No duplicate binary publication artwork is needed in this code repository.
 
 The GEO TPM matrix is exported with four decimal places; the source workbooks/plotting inputs preserve full precision. `--geo-root` checks all 15,803 × six retained TPM entries after that declared rounding. Captured Data S8 paragraph numbers refer to the source manuscript used to create its index, not the later BMC numbering. The exact captured source is deposited as `manuscript_claim_source.json`.
 

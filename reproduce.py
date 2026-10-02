@@ -82,7 +82,8 @@ def main():
     shutil.copytree(source/'workbooks', raw/'02.TableOutput')
     for p in (data/'05_Raw_data_for_Figures/auxiliary_alignment_counts').glob('*.STAR.counts'):
         shutil.copy2(p, raw/p.name)
-    shutil.copytree(data/'05_Raw_data_for_Figures/inhibitor_normalized',work/'00.Manuscript/ZXY_20260919_updated')
+    project_dir=work/'00.Manuscript/prism_projects';project_dir.mkdir(parents=True)
+    shutil.copy2(data/'05_Raw_data_for_Figures/prism_projects/Figure_3.prism',project_dir/'Figure_3.prism')
     supplementary = work/'00.Manuscript/Submission_02_JMM_2026-07/4_Journal_JMM/Supplementary'
     supplementary.mkdir(parents=True)
     shutil.copy2(data/'06_single_cell_reference/GSE146855_seurat.rds',pipe/'output/GSE146855_seurat.rds')

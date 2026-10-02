@@ -32,6 +32,8 @@ def main():
     inhibitor_target=args.destination/'Inhibitor_data';inhibitor_target.mkdir(parents=True,exist_ok=True)
     for name in ['Supplementary_Data_S6_inhibitor_normalized_values.csv','Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv']:
         shutil.copy2(inhibitor/name,inhibitor_target/name)
+    shutil.copy2(inhibitor/'Inhibitor_Statistics_Provenance.json',
+                 inhibitor_target/'Inhibitor_Statistics_Provenance.json')
     payload=json.loads(args.payload.read_text())
     wb=Workbook();wb.remove(wb.active)
     for index,info in enumerate(payload['sheets'],1):
