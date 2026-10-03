@@ -51,11 +51,12 @@ DISPLAY={
  'ER stress':['Atf3','Atf4','Ddit3','Hspa5','Trib3'],
  'p38 and TGF-beta context':['Gadd45a','Gadd45b','Gadd45g','Map2k6','Map2k3','Mapk14','Map3k7','Traf6','Tgfb2','Tgfb3','Tgfbr2','Tgfbr3','Grem1','Bmpr1a','Smad1','Smad5','Smad9','Smad3','Smad4'],
  'Additional epithelial markers':['Krt76','Gli1','Igfbp5','Krt15','Sox2','Lgr5','Msx2','Tuft1','Odam'],
+ # Sex markers remain source-data rows; their empty PANEL value excludes them from figures.
  'Sex markers':['Xist','Ddx3y','Eif2s3y','Uty','Kdm5d'],
  'Secretory and maturation markers':['Amelx','Ambn','Klk4','Slc24a4']}
 PANEL={'Identity':'Figure 5A','Wound':'Figure 5C','Sterol':'Figure 6A','IFN':'Figure 6B',
  'ERK-associated':'Figure 7A','ER stress':'Figure 7C','p38 and TGF-beta context':'Figure 7B',
- 'Additional epithelial markers':'Figure 5E','Sex markers':'Figure 4D',
+ 'Additional epithelial markers':'Figure 5E','Sex markers':'',
  'Secretory and maturation markers':'Figure 5F'}
 all_groups={**PROGRAMS,**DISPLAY,'Human AI orthologs':ai.external_gene_name.tolist()}
 PANEL['Human AI orthologs']='Figure 5B'
@@ -156,7 +157,7 @@ def save(fig,path):
     plt.close(fig);print('WROTE',path.name,flush=True)
 
 # Figure 4: retain a single program overview with all six libraries.
-fig=newfig(180,230)
+fig=newfig(180,170)
 title(fig,3,3,'A  Transcriptome separation')
 ax=axes(fig,15,17,61,75)
 lg=np.log2(T+1);top=lg.var(axis=1).sort_values(ascending=False).head(2000).index
@@ -204,9 +205,7 @@ for i,name in enumerate(order):
     ax.text(i,1.30,f'P = {p:.2f}',ha='center',fontsize=8.4)
 ax.axhline(0,color='#999999',lw=.6);ax.set_ylim(-1.15,1.6);ax.set_xlim(-.5,3.5)
 ax.set_xticks(range(4),['Ameloblast identity','Interferon','Sterol biosynthesis','Wound / stress']);ax.set_ylabel('Program z-score');ax.set_yticks([-1,0,1]);ax.tick_params(labelsize=8.4)
-fig.text(.5,1-161/230,'Points: libraries; short lines: means; exact two-sided permutation tests.',ha='center',fontsize=8.3)
-gene_panel(fig,(3,171,174,42),DISPLAY['Sex markers'],'D  Sex-associated expression across the same libraries')
-heat_legend(fig,218)
+fig.text(.5,1-161/170,'Points: libraries; short lines: means; exact two-sided permutation tests.',ha='center',fontsize=8.3)
 save(fig,F/'Figure4_transcriptome')
 
 # Figure 5: complete identity and wound programs, AI orthologs, and composition.
@@ -274,7 +273,7 @@ full['mean_TPM_CON']=full[SAMPLES[:3]].mean(axis=1);full['mean_TPM_dcKO']=full[S
 full['strict_DEG']=(full.padj<.05)&(full.log2FoldChange.abs()>1)
 full['padj_status']=np.where(full.padj.isna(),'not available',np.where(full.padj==0,'source numeric underflow','finite'))
 full['program_membership']=full.external_gene_name.map(lambda g:'; '.join(k for k,v in PROGRAMS.items() if g in v))
-full['figure_panels']=full.external_gene_name.map(lambda g:'; '.join(dict.fromkeys(PANEL[k] for k,v in all_groups.items() if g in v)))
+full['figure_panels']=full.external_gene_name.map(lambda g:'; '.join(dict.fromkeys(PANEL[k] for k,v in all_groups.items() if g in v and PANEL[k])))
 full['main_text_paragraphs']=full.external_gene_name.map(lambda g:'; '.join(str(i) for i,txt in body if isinstance(g,str) and re.search(r'(?<![A-Za-z0-9])'+re.escape(g)+r'(?![A-Za-z0-9])',txt)))
 full=full.rename(columns={'external_gene_name':'gene','FoldChange':'source_FoldChange'})
 full.to_csv(S/'Supplementary_Data_S3_all_gene_statistics.csv',index=False,float_format='%.17g')
@@ -285,7 +284,7 @@ for k,gs in all_groups.items():
         rows=full[full.gene==g]
         if len(rows): row=rows.iloc[0].to_dict()
         else: row={'gene':g,'padj_status':'not retained; no DESeq2 result'}
-        row={'display_group':k,'display_panel':PANEL[k],**row};displayrows.append(row)
+        row={'display_group':k,'display_panel':PANEL[k] or 'Data S3 only',**row};displayrows.append(row)
 display=pd.DataFrame(displayrows)
 display.to_csv(S/'Supplementary_Data_S3_displayed_genes.csv',index=False,float_format='%.17g')
 pd.DataFrame(program_tests).to_csv(S/'Supplementary_Data_S3_program_tests.csv',index=False,float_format='%.17g')
@@ -327,8 +326,9 @@ readme=[['Field','Definition'],
  ['Source data','DEG_table.csv and TPM_matrix.csv; original workbooks STAR_DEGs_ResOut_01_dcKOvsCON.xlsx and 00.DEGs_Out_TPM.xlsx.'],
  ['Program membership','programs.py is unchanged. ERK, stress and Discussion groups are display-only, not new scored programs.'],
  ['Nonretained genes','Sox2 and Lgr5 have low nonzero auxiliary alignment feature counts but no row in the retained DESeq2 table. These counts are not the Salmon/tximport model inputs.'],
- ['Animal sex','All experimental donors and all six RNA-seq libraries were male (author confirmation, 3 October 2026). Sex-marker expression is retained as measured; it does not establish mixed-sex pooling.'],
- ['Panel numbering','4C program overview; 4D sex markers; 5A identity; 5B human AI orthologs; 5C wound; 5D composition; 5E additional epithelial genes; 5F secretory/maturation TPM; 6A sterol; 6B IFN; 6C reference specificity; 7A ERK/MAPK; 7B p38/TGF-beta/BMP; 7C ER stress.'],
+ ['Animal sex','All experimental donors and all six RNA-seq libraries were male (author confirmation, 3 October 2026). Xist and Y-linked marker values remain in Data S3 as supporting sample metadata, not independent confirmation of animal sex.'],
+ ['Panel numbering','4C program overview; sex markers: Data S3 only; 5A identity; 5B human AI orthologs; 5C wound; 5D composition; 5E additional epithelial genes; 5F secretory/maturation TPM; 6A sterol; 6B IFN; 6C reference specificity; 7A ERK/MAPK; 7B p38/TGF-beta/BMP; 7C ER stress.'],
+ ['Source-only markers','The Displayed genes sheet also retains Xist, Ddx3y, Eif2s3y, Uty and Kdm5d, labelled Data S3 only. These five genes have no current figure-panel assignment.'],
  ['Manuscript','Source paragraph numbers in Text claims are zero-based positions in the captured author DOCX, not printed paragraph or section numbers.'],
  ['Source manuscript SHA256',source_manuscript_sha256]]
 payload={'sheets':[

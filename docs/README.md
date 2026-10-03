@@ -5,4 +5,4 @@
 - [Known limitations](known-issues.md)
 - [Current supplementary methods snapshot](supplementary_methods.md)
 
-Experimental animals were confirmed by the authors on 3 October 2026 to be male, including all six RNA-seq libraries. Xist/Y-linked expression is retained as measured expression, without inferring mixed-sex pools. Supplementary identifiers follow first citation in the current manuscript; see [the renumbering map](supplementary-numbering.md).
+Experimental animals were confirmed by the authors on 3 October 2026 to be male, including all six RNA-seq libraries. Xist/Y-linked expression is retained in Data S3, with a brief note in Additional file 1. Figure 4 contains panels A–C; these marker values have no current figure-panel assignment and are not an independent determination of animal sex. Supplementary identifiers follow first citation in the current manuscript; see [the renumbering map](supplementary-numbering.md).

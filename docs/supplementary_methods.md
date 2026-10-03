@@ -21,6 +21,8 @@ A1. Experimental design
 | Library strandedness | Reverse-stranded; automatically detected by Salmon as   ISR , and used as   -s 2   in featureCounts |
 | Contrast | dcKO vs CON |
 
+Sex was confirmed by the experimentalist. Expression of Xist, Ddx3y, Eif2s3y, Uty and Kdm5d is retained in Additional file 2 (Data S3) as supporting sample information, rather than an independent determination of sex.
+
 A2. Reference genome and annotation
 
 | Field | Value |

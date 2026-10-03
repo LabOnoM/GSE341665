@@ -186,8 +186,8 @@
   },
   {
     "path": "07_latest_results/Additional_file_2.xlsx",
-    "sha256": "2f20246c67ec7094ca55b47356a6b6dd9cf67fc954e926f09b426e9c0745e3b6",
-    "bytes": 3964787
+    "sha256": "69ffe7eaa31e4d8dfa52dbf2aca02d8ea3a0ecb425e4e68351954ee0f5f20bba",
+    "bytes": 3964868
   },
   {
     "path": "07_latest_results/Additional_file_3.csv",
@@ -226,8 +226,8 @@
   },
   {
     "path": "07_latest_results/Supplementary_Data_S3_all_gene_statistics.csv",
-    "sha256": "eed97f7a2b20d4b78a92e03ce4bb40f2e011c81d401b231f40cef6028b817168",
-    "bytes": 5474493
+    "sha256": "9d80692dda6e6ab3ab7e3e555ceeacd6d80419caa9904741464e68b461add43f",
+    "bytes": 5474448
   },
   {
     "path": "07_latest_results/Supplementary_Data_S3_deconvolution_tests.csv",
@@ -236,8 +236,8 @@
   },
   {
     "path": "07_latest_results/Supplementary_Data_S3_displayed_genes.csv",
-    "sha256": "6d382057faeab56ee2558e0d9618d60c3a2038ba740b1283529dc9c932ef6d56",
-    "bytes": 61249
+    "sha256": "502adfd52589f451382e14b72f04bc8f9e60686489233aabcc381e79643ba78d",
+    "bytes": 61219
   },
   {
     "path": "07_latest_results/Supplementary_Data_S3_nonretained_gene_counts.csv",
@@ -251,8 +251,8 @@
   },
   {
     "path": "07_latest_results/Supplementary_Data_S3_text_claim_index.csv",
-    "sha256": "7c72fac3a3a41e57de7851bf5b8d4c921a0158532cc1a493878785c07e0388a4",
-    "bytes": 17542
+    "sha256": "71a66ceb22b1ba21c8c241af44e3a7cdef3941e5a25d44f4d70a5bb5543cd452",
+    "bytes": 17497
   },
   {
     "path": "08_locus_alignments/CON1.STAR.Aligned.sortedByCoord.out.bam",
