@@ -19,3 +19,18 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python -m compileall -q reproduce.py validate.py pipeline environment tests
       - run: bash -n pipeline/04_download_scref.sh
+  program-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          r-version: '4.3.2'
+          use-public-rspm: true
+      - run: Rscript environment/setup_program.R --library "$RUNNER_TEMP/program-library" --install
+      - run: Rscript pipeline/check_program_environment.R
+        env:
+          PROGRAM_R_LIBRARY: ${{ runner.temp }}/program-library
+      - run: Rscript tests/test_program_models.R
+        env:
+          PROGRAM_R_LIBRARY: ${{ runner.temp }}/program-library

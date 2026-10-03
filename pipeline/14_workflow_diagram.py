@@ -60,11 +60,11 @@ def reanalysis():
     box(ax,133,16,65,25,'GSE146855\nP7 incisor reference\n(public GEO)')
     box(ax,49,51,83,25,'01  Extract source workbooks\nPreserve model statistics\nand all 15,803 gene rows')
     box(ax,133,51,65,25,'04 / 05  Download; Seurat\nQC and clustering\nSpecificity-based annotation')
-    box(ax,49,87,83,25,'03  Four program scores\n16 identity; 20 sterol\n14 wound/stress; 18 interferon')
+    box(ax,49,87,83,25,'03  Descriptive program scores\nR: archived counts/TPM/length → TMM/voom\nROAST (~W₁ + genotype); sensitivities')
     box(ax,133,87,65,25,'06  NNLS deconvolution\nReference cell-type fractions\nand program specificity')
     box(ax,49,122,83,25,'17 / 16  Pinned PanelApp 269 v4.37\nMouse orthologs; directional\nFisher enrichment (GREEN genes)')
     box(ax,133,122,65,25,'pipeline/programs.py\nSingle program definition\nImported by 03 / 06 / 07',accent=True)
-    box(ax,85,157,154,22,'07  Current Figures 4–7 and complete Data S3 source CSVs\nExact program tests; descriptive fractions; all displayed genes',accent=True)
+    box(ax,85,157,154,22,'07  Current Figures 4–7 and complete Data S3 source CSVs\nROAST gene-set inference; descriptive scores/fractions; all displayed genes',accent=True)
     for x in [49,133]:
         arrow(ax,(x,29.5),(x,37.5));arrow(ax,(x,64.5),(x,73.5))
     arrow(ax,(49,100.5),(49,108.5));arrow(ax,(49,135.5),(66,145))
@@ -73,7 +73,7 @@ def reanalysis():
     arrow(ax,(168.5,138),(150,145));arrow(ax,(133,135.5),(103,145))
     ax.text(85,179,'export_additional_data.py → Additional files and Table S4',ha='center',va='center',fontsize=10)
     arrow(ax,(85,169),(85,174))
-    ax.text(85,189,'Current reproduction uses archived gene-level results, without a new count-model fit.',ha='center',va='center',fontsize=8.5)
+    ax.text(85,189,'Original DESeq2 retained; new program limma-voom fit; six biological libraries.',ha='center',va='center',fontsize=8.5)
     save(fig,'FigureS5B_reanalysis')
 
 if __name__=='__main__':primary();reanalysis()

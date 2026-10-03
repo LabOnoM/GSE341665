@@ -4,15 +4,14 @@
 
 Per-sample gene-program "program scores" (combined gene-set z-score: the mean
 gene-wise z-score of log2 TPM; Lee et al. 2008, PMID 18989396) for
-the four programs, the CON-vs-dcKO group tests, and the sterol<->interferon
-reciprocal correlation across samples.
+the four programs. These six-library summaries are descriptive.
+Program inference is fitted separately by program_gene_set_tests.R.
 
 Inputs : output/TPM_matrix.csv
 Outputs: output/module_scores.csv, output/module_tests.txt
 """
 import os, sys, pandas as pd, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from scipy import stats
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT  = os.path.join(ROOT, "scripts", "JDR_reanalysis", "output")
@@ -30,7 +29,7 @@ def program_score(tpm, genes):
 
 
 def main():
-    t = pd.read_csv(os.path.join(OUT, "TPM_matrix.csv"), skiprows=1, low_memory=False)
+    t = pd.read_csv(os.path.join(OUT, "TPM_matrix.csv"), skiprows=1, low_memory=False, float_precision="round_trip")
     for s in SAMP:
         t[s] = pd.to_numeric(t[s], errors="coerce")
     tpm = t.groupby("external_gene_name")[SAMP].mean()
@@ -39,36 +38,11 @@ def main():
     scores["group"] = GROUP
     scores.to_csv(os.path.join(OUT, "module_scores.csv"))
 
-    # Program scores are reported as EFFECT SIZES with an EXACT PERMUTATION P value.
-    # A parametric t test is NOT valid here: each gene is z-scored across the same six
-    # samples before averaging, which forces coherent programs toward +/-1 per group and
-    # collapses within-group variance, so a t test returns spuriously tiny P (1e-6..1e-8)
-    # that measures the arithmetic of z-scoring, not biological replication. With n=3 vs 3
-    # the exact permutation floor is C(6,3)/2 = 10 assignments -> smallest attainable
-    # P = 0.10. (See peer-review Major concern 1; do not reinstate the t test.)
-    from itertools import combinations
-    idx = list(scores.index)
-    def perm_p(m):
-        obs = abs(scores.loc[scores.group=="CON", m].mean()
-                  - scores.loc[scores.group=="dcKO", m].mean())
-        vals = scores[m].values
-        diffs = []
-        for combo in combinations(range(6), 3):          # all C(6,3)=20 label assignments
-            a = [vals[i] for i in combo]
-            b = [vals[i] for i in range(6) if i not in combo]
-            diffs.append(abs(sum(a)/3 - sum(b)/3))
-        # two-sided exact permutation P = fraction of |mean diff| >= observed
-        ge = sum(1 for d in diffs if d >= obs - 1e-12)
-        return ge / len(diffs)
-    lines = ["Per-sample program z-scores:", scores.round(3).to_string(), ""]
+    lines = ["Descriptive per-library mean gene-wise z scores:", scores.round(3).to_string(), "",
+             "These scores are not the ROAST test statistic; see the canonical program result table."]
     for m in MODULES:
         con = scores.loc[scores.group=="CON", m]; ko = scores.loc[scores.group=="dcKO", m]
-        pp = perm_p(m)
-        lines.append(f"  {m:9s} CON={con.mean():+.2f} dcKO={ko.mean():+.2f} "
-                     f"exact_permutation_P={pp:.2f} (floor 0.10 at n=3v3)")
-    r, p = stats.pearsonr(scores["Sterol"], scores["IFN"])
-    lines.append(f"\nSterol vs IFN across samples: Pearson r={r:.2f} p={p:.2g} (n=6; "
-                 f"reflects genotype separation, not within-group coupling)")
+        lines.append(f"  {m:9s} CON={con.mean():+.2f} dcKO={ko.mean():+.2f} (descriptive)")
     print("\n".join(lines))
     with open(os.path.join(OUT, "module_tests.txt"), "w") as fh:
         fh.write("\n".join(lines) + "\n")

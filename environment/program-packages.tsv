@@ -1,0 +1,9 @@
+Package	Version	Source
+limma	3.58.1	Bioconductor-3.18
+edgeR	4.0.16	Bioconductor-3.18
+statmod	1.5.0	CRAN
+jsonlite	2.0.0	CRAN
+digest	0.6.37	CRAN
+Rcpp	1.1.0	CRAN
+locfit	1.5-9.12	CRAN
+lattice	0.21-9	CRAN

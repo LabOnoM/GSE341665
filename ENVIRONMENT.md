@@ -1,7 +1,9 @@
-# Software environment
+# Tested software environment
 
-`requirements-reproduction.txt` pins the environment used for the October Python reproduction check. Python 3.12.14 is used for that check. It is separate from the historical analysis environment in Additional file 1. No primary-model package version is inferred from this new environment.
+Python 3.12.14 and `environment/python-lock.txt` govern the reproduction workflow. The new program stage requires R 4.3.2 and eight exact packages in `environment/program-packages.tsv`: limma 3.58.1, edgeR 4.0.16, statmod 1.5.0, jsonlite 2.0.0, digest 0.6.37, Rcpp 1.1.0, locfit 1.5-9.12 and lattice 0.21-9. `setup_program.R --library /isolated/library --install` restores that library; omit `--install` to check it. Set `PROGRAM_R_LIBRARY` to that directory. The workflow checks the lock before fitting.
 
-The supplement mode uses the same public matplotlib environment; Graphviz is not required. Reference mode needs R 4.3.2, Seurat 5.3.1, SeuratObject 5.2.0, Matrix 1.6.5, uwot 0.2.3, ggplot2 4.0.0 and patchwork 1.3.2, as recorded in Additional file 1. Locus mode needs samtools and the exact alignment/reference inputs. These optional modes are documented separately from the Python archived-result check.
+`all`, `reference` and `reference-figure` additionally require the 149-package reference lock and setup procedure described in README. Reference packages use a separate `R_LIBS_USER`; the program stage prepends its own library only for program execution. `all` therefore supports both environments without replacing system libraries.
 
-The primary model used STAR 2.7.10b, Salmon 1.10.0, Ensembl 116 GRCm39, Trim Galore 0.6.10 and Cutadapt 4.9; original versions unrecorded for other tools remain unrecorded. `07_figures.py` and `export_additional_data.py` require no proprietary office or plotting runtime. NNLS marker iteration is sorted; Seurat scripts use seed 1; exact permutation tests enumerate all allocations.
+Program RNG is Mersenne-Twister/Inversion/Rejection, with seeds 20261003 and 20261004. ROAST uses exactly 99,999 rotations. Single-cell seeds and the separate exhaustive locus permutation analysis remain unchanged. No package installation occurs automatically during reproduction.
+
+Original FASTQ-to-DESeq2 processing used STAR 2.7.10b, Salmon 1.10.0, Ensembl 116 GRCm39, Trim Galore 0.6.10 and Cutadapt 4.9. Unrecorded original versions remain unrecorded; the new program library does not reconstruct them. `original_DESeq2_refit=false`; `program_limma_voom_fit=true` in manuscript/all modes.

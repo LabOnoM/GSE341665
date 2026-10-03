@@ -1,5 +1,8 @@
 # Documentation
 
+- [ROAST migration and validated methods](ROAST_migration.md)
+- [Complete standalone numerical validation](reproduction-validation.json)
+
 - [Reproduction map](reproduction-map.md)
 - [Data access](data-access.md)
 - [Known limitations](known-issues.md)

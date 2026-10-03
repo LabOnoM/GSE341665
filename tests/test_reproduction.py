@@ -11,10 +11,24 @@ import pandas as pd
 
 REPO=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(REPO))
-from validate import compare_frames
+from validate import compare_frames, independent_bh, check_program_results
 
 
 class ReproductionChecks(unittest.TestCase):
+    def test_bh_rejects_incomplete_or_invalid_family(self):
+        for values in ([.1,.2,.3],[.1,.2,.3,0],[.1,.2,.3,float('nan')]):
+            with self.assertRaisesRegex(ValueError,'four valid'):
+                independent_bh(values)
+
+    def test_bh_is_order_independent(self):
+        import numpy as np
+        np.testing.assert_allclose(independent_bh([2e-5,1e-5,1e-5,5e-5]),[8e-5/3,2e-5,2e-5,5e-5],rtol=1e-14)
+
+    def test_duplicate_program_identifier_fails(self):
+        primary=pd.DataFrame({'program':['Identity','Identity','Wound','IFN']})
+        with self.assertRaisesRegex(ValueError,'exactly once'):
+            check_program_results(primary,None,None)
+
     def run_cli(self,*args):
         return subprocess.run([sys.executable,*map(str,args)],capture_output=True,text=True)
 

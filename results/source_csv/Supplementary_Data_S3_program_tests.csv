@@ -1,5 +1,5 @@
-program,n_genes,mean_CON,mean_dcKO,delta_score,exact_permutation_P,n_libraries_per_group,n_assignments
-Identity,16,0.89850716928188579,-0.89850716928188434,-1.7970143385637702,0.10000000000000001,3,20
-Sterol,20,-0.90739757274818234,0.90739757274818234,1.8147951454963647,0.10000000000000001,3,20
-Wound,14,-0.90651581134657189,0.90651581134657178,1.8130316226931438,0.10000000000000001,3,20
-IFN,18,0.88261353166031054,-0.88261353166031087,-1.7652270633206215,0.10000000000000001,3,20
+program,n_genes,model,contrast,n_libraries_per_group,residual_df,mean_CON,mean_dcKO,delta_score,score_interpretation,direction,ROAST_P,ROAST_BH_adjusted_P,method,rotations,seed,adjustment_family,midp
+Identity,16,~ W_1 + genotype,dcKO minus CON,3,3,0.89850716928188579,-0.89850716928188445,-1.7970143385637702,Descriptive mean gene-wise z score; not the modeled ROAST statistic,Down,2.0000000000000002e-05,2.66666666666667e-05,limma::mroast mean; two-sided directional PValue,99999,20261003,ROAST_directional_RUV_adjusted_four_programs,False
+Sterol,20,~ W_1 + genotype,dcKO minus CON,3,3,-0.90739757274818211,0.90739757274818256,1.8147951454963647,Descriptive mean gene-wise z score; not the modeled ROAST statistic,Up,1.0000000000000001e-05,2.0000000000000002e-05,limma::mroast mean; two-sided directional PValue,99999,20261003,ROAST_directional_RUV_adjusted_four_programs,False
+Wound,14,~ W_1 + genotype,dcKO minus CON,3,3,-0.90651581134657189,0.90651581134657178,1.8130316226931438,Descriptive mean gene-wise z score; not the modeled ROAST statistic,Up,1.0000000000000001e-05,2.0000000000000002e-05,limma::mroast mean; two-sided directional PValue,99999,20261003,ROAST_directional_RUV_adjusted_four_programs,False
+IFN,18,~ W_1 + genotype,dcKO minus CON,3,3,0.88261353166031042,-0.88261353166031087,-1.7652270633206213,Descriptive mean gene-wise z score; not the modeled ROAST statistic,Down,5.0000000000000002e-05,5.0000000000000002e-05,limma::mroast mean; two-sided directional PValue,99999,20261003,ROAST_directional_RUV_adjusted_four_programs,False

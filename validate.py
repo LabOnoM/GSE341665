@@ -11,6 +11,46 @@ from openpyxl import load_workbook
 REPO = Path(__file__).resolve().parent
 
 
+def independent_bh(values):
+    p=np.asarray(values,dtype=float)
+    if len(p)!=4 or not np.isfinite(p).all() or np.any((p<=0)|(p>1)):
+        raise ValueError('Each BH family requires four valid nonzero probabilities')
+    order=np.argsort(p);ranked=p[order]*len(p)/np.arange(1,len(p)+1)
+    answer=np.empty_like(p);answer[order]=np.minimum(1,np.minimum.accumulate(ranked[::-1])[::-1])
+    return answer
+
+
+def check_program_results(primary, sensitivity, analysis):
+    expected={'Identity':16,'Sterol':20,'Wound':14,'IFN':18}
+    if primary.program.duplicated().any() or set(primary.program)!=set(expected):
+        raise ValueError('Canonical program IDs must map exactly once')
+    if dict(zip(primary.program,primary.n_genes))!=expected:raise ValueError('Program sizes changed')
+    if not np.allclose(independent_bh(primary.ROAST_P),primary.ROAST_BH_adjusted_P,rtol=1e-12,atol=0):
+        raise ValueError('Primary BH adjustment mismatch')
+    if not (primary.model.eq('~ W_1 + genotype').all() and primary.contrast.eq('dcKO minus CON').all()
+            and primary.residual_df.eq(3).all() and primary.rotations.eq(99999).all()
+            and primary.seed.eq(20261003).all() and primary.midp.eq(False).all()):
+        raise ValueError('Primary model/contrast/rotation specification changed')
+    if (primary.ROAST_P<1e-5).any():raise ValueError('ROAST probability below finite-rotation resolution')
+    if len(sensitivity)!=28:raise ValueError('Missing supplementary sensitivity rows')
+    for family,frame in sensitivity.groupby('adjustment_family'):
+        if frame.program.duplicated().any() or set(frame.program)!=set(expected):raise ValueError('Sensitivity family IDs changed')
+        if not np.allclose(independent_bh(frame.raw_P),frame.BH_adjusted_P,rtol=1e-12,atol=0):
+            raise ValueError('Sensitivity BH adjustment mismatch: '+family)
+    provenance=json.loads((analysis/'input_provenance.json').read_text())
+    if provenance['original_DESeq2_refit'] is not False or provenance['program_limma_voom_fit'] is not True:
+        raise ValueError('Fit provenance is incorrect')
+    if provenance['retained_genes']!=15803 or provenance['sample_count']!=6 or provenance['program_genes_unique']!=68:
+        raise ValueError('Program input dimensions changed')
+    qc=json.loads((analysis/'model_qc.json').read_text())
+    for model,df in [('RUV_adjusted',3),('unadjusted',4)]:
+        if qc[model]['residual_df']!=df or not qc[model]['full_rank'] or not qc[model]['all_weights_finite_positive']:
+            raise ValueError('Invalid design/voom weights')
+    members=pd.read_csv(analysis/'program_membership.csv')
+    if len(members)!=68 or members.ensembl_gene_id.duplicated().any():raise ValueError('Program membership ambiguity')
+    return {'file':'ROAST/CAMERA contract and independent BH','primary_programs':4,'sensitivity_rows':28,'passed':True}
+
+
 def compare_frames(expected, actual, name, descriptive_t=False):
     if expected.shape != actual.shape or list(expected.columns) != list(actual.columns):
         raise ValueError(f'{name}: table shape or column names changed')
@@ -60,6 +100,9 @@ def main():
     args=ap.parse_args();checks=[]
     output=args.work_dir/'scripts/JDR_reanalysis/output'
     if args.mode in ('manuscript','all'):
+        primary=pd.read_csv(args.destination/'Supplementary/Supplementary_Data_S3_program_tests.csv',float_precision='round_trip')
+        sensitivity=pd.read_csv(args.destination/'Supplementary/Supplementary_Data_S3_program_test_sensitivity.csv',float_precision='round_trip')
+        checks.append(check_program_results(primary,sensitivity,args.destination/'Program_analysis'))
         for folder,target in [('additional_files','Additional_files'),('source_csv','Supplementary'),('inhibitor_data','Inhibitor_data')]:
             for p in sorted((REPO/'results'/folder).glob('*.csv')):
                 if p.name.startswith('._'):continue
@@ -109,7 +152,8 @@ def main():
                             raise ValueError(f'SVG requires an external resource: {matches[0]}')
             figure_checks.append(str(matches[0].relative_to(args.destination)))
     report={'passed':True,'mode':args.mode,'numerical_checks':checks,'figure_files':figure_checks,
-            'raw_count_model_refit':False,'tolerances':'Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.'}
+            'raw_count_model_refit':False,'original_DESeq2_refit':False,'program_limma_voom_fit':args.mode in ('manuscript','all'),
+            'tolerances':'Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10. ROAST seed/rotations fixed; BH independently recomputed.'}
     (args.destination/'VALIDATION.json').write_text(json.dumps(report,indent=2)+'\n')
     print(f'PASS: {len(checks)} numerical tables/sheets and {len(figure_checks)} figure files',flush=True)
 

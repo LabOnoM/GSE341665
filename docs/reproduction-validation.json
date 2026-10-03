@@ -3,6 +3,12 @@
   "mode": "all",
   "numerical_checks": [
     {
+      "file": "ROAST/CAMERA contract and independent BH",
+      "primary_programs": 4,
+      "sensitivity_rows": 28,
+      "passed": true
+    },
+    {
       "file": "Additional_file_3.csv",
       "rows": 31,
       "columns": 5,
@@ -75,11 +81,35 @@
       "passed": true
     },
     {
+      "file": "Supplementary_Data_S3_program_membership.csv",
+      "rows": 68,
+      "columns": 3,
+      "checked_cells": 204,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S3_program_sample_metadata.csv",
+      "rows": 6,
+      "columns": 3,
+      "checked_cells": 18,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "Supplementary_Data_S3_program_test_sensitivity.csv",
+      "rows": 28,
+      "columns": 16,
+      "checked_cells": 448,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
       "file": "Supplementary_Data_S3_program_tests.csv",
       "rows": 4,
-      "columns": 8,
-      "checked_cells": 32,
-      "max_absolute_difference": 0.0,
+      "columns": 18,
+      "checked_cells": 72,
+      "max_absolute_difference": 2.220446049250313e-16,
       "passed": true
     },
     {
@@ -133,8 +163,32 @@
     {
       "file": "workbook/Program tests",
       "rows": 4,
-      "columns": 8,
-      "checked_cells": 32,
+      "columns": 18,
+      "checked_cells": 72,
+      "max_absolute_difference": 2.220446049250313e-16,
+      "passed": true
+    },
+    {
+      "file": "workbook/Program sensitivities",
+      "rows": 28,
+      "columns": 16,
+      "checked_cells": 448,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "workbook/Program membership",
+      "rows": 68,
+      "columns": 3,
+      "checked_cells": 204,
+      "max_absolute_difference": 0.0,
+      "passed": true
+    },
+    {
+      "file": "workbook/Program sample metadata",
+      "rows": 6,
+      "columns": 3,
+      "checked_cells": 18,
       "max_absolute_difference": 0.0,
       "passed": true
     },
@@ -143,7 +197,7 @@
       "rows": 3,
       "columns": 4,
       "checked_cells": 12,
-      "max_absolute_difference": 0.0,
+      "max_absolute_difference": 3.296918293926865e-12,
       "passed": true
     },
     {
@@ -252,14 +306,7 @@
     "Figures/FigureS1_breeding_scheme.png"
   ],
   "raw_count_model_refit": false,
-  "tolerances": "Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.",
-  "regression_tests_passed": 7,
-  "validation_date": "2026-10-03",
-  "required_main_figure_formats": [
-    "pdf",
-    "png",
-    "svg"
-  ],
-  "missing_SVG_guard_passed": true,
-  "source_revision": "Author-confirmed male cohort and first-citation supplementary numbering; full isolated execution including reference and regional BAM workflows. Original measurements and model results retained."
+  "original_DESeq2_refit": false,
+  "program_limma_voom_fit": true,
+  "tolerances": "Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10. ROAST seed/rotations fixed; BH independently recomputed."
 }

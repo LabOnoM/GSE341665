@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Rebuild nonredundant expression figures and their complete numerical source data.
 
-This is a presentation/reporting revision of archived DESeq2 results, not a new
-count-model analysis. Gene programs are imported unchanged from programs.py.
+This is a presentation/reporting revision of archived DESeq2 results, paired with new
+ROAST program inference. Original DESeq2 statistics remain archived. Gene programs are imported unchanged from programs.py.
 """
 from pathlib import Path
-import argparse, hashlib, importlib.util, itertools, json, re, sys
+import argparse, hashlib, importlib.util, json, re, sys
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -70,18 +70,21 @@ def zscore_rows(x):
     x=np.log2(x+1)
     return x.sub(x.mean(axis=1),axis=0).div(x.std(axis=1,ddof=1).replace(0,np.nan),axis=0)
 
-program_tests=[]
-for name,genes in PROGRAMS.items():
-    assert set(genes)<=set(bygene.index)
+program_frame=pd.read_csv(OUT/'Supplementary_Data_S3_program_tests.csv',float_precision='round_trip')
+if program_frame.program.duplicated().any() or set(program_frame.program)!=set(PROGRAMS):
+    raise ValueError('Canonical program IDs must map exactly once')
+for row in program_frame.to_dict('records'):
+    genes=PROGRAMS[row['program']]
+    if row['n_genes']!=len(genes):raise ValueError('Program membership count changed')
     calc=zscore_rows(T.loc[genes]).mean(axis=0)
-    assert np.allclose(calc.values,mod.loc[SAMPLES,name].values,rtol=1e-12,atol=1e-12)
-    vals=calc.values; diff=vals[3:].mean()-vals[:3].mean()
-    diffs=[abs(vals[list(c)].mean()-np.delete(vals,list(c)).mean()) for c in itertools.combinations(range(6),3)]
-    p=sum(x>=abs(diff)-1e-12 for x in diffs)/len(diffs)
-    program_tests.append({'program':name,'n_genes':len(genes),'mean_CON':vals[:3].mean(),'mean_dcKO':vals[3:].mean(),'delta_score':diff,'exact_permutation_P':p,'n_libraries_per_group':3,'n_assignments':len(diffs)})
+    assert np.allclose(calc.values,mod.loc[SAMPLES,row['program']].values,rtol=1e-12,atol=1e-12)
+program_tests=program_frame.to_dict('records')
+sensitivity=pd.read_csv(OUT/'Supplementary_Data_S3_program_test_sensitivity.csv',float_precision='round_trip')
+membership=pd.read_csv(OUT/'program_analysis/program_membership.csv')
+metadata=pd.read_csv(OUT/'program_analysis/sample_metadata.csv',float_precision='round_trip')
+program_provenance=json.loads((OUT/'program_analysis/input_provenance.json').read_text())
 assert sum((deg.padj<.05)&(deg.log2FoldChange.abs()>1))==563
 assert sum(deg.padj==0)==5
-assert all(x['exact_permutation_P']==.1 for x in program_tests)
 
 def pformat(p):
     if pd.isna(p): return 'NA'
@@ -193,7 +196,7 @@ try: lp.place(items,fontsize=7.6)
 except (TypeError,ValueError):
     # No fallback positions or numbers: the plot remains valid without selected labels.
     raise
-title(fig,3,109,'C  Program scores across individual libraries')
+title(fig,3,109,'C  Descriptive program scores; ROAST BH-adjusted P')
 ax=axes(fig,17,122,156,29)
 order=['Identity','IFN','Sterol','Wound']
 for i,name in enumerate(order):
@@ -201,11 +204,11 @@ for i,name in enumerate(order):
         v=mod.loc[SAMPLES,name].to_numpy()[sl]
         ax.scatter(i+dx+np.array([-.045,0,.045]),v,s=19,c=col,marker=marker,edgecolors='white',lw=.3,zorder=3)
         ax.plot([i+dx-.11,i+dx+.11],[v.mean()]*2,color=col,lw=1.4)
-    p=next(x['exact_permutation_P'] for x in program_tests if x['program']==name)
-    ax.text(i,1.30,f'P = {p:.2f}',ha='center',fontsize=8.4)
+    p=next(x['ROAST_BH_adjusted_P'] for x in program_tests if x['program']==name)
+    ax.text(i,1.30,f'{p:.2e}',ha='center',fontsize=8.4)
 ax.axhline(0,color='#999999',lw=.6);ax.set_ylim(-1.15,1.6);ax.set_xlim(-.5,3.5)
 ax.set_xticks(range(4),['Ameloblast identity','Interferon','Sterol biosynthesis','Wound / stress']);ax.set_ylabel('Program z-score');ax.set_yticks([-1,0,1]);ax.tick_params(labelsize=8.4)
-fig.text(.5,1-161/170,'Points: libraries; short lines: means; exact two-sided permutation tests.',ha='center',fontsize=8.3)
+fig.text(.5,1-161/170,'Points: libraries; lines: descriptive means. ROAST: gene-level model with W₁.',ha='center',fontsize=8.3)
 save(fig,F/'Figure4_transcriptome')
 
 # Figure 5: complete identity and wound programs, AI orthologs, and composition.
@@ -287,7 +290,10 @@ for k,gs in all_groups.items():
         row={'display_group':k,'display_panel':PANEL[k] or 'Data S3 only',**row};displayrows.append(row)
 display=pd.DataFrame(displayrows)
 display.to_csv(S/'Supplementary_Data_S3_displayed_genes.csv',index=False,float_format='%.17g')
-pd.DataFrame(program_tests).to_csv(S/'Supplementary_Data_S3_program_tests.csv',index=False,float_format='%.17g')
+program_frame.to_csv(S/'Supplementary_Data_S3_program_tests.csv',index=False,float_format='%.17g')
+sensitivity.to_csv(S/'Supplementary_Data_S3_program_test_sensitivity.csv',index=False,float_format='%.17g')
+membership.to_csv(S/'Supplementary_Data_S3_program_membership.csv',index=False)
+metadata.to_csv(S/'Supplementary_Data_S3_program_sample_metadata.csv',index=False,float_format='%.17g')
 pd.DataFrame(pvals).to_csv(S/'Supplementary_Data_S3_deconvolution_tests.csv',index=False,float_format='%.17g')
 
 # Auxiliary count evidence is kept separate from Salmon/tximport model inputs.
@@ -319,28 +325,36 @@ readme=[['Field','Definition'],
  ['Gene-level inference','Archived DESeq2 likelihood-ratio test: full ~W1 + genotype; reduced ~W1. P values adjusted by Benjamini-Hochberg.'],
  ['Expression','TPM is descriptive, unadjusted expression. Heatmaps are row z-scores of log2(TPM + 1), sample SD (ddof=1).'],
  ['Effect size','log2FoldChange comes from the fitted model; not recomputed as a ratio of mean TPM. Linear fold = 2^log2FoldChange.'],
- ['No selection','All members of the four predefined programs are displayed, including effects below the strict DEG cutoff.'],
+ ['No selection','All members of the four curated programs are displayed, including effects below the strict DEG cutoff.'],
  ['Zero adjusted P','Source values of zero denote numerical underflow; figures show 0*. They are not literal zero probabilities.'],
  ['Missing adjusted P','A missing test result is retained as missing, not converted to zero.'],
- ['Program tests','Two-sided exact label permutation over all 20 allocations of 6 libraries; smallest attainable P is 0.10.'],
- ['Source data','DEG_table.csv and TPM_matrix.csv; original workbooks STAR_DEGs_ResOut_01_dcKOvsCON.xlsx and 00.DEGs_Out_TPM.xlsx.'],
+ ['Program tests','Primary: W_1-adjusted limma-voom ROAST; mean statistic, two-sided directional PValue, 99,999 rotations, seed 20261003, ordinary-P BH across four programs. Plotted z scores remain descriptive.'],
+ ['Source data','Program model: archived DESeq2_Processing.Rdata, reconstructed lengthScaledTPM/TMM/voom within 15,803 genes. Gene-level archive: DEG_table.csv and TPM_matrix.csv; original workbooks STAR_DEGs_ResOut_01_dcKOvsCON.xlsx and 00.DEGs_Out_TPM.xlsx.'],
  ['Program membership','programs.py is unchanged. ERK, stress and Discussion groups are display-only, not new scored programs.'],
  ['Nonretained genes','Sox2 and Lgr5 have low nonzero auxiliary alignment feature counts but no row in the retained DESeq2 table. These counts are not the Salmon/tximport model inputs.'],
  ['Animal sex','All experimental donors and all six RNA-seq libraries were male (author confirmation, 3 October 2026). Xist and Y-linked marker values remain in Data S3 as supporting sample metadata, not independent confirmation of animal sex.'],
  ['Panel numbering','4C program overview; sex markers: Data S3 only; 5A identity; 5B human AI orthologs; 5C wound; 5D composition; 5E additional epithelial genes; 5F secretory/maturation TPM; 6A sterol; 6B IFN; 6C reference specificity; 7A ERK/MAPK; 7B p38/TGF-beta/BMP; 7C ER stress.'],
  ['Source-only markers','The Displayed genes sheet also retains Xist, Ddx3y, Eif2s3y, Uty and Kdm5d, labelled Data S3 only. These five genes have no current figure-panel assignment.'],
  ['Manuscript','Source paragraph numbers in Text claims are zero-based positions in the captured author DOCX, not printed paragraph or section numbers.'],
+ ['Sensitivities','Genotype-only ROAST; estimated-correlation CAMERA in both designs; fixed-correlation 0.01 CAMERA and mixed ROAST are explicitly secondary. Separate four-program BH families.'],
+ ['Limitations','Six biological libraries; post hoc program curation; incomplete W_1 derivation and donor/litter mapping; large voom weights among very abundant genes. No independent validation, pathway-activity, flux or cell-autonomy conclusion.'],
+ ['Fit provenance','original_DESeq2_refit=false; program_limma_voom_fit=true.'],
+ ['Finite rotations','Raw-P resolution floor 0.00001; not zero or an exact tail probability.'],
+ ['Program input SHA256',program_provenance['sources'][0]['sha256']],
  ['Source manuscript SHA256',source_manuscript_sha256]]
 payload={'sheets':[
  {'name':'Displayed genes','data':matrix(display[compactcols]),'numeric':['log2FoldChange','padj','mean_TPM_CON','mean_TPM_dcKO']+SAMPLES},
  {'name':'Text claims','data':matrix(claims),'numeric':['source_paragraph','log2FoldChange','fold_dcKO_over_CON','adjusted_P','mean_TPM_CON','mean_TPM_dcKO','mean_TPM_all']},
  {'name':'All genes','data':matrix(full),'numeric':[c for c in full if pd.api.types.is_numeric_dtype(full[c])]},
- {'name':'Program tests','data':matrix(pd.DataFrame(program_tests)),'numeric':[c for c in program_tests[0] if c!='program']},
+ {'name':'Program tests','data':matrix(pd.DataFrame(program_tests)),'numeric':[c for c in program_frame if pd.api.types.is_numeric_dtype(program_frame[c])]},
+ {'name':'Program sensitivities','data':matrix(sensitivity),'numeric':[c for c in sensitivity if pd.api.types.is_numeric_dtype(sensitivity[c])]},
+ {'name':'Program membership','data':matrix(membership),'numeric':[]},
+ {'name':'Program sample metadata','data':matrix(metadata),'numeric':['W_1']},
  {'name':'Deconvolution tests','data':matrix(pd.DataFrame(pvals)),'numeric':[c for c in pvals[0] if c!='cell_type']},
  {'name':'Nonretained genes','data':matrix(pd.DataFrame(counts)),'numeric':['alignment_feature_count']},
  {'name':'Read me','data':readme,'numeric':[]}]}
 (args.scratch/'workbook_payload.json').write_text(json.dumps(payload,ensure_ascii=False,allow_nan=False))
 sources={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [OUT/'DEG_table.csv',OUT/'TPM_matrix.csv',OUT/'module_scores.csv',OUT/'deconv_proportions.csv',OUT/'program_celltype_specificity.csv',ROOT/'scripts/JDR_reanalysis/programs.py']}
-prov={'source_manuscript_sha256':source_manuscript_sha256,'sources':sources,'program_tests':program_tests,'figures':figure_meta,'gene_counts':{'retained':len(full),'finite_adjusted_P':int(deg.padj.notna().sum()),'source_zero_adjusted_P':int(sum(deg.padj==0)),'display_rows':len(display),'unique_display_genes':len(set(display.gene)),'claim_index_rows':len(claims)},'analysis':'Archived DESeq2 values retained; program scores and permutation tests recomputed and matched; no new count-model fit.'}
+prov={'source_manuscript_sha256':source_manuscript_sha256,'sources':sources,'program_tests':program_tests,'figures':figure_meta,'gene_counts':{'retained':len(full),'finite_adjusted_P':int(deg.padj.notna().sum()),'source_zero_adjusted_P':int(sum(deg.padj==0)),'display_rows':len(display),'unique_display_genes':len(set(display.gene)),'claim_index_rows':len(claims)},'analysis':'Archived DESeq2 values retained; descriptive program scores unchanged; new limma-voom ROAST fit.', 'original_DESeq2_refit':False,'program_limma_voom_fit':True}
 (DEST/'Figure_Refinement_Provenance.json').write_text(json.dumps(prov,indent=2))
 print(json.dumps(prov['gene_counts']),flush=True)

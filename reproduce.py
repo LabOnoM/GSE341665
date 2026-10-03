@@ -121,6 +121,15 @@ def main():
         # NNLS fractions, reference specificity and pinned-panel enrichment.
         for script in ['01_extract_tables.py','03_module_scores.py','06_deconvolution.py','16_ai_gene_enrichment.py']:
             step(script)
+        run([args.rscript,pipe/'check_program_environment.R'],work)
+        membership=pipe/'output/programs.json'
+        run([py,pipe/'program_results.py','--membership',membership],work)
+        command=[args.rscript,pipe/'program_gene_set_tests.R',data,pipe/'output/program_analysis',membership,
+                 pipe/'program_analysis_config.json']
+        if args.geo_root:command.extend(['--geo-root',args.geo_root])
+        run(command,work)
+        run([py,pipe/'program_results.py','--output',pipe/'output'],work)
+        shutil.copytree(pipe/'output/program_analysis',dest/'Program_analysis')
         run([py,pipe/'07_figures.py','--root',work,'--destination',dest,
              '--claim-source',source/'manuscript_claim_source.json','--scratch',work/'payload'],work)
         step('24_september_inhibitor_audit.py')
@@ -161,7 +170,8 @@ def main():
         'threads':1,'entrypoint_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'repository_code_hashes':{str(p.relative_to(REPO)):hashlib.sha256(p.read_bytes()).hexdigest()
           for p in sorted((REPO/'pipeline').rglob('*')) if p.is_file() and '__pycache__' not in p.parts and not p.name.startswith('._')},
-        'data_inputs_verified':len(manifest),'raw_count_model_refit':False},indent=2))
+        'data_inputs_verified':len(manifest),'raw_count_model_refit':False,
+        'original_DESeq2_refit':False,'program_limma_voom_fit':args.mode in ('manuscript','all')},indent=2))
 
 
 if __name__=='__main__': main()
