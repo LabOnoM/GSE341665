@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export the latest Additional files and supplementary provenance tables.
 
-The Data S8 workbook uses public openpyxl, without a proprietary artifact runtime.
+The Data S3 workbook uses public openpyxl, without a proprietary artifact runtime.
 """
 import argparse
 import json
@@ -30,7 +30,7 @@ def main():
     for number,name in mapping.items():shutil.copy2(out/name,target/f'Additional_file_{number}.csv')
     inhibitor=args.workspace/'00.Manuscript/Submission_02_JMM_2026-07/4_Journal_JMM/Supplementary'
     inhibitor_target=args.destination/'Inhibitor_data';inhibitor_target.mkdir(parents=True,exist_ok=True)
-    for name in ['Supplementary_Data_S6_inhibitor_normalized_values.csv','Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv']:
+    for name in ['Supplementary_Data_S1_inhibitor_normalized_values.csv','Supplementary_Data_S2_inhibitor_ANOVA_Dunnett.csv']:
         shutil.copy2(inhibitor/name,inhibitor_target/name)
     shutil.copy2(inhibitor/'Inhibitor_Statistics_Provenance.json',
                  inhibitor_target/'Inhibitor_Statistics_Provenance.json')
@@ -61,9 +61,9 @@ def main():
                 ws.row_dimensions[row[0].row].height=42
     wb.save(target/'Additional_file_2.xlsx')
     import ai_gene_provenance as provenance
-    (target/'Supplementary_Tables_S1_S2.md').write_text(
-        '# Supplementary Table S1\n\n'+provenance.audit_markdown()+provenance.audit_footnote()
-        +'\n\n# Supplementary Table S2\n\n'+provenance.panel_markdown()+provenance.panel_footnote())
+    (target/'Supplementary_Tables_S4_S5.md').write_text(
+        '# Supplementary Table S4\n\n'+provenance.audit_markdown()+provenance.audit_footnote()
+        +'\n\n# Supplementary Table S5\n\n'+provenance.panel_markdown()+provenance.panel_footnote())
 
 
 if __name__=='__main__':main()

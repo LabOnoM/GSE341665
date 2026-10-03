@@ -128,8 +128,8 @@ def main():
                 significance=stars(pv),source_file=PROJECT,source_table=table['source_table']))
     assert len(raw) == 195 and len(comparisons) == 52
     OUT.mkdir(exist_ok=True)
-    for filename, rows in [('Supplementary_Data_S6_inhibitor_normalized_values.csv',raw),
-                           ('Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv',comparisons)]:
+    for filename, rows in [('Supplementary_Data_S1_inhibitor_normalized_values.csv',raw),
+                           ('Supplementary_Data_S2_inhibitor_ANOVA_Dunnett.csv',comparisons)]:
         with (OUT/filename).open('w',newline='') as f:
             w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
     audit={'source_sha256':hashes,'scipy_version':scipy.__version__,'method':'ordinary one-way ANOVA; two-sided Dunnett, four comparisons within target, no correction across targets; deterministic quadrature',

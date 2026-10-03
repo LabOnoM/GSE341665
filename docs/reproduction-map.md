@@ -4,26 +4,26 @@ Authority: BMC Word manuscript dated 2 October 2026 and current Additional files
 
 | Figure, table or result | Retained code | Required source and purpose |
 |---|---|---|
-| Main Figures 4–7; full Data S8 | 01_extract_tables.py, 03_module_scores.py, 06_deconvolution.py, 07_figures.py; volcano_panel.py, vendor/figstyle.py | Two source workbooks; DEG/TPM and captured claim-source JSON; seven-cell-type CPM signature. Preserves original gene-level model statistics and all displayed genes |
+| Main Figures 4–7; full Data S3 | 01_extract_tables.py, 03_module_scores.py, 06_deconvolution.py, 07_figures.py; volcano_panel.py, vendor/figstyle.py | Two source workbooks; DEG/TPM and captured claim-source JSON; seven-cell-type CPM signature. Preserves original gene-level model statistics and all displayed genes |
 | Four scored programs; Additional file 5 | programs.py, 03_module_scores.py | The single definition of 16 identity, 20 sterol, 14 wound/stress and 18 interferon genes; full-precision TPM; exhaustive 20 label assignments |
 | Reference fractions/specificity; Additional files 6–7 | 06_deconvolution.py | Captured GSE146855 CPM signature; full-precision bulk TPM; sorted markers before NNLS |
 | AI enrichment, Additional file 3 and Methods B6 | 16_ai_gene_enrichment.py, ai_genes.py, ai_gene_provenance.py | Pinned PanelApp 269 v4.37 GREEN panel and gene-level statistics; three reported threshold sensitivity tests |
 | Pinned-panel source reconstruction | 17_fetch_ai_panel.py | Original PanelApp v4.37 JSON and MGI report in the deposit; explicit live download also tested. `all` reconstructs the mapped panel before enrichment |
-| Zenodo Data S6/S7; Figure 3C/E statistical evidence | 24_september_inhibitor_audit.py | The declared inhibitor data sheets in Figure_3.prism; 195 values and 52 ANOVA/two-sided Dunnett comparisons. The author-provided wet-laboratory artwork is preserved |
-| Additional file 2 workbook; files 2–7; Tables S1–S2 | export_additional_data.py, ai_gene_provenance.py | Latest regenerated CSV/payload; public openpyxl. Table S1's retired-list provenance is retained because it is explicitly part of current Additional file 1 |
-| Supplementary Figure S3 / reference reannotation | 04_download_scref.sh, 05_scref_annotate.R, 11_scref_umap_dotplot.R | Original deposited GSE146855 raw archive; exact R/library lock; fresh labels/signatures checked against captured reference before downstream use |
-| Supplementary Figure S4 | 14_workflow_diagram.py | Recorded primary methods in Additional file 1 and current retained-code map; public matplotlib renderer |
-| Supplementary Figure S5 rendering | 21_smad4_loxp_figure.py | Archived locus GTF/evidence CSVs/summary JSON and exact Ensembl-116 locus sequence; missing evidence stops execution |
-| BAM-level S5 extraction | 20_smad4_loxp_evidence.py | Six deposited regional BAM/indexes and filtered original STAR junctions; exact locus sequence/GTF; pysam. Original full-BAM extraction independently verified |
-| Supplementary Figure S6 | 22_breeding_scheme.py | Author-confirmed experiment allocation in current Methods; includes RNA-sequencing Figures 4–7 |
-| Sox2/Lgr5 supporting rows in Data S8 | 07_figures.py | Six full auxiliary STAR count files; kept separate from Salmon/tximport model inputs |
+| Zenodo Data S1/S2; Figure 3C/E statistical evidence | 24_september_inhibitor_audit.py | The declared inhibitor data sheets in Figure_3.prism; 195 values and 52 ANOVA/two-sided Dunnett comparisons. The author-provided wet-laboratory artwork is preserved |
+| Additional file 2 workbook; files 2–7; Tables S4–S5 | export_additional_data.py, ai_gene_provenance.py | Latest regenerated CSV/payload; public openpyxl. Table S4's retired-list provenance is retained because it is explicitly part of current Additional file 1 |
+| Supplementary Figure S6 / reference reannotation | 04_download_scref.sh, 05_scref_annotate.R, 11_scref_umap_dotplot.R | Original deposited GSE146855 raw archive; exact R/library lock; fresh labels/signatures checked against captured reference before downstream use |
+| Supplementary Figure S5 | 14_workflow_diagram.py | Recorded primary methods in Additional file 1 and current retained-code map; public matplotlib renderer |
+| Supplementary Figure S3 rendering | 21_smad4_loxp_figure.py | Archived locus GTF/evidence CSVs/summary JSON and exact Ensembl-116 locus sequence; missing evidence stops execution |
+| BAM-level S3 extraction | 20_smad4_loxp_evidence.py | Six deposited regional BAM/indexes and filtered original STAR junctions; exact locus sequence/GTF; pysam. Original full-BAM extraction independently verified |
+| Supplementary Figure S1 | 22_breeding_scheme.py | Author-confirmed experiment allocation in current Methods; includes RNA-sequencing Figures 4–7 |
+| Sox2/Lgr5 supporting rows in Data S3 | 07_figures.py | Six full auxiliary STAR count files; kept separate from Salmon/tximport model inputs |
 | Upstream model/assembly inspection | Data deposit only | Saved DESeq2 processing/results/parameters and merged transcriptome GTF. No independent raw-count-model refit is supplied or claimed |
 
-Main Figures 1–3 and supplementary S1, S2 and S7 are author-supplied experimental artwork, not bioinformatics outputs. No code or normalized values reconstruct the missing complete raw scans, raw Ct values or raw band intensities. Tables S3–S5 transcribe experimental records, with unresolved source checks explicitly retained in Additional file 1.
+Main Figures 1–3 and supplementary S2, S4 and S7 are author-supplied experimental artwork, not bioinformatics outputs. No code or normalized values reconstruct the missing complete raw scans, raw Ct values or raw band intensities. Tables S1–S3 transcribe experimental records, with unresolved source checks explicitly retained in Additional file 1.
 
-`results/additional_files/` contains the five current Additional-file CSVs; `results/source_csv/` contains all six Data S8 CSVs. Publication PDFs and the Excel workbook belong to the journal/data package; both Python execution modes produce their stated figure outputs. No duplicate binary publication artwork is needed in this code repository.
+`results/additional_files/` contains the five current Additional-file CSVs; `results/source_csv/` contains all six Data S3 CSVs. Publication PDFs and the Excel workbook belong to the journal/data package; both Python execution modes produce their stated figure outputs. No duplicate binary publication artwork is needed in this code repository.
 
-The GEO TPM matrix is exported with four decimal places; the source workbooks/plotting inputs preserve full precision. `--geo-root` checks all 15,803 × six retained TPM entries after that declared rounding. Captured Data S8 paragraph numbers refer to the source manuscript used to create its index, not the later BMC numbering. The exact captured source is deposited as `manuscript_claim_source.json`.
+The GEO TPM matrix is exported with four decimal places; the source workbooks/plotting inputs preserve full precision. `--geo-root` checks all 15,803 × six retained TPM entries after that declared rounding. Captured Data S3 paragraph numbers refer to the source manuscript used to create its index, not the later BMC numbering. The exact captured source is deposited as `manuscript_claim_source.json`.
 
 ## Validation scope
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Current Figure S4 workflow, aligned with the retained reproduction scripts.
+"""Current Figure S5 workflow, aligned with the retained reproduction scripts.
 
 Panel A records archived primary analysis, without claiming a new raw-read fit.
 Panel B maps the current executable analyses.
@@ -52,7 +52,7 @@ def primary():
         if i:arrow(ax,(85,ys[i-1]+10.8),(85,y-10.8))
     ax.text(85,198,'Archived primary processing; the current repository does not refit this model.',
         ha='center',va='center',fontsize=8.5)
-    save(fig,'FigureS4A_pipeline')
+    save(fig,'FigureS5A_pipeline')
 
 def reanalysis():
     fig,ax=canvas(193)
@@ -64,16 +64,16 @@ def reanalysis():
     box(ax,133,87,65,25,'06  NNLS deconvolution\nReference cell-type fractions\nand program specificity')
     box(ax,49,122,83,25,'17 / 16  Pinned PanelApp 269 v4.37\nMouse orthologs; directional\nFisher enrichment (GREEN genes)')
     box(ax,133,122,65,25,'pipeline/programs.py\nSingle program definition\nImported by 03 / 06 / 07',accent=True)
-    box(ax,85,157,154,22,'07  Current Figures 4–7 and complete Data S8 source CSVs\nExact program tests; descriptive fractions; all displayed genes',accent=True)
+    box(ax,85,157,154,22,'07  Current Figures 4–7 and complete Data S3 source CSVs\nExact program tests; descriptive fractions; all displayed genes',accent=True)
     for x in [49,133]:
         arrow(ax,(x,29.5),(x,37.5));arrow(ax,(x,64.5),(x,73.5))
     arrow(ax,(49,100.5),(49,108.5));arrow(ax,(49,135.5),(66,145))
     # Route reference output around the program-definition note.
     ax.plot([166.5,168.5,168.5],[87,87,138],color='#555555',linewidth=.9)
     arrow(ax,(168.5,138),(150,145));arrow(ax,(133,135.5),(103,145))
-    ax.text(85,179,'export_additional_data.py → Additional files and Tables S1–S2',ha='center',va='center',fontsize=10)
+    ax.text(85,179,'export_additional_data.py → Additional files and Tables S4–S5',ha='center',va='center',fontsize=10)
     arrow(ax,(85,169),(85,174))
     ax.text(85,189,'Current reproduction uses archived gene-level results, without a new count-model fit.',ha='center',va='center',fontsize=8.5)
-    save(fig,'FigureS4B_reanalysis')
+    save(fig,'FigureS5B_reanalysis')
 
 if __name__=='__main__':primary();reanalysis()

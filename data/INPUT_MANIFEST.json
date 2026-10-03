@@ -186,8 +186,8 @@
   },
   {
     "path": "07_latest_results/Additional_file_2.xlsx",
-    "sha256": "c038d4121d03729eabeda0915ac08ae8848fb2f6dd596b8f0dfe30263efd72f1",
-    "bytes": 3906350
+    "sha256": "2f20246c67ec7094ca55b47356a6b6dd9cf67fc954e926f09b426e9c0745e3b6",
+    "bytes": 3964787
   },
   {
     "path": "07_latest_results/Additional_file_3.csv",
@@ -215,43 +215,43 @@
     "bytes": 681
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S6_inhibitor_normalized_values.csv",
+    "path": "07_latest_results/Supplementary_Data_S1_inhibitor_normalized_values.csv",
     "sha256": "a77c80697ddf3244baff73d2630ec71666ebbaad80625226d97f14ec5063b21d",
     "bytes": 27923
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv",
+    "path": "07_latest_results/Supplementary_Data_S2_inhibitor_ANOVA_Dunnett.csv",
     "sha256": "d5c6b51d9a3c5e8fcf25ceff5b6a1c8599b34ec670940cbfd022c4668bac4121",
     "bytes": 13091
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S8_all_gene_statistics.csv",
+    "path": "07_latest_results/Supplementary_Data_S3_all_gene_statistics.csv",
     "sha256": "eed97f7a2b20d4b78a92e03ce4bb40f2e011c81d401b231f40cef6028b817168",
     "bytes": 5474493
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S8_deconvolution_tests.csv",
+    "path": "07_latest_results/Supplementary_Data_S3_deconvolution_tests.csv",
     "sha256": "b6be1ac055e3763aecffdabfb1160689b11841a1c07ec8138cbf53823b035f37",
     "bytes": 281
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S8_displayed_genes.csv",
+    "path": "07_latest_results/Supplementary_Data_S3_displayed_genes.csv",
     "sha256": "6d382057faeab56ee2558e0d9618d60c3a2038ba740b1283529dc9c932ef6d56",
     "bytes": 61249
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S8_nonretained_gene_counts.csv",
+    "path": "07_latest_results/Supplementary_Data_S3_nonretained_gene_counts.csv",
     "sha256": "5aa66304b56bcf672a229ce6db92fdafbbfc2d754e3d1f13cf953d40f4e50e2c",
     "bytes": 1731
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S8_program_tests.csv",
+    "path": "07_latest_results/Supplementary_Data_S3_program_tests.csv",
     "sha256": "7b518253353a9feafe81d30181671250d1d5f401fd104e5e7d88571ea918a98f",
     "bytes": 483
   },
   {
-    "path": "07_latest_results/Supplementary_Data_S8_text_claim_index.csv",
-    "sha256": "7e2617fb55215584bf059e627a8d8b3757ab606e0bdf1372aed6477c6724e0bf",
+    "path": "07_latest_results/Supplementary_Data_S3_text_claim_index.csv",
+    "sha256": "7c72fac3a3a41e57de7851bf5b8d4c921a0158532cc1a493878785c07e0388a4",
     "bytes": 17542
   },
   {

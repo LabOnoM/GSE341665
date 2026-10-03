@@ -43,7 +43,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S8_all_gene_statistics.csv",
+      "file": "Supplementary_Data_S3_all_gene_statistics.csv",
       "rows": 15803,
       "columns": 23,
       "checked_cells": 363469,
@@ -51,7 +51,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S8_deconvolution_tests.csv",
+      "file": "Supplementary_Data_S3_deconvolution_tests.csv",
       "rows": 3,
       "columns": 4,
       "checked_cells": 12,
@@ -59,7 +59,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S8_displayed_genes.csv",
+      "file": "Supplementary_Data_S3_displayed_genes.csv",
       "rows": 157,
       "columns": 25,
       "checked_cells": 3925,
@@ -67,7 +67,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S8_nonretained_gene_counts.csv",
+      "file": "Supplementary_Data_S3_nonretained_gene_counts.csv",
       "rows": 12,
       "columns": 6,
       "checked_cells": 72,
@@ -75,7 +75,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S8_program_tests.csv",
+      "file": "Supplementary_Data_S3_program_tests.csv",
       "rows": 4,
       "columns": 8,
       "checked_cells": 32,
@@ -83,7 +83,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S8_text_claim_index.csv",
+      "file": "Supplementary_Data_S3_text_claim_index.csv",
       "rows": 102,
       "columns": 11,
       "checked_cells": 1122,
@@ -91,7 +91,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S6_inhibitor_normalized_values.csv",
+      "file": "Supplementary_Data_S1_inhibitor_normalized_values.csv",
       "rows": 195,
       "columns": 8,
       "checked_cells": 1560,
@@ -99,7 +99,7 @@
       "passed": true
     },
     {
-      "file": "Supplementary_Data_S7_inhibitor_ANOVA_Dunnett.csv",
+      "file": "Supplementary_Data_S2_inhibitor_ANOVA_Dunnett.csv",
       "rows": 52,
       "columns": 20,
       "checked_cells": 1040,
@@ -111,7 +111,7 @@
       "rows": 157,
       "columns": 15,
       "checked_cells": 2355,
-      "max_absolute_difference": 3.637978807091713e-12,
+      "max_absolute_difference": 0.0,
       "passed": true
     },
     {
@@ -119,7 +119,7 @@
       "rows": 102,
       "columns": 11,
       "checked_cells": 1122,
-      "max_absolute_difference": 3.637978807091713e-12,
+      "max_absolute_difference": 0.0,
       "passed": true
     },
     {
@@ -127,7 +127,7 @@
       "rows": 15803,
       "columns": 23,
       "checked_cells": 363469,
-      "max_absolute_difference": 3.637978807091713e-12,
+      "max_absolute_difference": 0.0,
       "passed": true
     },
     {
@@ -135,7 +135,7 @@
       "rows": 4,
       "columns": 8,
       "checked_cells": 32,
-      "max_absolute_difference": 4.440892098500626e-16,
+      "max_absolute_difference": 0.0,
       "passed": true
     },
     {
@@ -143,7 +143,7 @@
       "rows": 3,
       "columns": 4,
       "checked_cells": 12,
-      "max_absolute_difference": 3.296918293926865e-12,
+      "max_absolute_difference": 0.0,
       "passed": true
     },
     {
@@ -240,20 +240,19 @@
     "Figures/Figure7_signaling_gene_evidence.pdf",
     "Figures/Figure7_signaling_gene_evidence.png",
     "Figures/Figure7_signaling_gene_evidence.svg",
-    "Figures/FigureS3_scref_umap_dotplot.pdf",
-    "Figures/FigureS3_scref_umap_dotplot.png",
-    "Figures/FigureS5_smad4_loxp.pdf",
-    "Figures/FigureS5_smad4_loxp.png",
-    "Figures/FigureS4A_pipeline.pdf",
-    "Figures/FigureS4A_pipeline.png",
-    "Figures/FigureS4B_reanalysis.pdf",
-    "Figures/FigureS4B_reanalysis.png",
-    "Figures/FigureS6_breeding_scheme.pdf",
-    "Figures/FigureS6_breeding_scheme.png"
+    "Figures/FigureS6_scref_umap_dotplot.pdf",
+    "Figures/FigureS6_scref_umap_dotplot.png",
+    "Figures/FigureS3_smad4_loxp.pdf",
+    "Figures/FigureS3_smad4_loxp.png",
+    "Figures/FigureS5A_pipeline.pdf",
+    "Figures/FigureS5A_pipeline.png",
+    "Figures/FigureS5B_reanalysis.pdf",
+    "Figures/FigureS5B_reanalysis.png",
+    "Figures/FigureS1_breeding_scheme.pdf",
+    "Figures/FigureS1_breeding_scheme.png"
   ],
   "raw_count_model_refit": false,
   "tolerances": "Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.",
-  "source_revision": "Figure_3.prism replaces both duplicate PZFX inputs; native-source CSV provenance; all scientific values unchanged.",
   "regression_tests_passed": 7,
   "validation_date": "2026-10-03",
   "required_main_figure_formats": [
@@ -261,5 +260,6 @@
     "png",
     "svg"
   ],
-  "missing_SVG_guard_passed": true
+  "missing_SVG_guard_passed": true,
+  "source_revision": "Author-confirmed male cohort and first-citation supplementary numbering; full isolated execution including reference and regional BAM workflows. Original measurements and model results retained."
 }

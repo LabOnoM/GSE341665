@@ -4,12 +4,12 @@
 # Loads the annotated GSE146855 Seurat object (from 05_scref_annotate.R), computes
 # a UMAP embedding, and produces two supplementary panels documenting the reference
 # used for deconvolution:
-#   S3A  UMAP coloured by the de-novo cell-type annotation
-#   S3B  Dot plot of the canonical markers used to assign each cell type
+#   S6A  UMAP coloured by the de-novo cell-type annotation
+#   S6B  Dot plot of the canonical markers used to assign each cell type
 #
 # Also writes the exact package versions used, for the supplementary methods.
 #
-# Output: figures/FigureS3_scref_umap_dotplot.{png,pdf}
+# Output: figures/FigureS6_scref_umap_dotplot.{png,pdf}
 #         output/scref_umap_versions.txt, output/scref_celltype_counts.csv
 suppressMessages({library(Seurat); library(ggplot2); library(patchwork)})
 set.seed(1)
@@ -35,7 +35,7 @@ pal <- c(Ameloblast_secretory = "#B2182B", Ameloblast_maturation = "#E8783A",
          Epithelial_IEE_SI = "#F4A582", Mesenchyme = "#2166AC",
          Immune = "#4DAF4A", Endothelial = "#984EA3", Erythroid = "#999999")
 
-# ---- S3A: UMAP ----
+# ---- S6A: UMAP ----
 p1 <- DimPlot(so, reduction = "umap", cols = pal, pt.size = .3, label = TRUE,
               label.size = 2.6, repel = TRUE) +
   ggtitle("A  Single-cell reference (GSE146855, P7 incisor): de-novo cell-type annotation") +
@@ -43,7 +43,7 @@ p1 <- DimPlot(so, reduction = "umap", cols = pal, pt.size = .3, label = TRUE,
         plot.title = element_text(size = 9, face = "bold"),
         axis.title = element_text(size = 7), axis.text = element_text(size = 6))
 
-# ---- S3B: marker dot plot (the markers used for annotation) ----
+# ---- S6B: marker dot plot (the markers used for annotation) ----
 markers <- c("Amelx", "Ambn", "Enam", "Mmp20",          # secretory ameloblast
              "Klk4", "Odam", "Amtn", "Slc24a4",          # maturation ameloblast
              "Shh", "Sfrp5", "Krt14", "Epcam",           # other dental epithelium
@@ -61,8 +61,8 @@ p2 <- DotPlot(so, features = markers, dot.scale = 3.4) +
         plot.title = element_text(size = 9, face = "bold"))
 
 p <- p1 / p2 + plot_layout(heights = c(1.15, 1))
-ggsave(file.path(FIG, "FigureS3_scref_umap_dotplot.png"), p, width = 9.5, height = 8.2, dpi = 300)
-ggsave(file.path(FIG, "FigureS3_scref_umap_dotplot.pdf"), p, width = 9.5, height = 8.2)
+ggsave(file.path(FIG, "FigureS6_scref_umap_dotplot.png"), p, width = 9.5, height = 8.2, dpi = 300)
+ggsave(file.path(FIG, "FigureS6_scref_umap_dotplot.pdf"), p, width = 9.5, height = 8.2)
 
 # ---- provenance for the supplementary methods ----
 tab <- as.data.frame(table(so$celltype)); colnames(tab) <- c("cell_type", "n_cells")

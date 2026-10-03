@@ -28,7 +28,7 @@ flagged in `note` (PEX26 has no enamel-specific paper; PLXNB2 has no OMIM phenot
 yet; SP6's human evidence is recent and limited).
 
 This module is imported by 15_build_supplementary_docx.py to render Supplementary
-Tables S1 (audit) and S2 (verified panel). It is the single source for those tables.
+Tables S4 (audit) and S5 (verified panel). It is the single source for those tables.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ from dataclasses import dataclass
 
 
 # ---------------------------------------------------------------------------
-# Supplementary Table S1 — audit of the retired 20-gene hand-curated list
+# Supplementary Table S4 — audit of the retired 20-gene hand-curated list
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True)
 class AuditRow:
@@ -96,7 +96,7 @@ AUDIT: tuple[AuditRow, ...] = (
 
 
 # ---------------------------------------------------------------------------
-# Supplementary Table S2 — verified provenance of the 31 PanelApp GREEN genes
+# Supplementary Table S5 — verified provenance of the 31 PanelApp GREEN genes
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True)
 class PanelRow:
@@ -182,7 +182,7 @@ def _md_escape(s: str) -> str:
 
 
 def audit_markdown() -> str:
-    """Render Supplementary Table S1 as a Markdown table."""
+    """Render Supplementary Table S4 as a Markdown table."""
     h = ("| Gene | Claimed MIM | What that MIM is | Correct phenotype MIM | "
          "Claimed PMID | What that PMID cites | Verified PMID | On panel |\n"
          "|---|---|---|---|---|---|---|---|\n")
@@ -196,7 +196,7 @@ def audit_markdown() -> str:
 
 
 def panel_markdown() -> str:
-    """Render Supplementary Table S2 as a Markdown table."""
+    """Render Supplementary Table S5 as a Markdown table."""
     h = ("| Gene (human) | Mouse | OMIM phenotype MIM | Phenotype | Inheritance | "
          "Primary reference (PMID) | Notes |\n"
          "|---|---|---|---|---|---|---|\n")
@@ -210,9 +210,9 @@ def panel_markdown() -> str:
 
 
 def audit_footnote() -> str:
-    """Footnote defining the conventions used in Supplementary Table S1."""
+    """Footnote defining the conventions used in Supplementary Table S4."""
     return """
-**Table S1 footnote — how to read this table.** Each row is one gene from the retired
+**Table S4 footnote — how to read this table.** Each row is one gene from the retired
 hand-curated list. **Claimed MIM** and **Claimed PMID** are the identifiers that list
 asserted. **What that MIM is** classifies the claimed number against NCBI
 `mim2gene_medgen`: *phenotype (correct)* means it is a phenotype entry mapping to the
@@ -223,7 +223,7 @@ actual subject of the claimed PubMed record, confirmed via NCBI E-utilities. **V
 PMID** is the correct primary report where one was identified; an em dash with
 "(excluded)" means the gene is not GREEN-rated on the PanelApp panel and is therefore not
 used in this study, so no replacement was sought. **On panel** indicates whether the gene
-is among the 31 GREEN-rated genes actually used (Supplementary Table S2).
+is among the 31 GREEN-rated genes actually used (Supplementary Table S5).
 
 Abbreviations: **MIM**, Mendelian Inheritance in Man identifier; **PMID**, PubMed
 identifier; **AI**, amelogenesis imperfecta.
@@ -231,14 +231,14 @@ identifier; **AI**, amelogenesis imperfecta.
 
 
 def panel_footnote() -> str:
-    """Footnote defining every abbreviation that appears in Supplementary Table S2.
+    """Footnote defining every abbreviation that appears in Supplementary Table S5.
 
     Kept next to the data so the two cannot drift; the abbreviation list was derived by
     extracting every acronym actually present in the rendered table, not written from
     memory.
     """
     return """
-**Table S2 footnote — abbreviations and conventions.**
+**Table S5 footnote — abbreviations and conventions.**
 
 *Columns.* **Gene (human)** — HGNC-approved human gene symbol, as listed by PanelApp.
 **Mouse** — the MGI-approved mouse ortholog symbol (italic), as carried in the Ensembl
@@ -310,7 +310,7 @@ if __name__ == "__main__":
     print(summary())
     assert len({r.human for r in PANEL}) == 31, "panel must have 31 distinct genes"
     assert len({r.gene for r in AUDIT}) == 20, "audit must have 20 distinct genes"
-    print("\n### Supplementary Table S1 — audit\n")
+    print("\n### Supplementary Table S4 — audit\n")
     print(audit_markdown())
-    print("\n### Supplementary Table S2 — verified panel\n")
+    print("\n### Supplementary Table S5 — verified panel\n")
     print(panel_markdown())

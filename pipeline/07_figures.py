@@ -233,7 +233,7 @@ for i,g in enumerate(DISPLAY['Secretory and maturation markers']):
         v=T.loc[g].values[sl];ax.scatter(i+dx+np.array([-.045,0,.045]),np.log10(v+1),s=16,c=c,marker=m)
 ax.set_xticks(range(4),DISPLAY['Secretory and maturation markers']);ax.set_yticks([0,2,4],['0','99','9,999']);ax.set_ylabel('TPM (log scale)');ax.tick_params(labelsize=8)
 for l in ax.get_xticklabels():l.set_fontstyle('italic')
-fig.text(.02,.015,'NA: not retained for DESeq2. 0*: numerical underflow. Full source values: Data S8.',fontsize=8.3)
+fig.text(.02,.015,'NA: not retained for DESeq2. 0*: numerical underflow. Full source values: Data S3.',fontsize=8.3)
 save(fig,F/'Figure5_identity_switch')
 
 # Figure 6: gene-level sterol / IFN evidence replaces both redundant score views.
@@ -257,7 +257,7 @@ fig=newfig(180,199);heat_legend(fig,6)
 gene_panel(fig,(3,22,84,112),DISPLAY['ERK-associated'],'A  ERK-associated / MAPK feedback')
 gene_panel(fig,(93,22,84,112),DISPLAY['p38 and TGF-beta context'],'B  p38 / TGF-β / BMP pathway genes')
 gene_panel(fig,(3,145,174,42),DISPLAY['ER stress'],'C  ER stress')
-fig.text(.02,.013,'All listed genes are shown, including nonsignificant results. Full numerical records: Data S8.',fontsize=8.4)
+fig.text(.02,.013,'All listed genes are shown, including nonsignificant results. Full numerical records: Data S3.',fontsize=8.4)
 save(fig,F/'Figure7_signaling_gene_evidence')
 
 # Full expression results with gene, program, manuscript and panel mapping.
@@ -273,7 +273,7 @@ full['program_membership']=full.external_gene_name.map(lambda g:'; '.join(k for 
 full['figure_panels']=full.external_gene_name.map(lambda g:'; '.join(dict.fromkeys(PANEL[k] for k,v in all_groups.items() if g in v)))
 full['main_text_paragraphs']=full.external_gene_name.map(lambda g:'; '.join(str(i) for i,txt in body if isinstance(g,str) and re.search(r'(?<![A-Za-z0-9])'+re.escape(g)+r'(?![A-Za-z0-9])',txt)))
 full=full.rename(columns={'external_gene_name':'gene','FoldChange':'source_FoldChange'})
-full.to_csv(S/'Supplementary_Data_S8_all_gene_statistics.csv',index=False,float_format='%.17g')
+full.to_csv(S/'Supplementary_Data_S3_all_gene_statistics.csv',index=False,float_format='%.17g')
 tables={}
 displayrows=[]
 for k,gs in all_groups.items():
@@ -283,9 +283,9 @@ for k,gs in all_groups.items():
         else: row={'gene':g,'padj_status':'not retained; no DESeq2 result'}
         row={'display_group':k,'display_panel':PANEL[k],**row};displayrows.append(row)
 display=pd.DataFrame(displayrows)
-display.to_csv(S/'Supplementary_Data_S8_displayed_genes.csv',index=False,float_format='%.17g')
-pd.DataFrame(program_tests).to_csv(S/'Supplementary_Data_S8_program_tests.csv',index=False,float_format='%.17g')
-pd.DataFrame(pvals).to_csv(S/'Supplementary_Data_S8_deconvolution_tests.csv',index=False,float_format='%.17g')
+display.to_csv(S/'Supplementary_Data_S3_displayed_genes.csv',index=False,float_format='%.17g')
+pd.DataFrame(program_tests).to_csv(S/'Supplementary_Data_S3_program_tests.csv',index=False,float_format='%.17g')
+pd.DataFrame(pvals).to_csv(S/'Supplementary_Data_S3_deconvolution_tests.csv',index=False,float_format='%.17g')
 
 # Auxiliary count evidence is kept separate from Salmon/tximport model inputs.
 counts=[]
@@ -296,7 +296,7 @@ for gene,gid in [('Sox2','ENSMUSG00000074637'),('Lgr5','ENSMUSG00000020140')]:
             if line.startswith(gid+'\t'):
                 counts.append({'gene':gene,'ensembl_gene_id':gid,'sample':sample,'alignment_feature_count':int(line.rstrip().split('\t')[-1]),'source_file':path.name,'interpretation':'Auxiliary alignment counts; not DESeq2 input; no differential-expression test available'});break
 assert len(counts)==12
-pd.DataFrame(counts).to_csv(S/'Supplementary_Data_S8_nonretained_gene_counts.csv',index=False)
+pd.DataFrame(counts).to_csv(S/'Supplementary_Data_S3_nonretained_gene_counts.csv',index=False)
 
 # Source claims table lists every original numeric-expression paragraph, plus all
 # explicitly named genes, so unsupported/omitted citations can be reviewed directly.
@@ -305,8 +305,8 @@ for i,txt in body:
     if ('fold' in txt or 'TPM' in txt or 'transcripts per million' in txt or 'adjusted P' in txt) and i>=32:
         hits=full[full.main_text_paragraphs.map(lambda x:str(i) in x.split('; '))]
         for _,r in hits.iterrows():
-            claimrows.append({'source_paragraph':i,'gene':r.gene,'log2FoldChange':r.log2FoldChange,'fold_dcKO_over_CON':2**r.log2FoldChange,'adjusted_P':r.padj,'padj_status':r.padj_status,'mean_TPM_CON':r.mean_TPM_CON,'mean_TPM_dcKO':r.mean_TPM_dcKO,'mean_TPM_all':r.mean_TPM_all,'figure_panels':r.figure_panels,'supporting_table':'Supplementary Data S8'})
-claims=pd.DataFrame(claimrows);claims.to_csv(S/'Supplementary_Data_S8_text_claim_index.csv',index=False,float_format='%.17g')
+            claimrows.append({'source_paragraph':i,'gene':r.gene,'log2FoldChange':r.log2FoldChange,'fold_dcKO_over_CON':2**r.log2FoldChange,'adjusted_P':r.padj,'padj_status':r.padj_status,'mean_TPM_CON':r.mean_TPM_CON,'mean_TPM_dcKO':r.mean_TPM_dcKO,'mean_TPM_all':r.mean_TPM_all,'figure_panels':r.figure_panels,'supporting_table':'Supplementary Data S3'})
+claims=pd.DataFrame(claimrows);claims.to_csv(S/'Supplementary_Data_S3_text_claim_index.csv',index=False,float_format='%.17g')
 
 def matrix(df):
     return [df.columns.tolist()]+df.astype(object).where(pd.notna(df),None).values.tolist()
@@ -323,6 +323,7 @@ readme=[['Field','Definition'],
  ['Source data','DEG_table.csv and TPM_matrix.csv; original workbooks STAR_DEGs_ResOut_01_dcKOvsCON.xlsx and 00.DEGs_Out_TPM.xlsx.'],
  ['Program membership','programs.py is unchanged. ERK, stress and Discussion groups are display-only, not new scored programs.'],
  ['Nonretained genes','Sox2 and Lgr5 have low nonzero auxiliary alignment feature counts but no row in the retained DESeq2 table. These counts are not the Salmon/tximport model inputs.'],
+ ['Animal sex','All experimental donors and all six RNA-seq libraries were male (author confirmation, 3 October 2026). Sex-marker expression is retained as measured; it does not establish mixed-sex pooling.'],
  ['Panel numbering','4C program overview; 4D sex markers; 5A identity; 5B human AI orthologs; 5C wound; 5D composition; 5E additional epithelial genes; 5F secretory/maturation TPM; 6A sterol; 6B IFN; 6C reference specificity; 7A ERK/MAPK; 7B p38/TGF-beta/BMP; 7C ER stress.'],
  ['Manuscript','Source paragraph numbers in Text claims are zero-based positions in the captured author DOCX, not printed paragraph or section numbers.'],
  ['Source manuscript SHA256',source_manuscript_sha256]]

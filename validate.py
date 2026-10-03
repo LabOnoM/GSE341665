@@ -73,7 +73,7 @@ def main():
             checks.append(compare_frames(pd.DataFrame(aa[1:],columns=aa[0]),
                                          pd.DataFrame(bb[1:],columns=bb[0]),'workbook/'+name,True))
         a.close();b.close()
-        genes=pd.read_csv(args.destination/'Supplementary/Supplementary_Data_S8_all_gene_statistics.csv',float_precision='round_trip')
+        genes=pd.read_csv(args.destination/'Supplementary/Supplementary_Data_S3_all_gene_statistics.csv',float_precision='round_trip')
         if len(genes)!=15803 or genes.padj.isna().sum()!=613 or (genes.padj==0).sum()!=5:
             raise ValueError('Full gene set or adjusted-P masks changed')
     if args.mode in ('reference','reference-figure','all'):
@@ -88,8 +88,8 @@ def main():
         name='AI_panel_PanelApp_v4.37.csv'
         checks.append(compare_csv(args.data_root/'01_processed_data/reproduction_inputs/output'/name,output/name))
     figures={'manuscript':[f'Figure{i}' for i in range(4,8)],
-             'reference':['FigureS3_scref_umap_dotplot'],'reference-figure':['FigureS3_scref_umap_dotplot'],
-             'locus':['FigureS5_smad4_loxp'],'supplement':['FigureS4A_pipeline','FigureS4B_reanalysis','FigureS5_smad4_loxp','FigureS6_breeding_scheme']}
+             'reference':['FigureS6_scref_umap_dotplot'],'reference-figure':['FigureS6_scref_umap_dotplot'],
+             'locus':['FigureS3_smad4_loxp'],'supplement':['FigureS5A_pipeline','FigureS5B_reanalysis','FigureS3_smad4_loxp','FigureS1_breeding_scheme']}
     required=figures.get(args.mode,[])
     if args.mode=='all':required=list(dict.fromkeys(sum(figures.values(),[])))
     # Main figures have descriptive suffixes; require one nonempty match per format.
