@@ -2,6 +2,7 @@
 """Compare regenerated numerical evidence with the pinned manuscript inputs."""
 import argparse
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -94,9 +95,18 @@ def main():
     # Main figures have descriptive suffixes; require one nonempty match per format.
     figure_checks=[]
     for name in required:
-        for extension in ('pdf','png'):
+        extensions=('pdf','png','svg') if name in [f'Figure{i}' for i in range(4,8)] else ('pdf','png')
+        for extension in extensions:
             matches=list((args.destination/'Figures').glob(name+'*.'+extension))
             if len(matches)!=1 or matches[0].stat().st_size==0:raise ValueError(f'Missing or ambiguous figure {name}.{extension}')
+            if extension=='svg':
+                svg=ET.parse(matches[0]).getroot()
+                if svg.tag!='{http://www.w3.org/2000/svg}svg' or not svg.get('viewBox'):
+                    raise ValueError(f'Invalid SVG document: {matches[0]}')
+                for element in svg.iter():
+                    for attribute,value in element.attrib.items():
+                        if attribute.rsplit('}',1)[-1]=='href' and not value.startswith(('#','data:')):
+                            raise ValueError(f'SVG requires an external resource: {matches[0]}')
             figure_checks.append(str(matches[0].relative_to(args.destination)))
     report={'passed':True,'mode':args.mode,'numerical_checks':checks,'figure_files':figure_checks,
             'raw_count_model_refit':False,'tolerances':'Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.'}

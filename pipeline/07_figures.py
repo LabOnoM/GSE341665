@@ -147,7 +147,8 @@ def save(fig,path):
     for ext in ['png','pdf','svg']:
         fig.savefig(path.with_suffix('.'+ext),dpi=300,facecolor='white')
     minfont=min(t.get_fontsize() for t in fig.findobj(matplotlib.text.Text) if t.get_text() and t.get_visible())
-    figure_meta.append({'file':path.name,'width_mm':w,'height_mm':h,'minimum_font_pt':minfont,'png_dpi':300})
+    figure_meta.append({'file':path.name,'width_mm':w,'height_mm':h,'minimum_font_pt':minfont,'png_dpi':300,
+                        'formats':['png','pdf','svg'],'svg_text':'editable text'})
     plt.close(fig);print('WROTE',path.name,flush=True)
 
 # Figure 4: retain a single program overview with all six libraries.

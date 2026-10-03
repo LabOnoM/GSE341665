@@ -230,12 +230,16 @@
   "figure_files": [
     "Figures/Figure4_transcriptome.pdf",
     "Figures/Figure4_transcriptome.png",
+    "Figures/Figure4_transcriptome.svg",
     "Figures/Figure5_identity_switch.pdf",
     "Figures/Figure5_identity_switch.png",
+    "Figures/Figure5_identity_switch.svg",
     "Figures/Figure6_metabolic_convergence.pdf",
     "Figures/Figure6_metabolic_convergence.png",
+    "Figures/Figure6_metabolic_convergence.svg",
     "Figures/Figure7_signaling_gene_evidence.pdf",
     "Figures/Figure7_signaling_gene_evidence.png",
+    "Figures/Figure7_signaling_gene_evidence.svg",
     "Figures/FigureS3_scref_umap_dotplot.pdf",
     "Figures/FigureS3_scref_umap_dotplot.png",
     "Figures/FigureS5_smad4_loxp.pdf",
@@ -250,5 +254,12 @@
   "raw_count_model_refit": false,
   "tolerances": "Zero/missing masks exact; nonzero values rtol=1e-12, atol=0; descriptive NNLS t tests rtol=1e-10.",
   "source_revision": "Figure_3.prism replaces both duplicate PZFX inputs; native-source CSV provenance; all scientific values unchanged.",
-  "regression_tests_passed": 7
+  "regression_tests_passed": 7,
+  "validation_date": "2026-10-03",
+  "required_main_figure_formats": [
+    "pdf",
+    "png",
+    "svg"
+  ],
+  "missing_SVG_guard_passed": true
 }
