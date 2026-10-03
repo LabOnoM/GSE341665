@@ -1,29 +1,13 @@
-program,n_genes,model,contrast,n_libraries_per_group,residual_df,method,direction,raw_P,BH_adjusted_P,adjustment_family,correlation_setting,estimated_correlation,rotations,seed,role
-Identity,16,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_estimated,Down,0.00272295509215253,0.0049012577932781897,CAMERA_estimated_RUV_adjusted_four_programs,estimated set-specific,-0.046261304698756299,,,supplementary sensitivity
-Identity,16,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_fixed001,Down,1.10861992626686e-17,2.2172398525337299e-17,CAMERA_fixed001_RUV_adjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-Identity,16,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,2.0000000000000002e-05,2.66666666666667e-05,ROAST_mixed_RUV_adjusted_four_programs,,,99999,20261003,secondary mixed-direction endpoint
-Sterol,20,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_estimated,Up,0.00147761260595366,0.0049012577932781897,CAMERA_estimated_RUV_adjusted_four_programs,estimated set-specific,-0.0073415230293766799,,,supplementary sensitivity
-Sterol,20,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_fixed001,Up,3.66336092981266e-25,1.4653443719250701e-24,CAMERA_fixed001_RUV_adjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-Sterol,20,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,1.0000000000000001e-05,2.0000000000000002e-05,ROAST_mixed_RUV_adjusted_four_programs,,,99999,20261003,secondary mixed-direction endpoint
-Wound,14,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_estimated,Up,0.0036759433449586399,0.0049012577932781897,CAMERA_estimated_RUV_adjusted_four_programs,estimated set-specific,-0.0065022301209813,,,supplementary sensitivity
-Wound,14,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_fixed001,Up,6.5826772004143504e-15,8.7769029338858e-15,CAMERA_fixed001_RUV_adjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-Wound,14,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,1.0000000000000001e-05,2.0000000000000002e-05,ROAST_mixed_RUV_adjusted_four_programs,,,99999,20261003,secondary mixed-direction endpoint
-IFN,18,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_estimated,Down,0.010592055785852299,0.010592055785852299,CAMERA_estimated_RUV_adjusted_four_programs,estimated set-specific,0.058547754062670501,,,supplementary sensitivity
-IFN,18,~ W_1 + genotype,dcKO minus CON,3,3,CAMERA_fixed001,Down,8.3642566609001505e-14,8.3642566609001505e-14,CAMERA_fixed001_RUV_adjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-IFN,18,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,5.0000000000000002e-05,5.0000000000000002e-05,ROAST_mixed_RUV_adjusted_four_programs,,,99999,20261003,secondary mixed-direction endpoint
-Identity,16,~ genotype,dcKO minus CON,3,4,ROAST,Down,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_unadjusted_four_programs,,,99999,20261004,supplementary sensitivity
-Identity,16,~ genotype,dcKO minus CON,3,4,CAMERA_estimated,Down,0.00071860105977691001,0.0013788873021989599,CAMERA_estimated_unadjusted_four_programs,estimated set-specific,-0.033236110716807897,,,supplementary sensitivity
-Identity,16,~ genotype,dcKO minus CON,3,4,CAMERA_fixed001,Down,2.32880327928766e-18,4.6576065585753301e-18,CAMERA_fixed001_unadjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-Identity,16,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_mixed_unadjusted_four_programs,,,99999,20261004,secondary mixed-direction endpoint
-Sterol,20,~ genotype,dcKO minus CON,3,4,ROAST,Up,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_unadjusted_four_programs,,,99999,20261004,supplementary sensitivity
-Sterol,20,~ genotype,dcKO minus CON,3,4,CAMERA_estimated,Up,0.00038315930006675502,0.0013788873021989599,CAMERA_estimated_unadjusted_four_programs,estimated set-specific,0.0057716356729288001,,,supplementary sensitivity
-Sterol,20,~ genotype,dcKO minus CON,3,4,CAMERA_fixed001,Up,1.96491741853329e-26,7.8596696741331701e-26,CAMERA_fixed001_unadjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-Sterol,20,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_mixed_unadjusted_four_programs,,,99999,20261004,secondary mixed-direction endpoint
-Wound,14,~ genotype,dcKO minus CON,3,4,ROAST,Up,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_unadjusted_four_programs,,,99999,20261004,supplementary sensitivity
-Wound,14,~ genotype,dcKO minus CON,3,4,CAMERA_estimated,Up,0.00103416547664922,0.0013788873021989599,CAMERA_estimated_unadjusted_four_programs,estimated set-specific,-0.0126537859946988,,,supplementary sensitivity
-Wound,14,~ genotype,dcKO minus CON,3,4,CAMERA_fixed001,Up,1.04702119861125e-15,1.3960282648149999e-15,CAMERA_fixed001_unadjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-Wound,14,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_mixed_unadjusted_four_programs,,,99999,20261004,secondary mixed-direction endpoint
-IFN,18,~ genotype,dcKO minus CON,3,4,ROAST,Down,2.0000000000000002e-05,2.0000000000000002e-05,ROAST_unadjusted_four_programs,,,99999,20261004,supplementary sensitivity
-IFN,18,~ genotype,dcKO minus CON,3,4,CAMERA_estimated,Down,0.0025331919805421099,0.0025331919805421099,CAMERA_estimated_unadjusted_four_programs,estimated set-specific,0.027381711210454698,,,supplementary sensitivity
-IFN,18,~ genotype,dcKO minus CON,3,4,CAMERA_fixed001,Down,5.0991127981020301e-14,5.0991127981020301e-14,CAMERA_fixed001_unadjusted_four_programs,fixed 0.01,,,,supplementary sensitivity
-IFN,18,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,2.0000000000000002e-05,2.0000000000000002e-05,ROAST_mixed_unadjusted_four_programs,,,99999,20261004,secondary mixed-direction endpoint
+program,n_genes,model,contrast,n_libraries_per_group,residual_df,method,direction,raw_P,BH_adjusted_P,adjustment_family,rotations,seed,role
+Identity,16,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,2.0000000000000002e-05,2.66666666666667e-05,ROAST_mixed_RUV_adjusted_four_programs,99999,20261003,secondary mixed-direction endpoint
+Sterol,20,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,1.0000000000000001e-05,2.0000000000000002e-05,ROAST_mixed_RUV_adjusted_four_programs,99999,20261003,secondary mixed-direction endpoint
+Wound,14,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,1.0000000000000001e-05,2.0000000000000002e-05,ROAST_mixed_RUV_adjusted_four_programs,99999,20261003,secondary mixed-direction endpoint
+IFN,18,~ W_1 + genotype,dcKO minus CON,3,3,ROAST_mixed,Mixed,5.0000000000000002e-05,5.0000000000000002e-05,ROAST_mixed_RUV_adjusted_four_programs,99999,20261003,secondary mixed-direction endpoint
+Identity,16,~ genotype,dcKO minus CON,3,4,ROAST,Down,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_unadjusted_four_programs,99999,20261004,supplementary sensitivity
+Identity,16,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_mixed_unadjusted_four_programs,99999,20261004,secondary mixed-direction endpoint
+Sterol,20,~ genotype,dcKO minus CON,3,4,ROAST,Up,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_unadjusted_four_programs,99999,20261004,supplementary sensitivity
+Sterol,20,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_mixed_unadjusted_four_programs,99999,20261004,secondary mixed-direction endpoint
+Wound,14,~ genotype,dcKO minus CON,3,4,ROAST,Up,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_unadjusted_four_programs,99999,20261004,supplementary sensitivity
+Wound,14,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,1.0000000000000001e-05,1.3333333333333299e-05,ROAST_mixed_unadjusted_four_programs,99999,20261004,secondary mixed-direction endpoint
+IFN,18,~ genotype,dcKO minus CON,3,4,ROAST,Down,2.0000000000000002e-05,2.0000000000000002e-05,ROAST_unadjusted_four_programs,99999,20261004,supplementary sensitivity
+IFN,18,~ genotype,dcKO minus CON,3,4,ROAST_mixed,Mixed,2.0000000000000002e-05,2.0000000000000002e-05,ROAST_mixed_unadjusted_four_programs,99999,20261004,secondary mixed-direction endpoint

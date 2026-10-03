@@ -32,7 +32,13 @@ def check_program_results(primary, sensitivity, analysis):
             and primary.seed.eq(20261003).all() and primary.midp.eq(False).all()):
         raise ValueError('Primary model/contrast/rotation specification changed')
     if (primary.ROAST_P<1e-5).any():raise ValueError('ROAST probability below finite-rotation resolution')
-    if len(sensitivity)!=28:raise ValueError('Missing supplementary sensitivity rows')
+    if len(sensitivity)!=12:raise ValueError('Missing supplementary sensitivity rows')
+    expected_families={
+        'ROAST_unadjusted_four_programs',
+        'ROAST_mixed_RUV_adjusted_four_programs',
+        'ROAST_mixed_unadjusted_four_programs'}
+    if set(sensitivity.adjustment_family)!=expected_families or set(sensitivity.method)!={'ROAST','ROAST_mixed'}:
+        raise ValueError('Unexpected supplementary method or adjustment family')
     for family,frame in sensitivity.groupby('adjustment_family'):
         if frame.program.duplicated().any() or set(frame.program)!=set(expected):raise ValueError('Sensitivity family IDs changed')
         if not np.allclose(independent_bh(frame.raw_P),frame.BH_adjusted_P,rtol=1e-12,atol=0):
@@ -48,7 +54,7 @@ def check_program_results(primary, sensitivity, analysis):
             raise ValueError('Invalid design/voom weights')
     members=pd.read_csv(analysis/'program_membership.csv')
     if len(members)!=68 or members.ensembl_gene_id.duplicated().any():raise ValueError('Program membership ambiguity')
-    return {'file':'ROAST/CAMERA contract and independent BH','primary_programs':4,'sensitivity_rows':28,'passed':True}
+    return {'file':'ROAST contract and independent BH','primary_programs':4,'sensitivity_rows':12,'passed':True}
 
 
 def compare_frames(expected, actual, name, descriptive_t=False):

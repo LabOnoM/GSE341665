@@ -2,14 +2,32 @@
   "schema_version": 1,
   "status": "Exploratory programs curated during earlier study analysis; frozen for production reproduction, not prospective preregistration",
   "retained_genes": 15803,
-  "samples": ["CON1", "CON2", "CON3", "dcKO1", "dcKO2", "dcKO3"],
+  "samples": [
+    "CON1",
+    "CON2",
+    "CON3",
+    "dcKO1",
+    "dcKO2",
+    "dcKO3"
+  ],
   "primary_model": "~ W_1 + genotype",
   "sensitivity_model": "~ genotype",
   "contrast": "dcKO minus CON",
-  "ROAST": {"statistic": "mean", "endpoint": "two-sided directional PValue", "rotations": 99999, "primary_seed": 20261003, "sensitivity_seed": 20261004, "midp": false, "adjustment": "BH across four programs"},
-  "CAMERA": {"correlation": "estimated set-specific (NA)", "allow_negative_correlation": false, "use_ranks": false, "secondary_fixed_correlation": 0.01},
+  "ROAST": {
+    "statistic": "mean",
+    "endpoint": "two-sided directional PValue",
+    "rotations": 99999,
+    "primary_seed": 20261003,
+    "sensitivity_seed": 20261004,
+    "midp": false,
+    "adjustment": "BH across four programs"
+  },
   "preprocessing": "Within retained universe: TPM times mean effective length, scaled to archived retained count totals; TMM; limma-voom. No second length correction.",
-  "RNG": ["Mersenne-Twister", "Inversion", "Rejection"],
+  "RNG": [
+    "Mersenne-Twister",
+    "Inversion",
+    "Rejection"
+  ],
   "original_DESeq2_refit": false,
   "program_limma_voom_fit": true
 }

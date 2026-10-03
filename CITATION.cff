@@ -17,5 +17,5 @@ references:
   - type: data
     title: "Data for Epithelial Smad4 loss reprograms ameloblast identity and metabolism"
     doi: "10.5281/zenodo.21637766"
-version: "2026.10.03-roast"
-date-released: "2026-10-03"
+version: "2026.10.04-roast-only"
+date-released: "2026-10-04"

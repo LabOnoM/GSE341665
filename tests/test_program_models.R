@@ -17,7 +17,7 @@ index <- map_programs(list(signal=paste0('gene',1:10),neutral=paste0('gene',11:2
 for(design in list(model.matrix(~W_1+genotype,metadata),model.matrix(~genotype,metadata))) {
   y <- calcNormFactors(DGEList(scaled));v <- voom(y,design,plot=FALSE)
   result <- run_gene_set_tests(v,index,design,11,199)
-  stopifnot(result$ROAST['signal','Direction']=='Up',result$ROAST['signal','PValue']>0,
+  stopifnot(identical(names(result),'ROAST'),result$ROAST['signal','Direction']=='Up',result$ROAST['signal','PValue']>0,
             identical(result$ROAST,run_gene_set_tests(v,index,design,11,199)$ROAST))
 }
 fails <- function(expression) stopifnot(inherits(try(expression,silent=TRUE),'try-error'))

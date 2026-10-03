@@ -223,8 +223,8 @@
   },
   {
     "path": "07_latest_results/Additional_file_2.xlsx",
-    "sha256": "77b138745c329e19d142e0b7ce0c7eba7d3e074adc2c1d679068bef68b36b270",
-    "bytes": 3974624,
+    "sha256": "7340b1ce98bb3fdea1311e7c6afb57b3c248859c9c686fc97301c19252714f9e",
+    "bytes": 3972907,
     "role": "validation benchmark"
   },
   {
@@ -427,8 +427,8 @@
   },
   {
     "path": "07_latest_results/Supplementary_Data_S3_program_test_sensitivity.csv",
-    "sha256": "532bff18856d2f4d5683fe3f91b94c527677eb6c6367b076a4ca40e189e770c3",
-    "bytes": 5718,
+    "sha256": "eff7bca1532411952c197f0ce84aa7862231f3d4f5778b0e6d47ad87f9ce0068",
+    "bytes": 2364,
     "role": "validation benchmark"
   },
   {

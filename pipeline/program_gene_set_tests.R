@@ -19,7 +19,7 @@ provenance <- list(original_DESeq2_refit=FALSE,program_limma_voom_fit=TRUE,
     configuration=cfg,configuration_sha256=hash_file(args[4]),membership_json_sha256=hash_file(program_file),
     GEO_count_crosscheck=list(performed=FALSE),reconstructed_from='DEGs_dds assays counts/avgTxLength; DEGs_Out_TPM full-precision TPM/raw counts; colData RUV_x/W_1')
 writeLines(capture.output(sessionInfo()),file.path(out,'sessionInfo.txt'))
-writeLines(capture.output(list(mroast=formals(mroast.default),camera=formals(camera.default))),file.path(out,'function_defaults.txt'))
+writeLines(capture.output(list(mroast=formals(mroast.default))),file.path(out,'function_defaults.txt'))
 e <- new.env()
 load(file.path(data_root,'04_pipeline_objects/DESeq2_Processing.Rdata'),envir=e)
 # Extract serialized numeric data without refitting or changing the DESeq2 object.
@@ -111,20 +111,14 @@ for(i in seq_along(designs)) {
  write.csv(gtest,file.path(out,paste0('gene_statistics_',label,'.csv')),row.names=FALSE)
  cat('Running',label,'ROAST with 99,999 rotations\n');flush.console()
  tests <- run_gene_set_tests(v,index,design,20261003+i-1L,99999L)
- rr <- tests$ROAST;cc <- tests$CAMERA;cf <- tests$CAMERA_fixed001
- for(n in c('rr','cc','cf')) {
-   nm<-switch(n,rr='ROAST',cc='CAMERA_estimated_correlation',cf='CAMERA_fixed_correlation_001')
-   result<-get(n); write.csv(data.frame(Program=rownames(result),result,row.names=NULL),
-                             file.path(out,paste0(nm,'_',label,'.csv')),row.names=FALSE)
- }
+ rr <- tests$ROAST
+ write.csv(data.frame(Program=rownames(rr),rr,row.names=NULL),
+           file.path(out,paste0('ROAST_',label,'.csv')),row.names=FALSE)
  result<-data.frame(Model=label,Program=names(index),NGenes=lengths(index),
                     ROAST_direction=rr$Direction,ROAST_P=rr$PValue,ROAST_FDR=rr$FDR,
-                    ROAST_mixed_P=rr$PValue.Mixed,ROAST_mixed_FDR=rr$FDR.Mixed,
-                    CAMERA_direction=cc$Direction,CAMERA_correlation=cc$Correlation,
-                    CAMERA_P=cc$PValue,CAMERA_FDR=cc$FDR,
-                    CAMERA_fixed001_P=cf$PValue,CAMERA_fixed001_FDR=cf$FDR,row.names=NULL)
+                    ROAST_mixed_P=rr$PValue.Mixed,ROAST_mixed_FDR=rr$FDR.Mixed,row.names=NULL)
  print(result);all_results[[label]]<-result
- fit_models[[label]]<-list(voom=v,fit=fit,ROAST=rr,CAMERA=cc,CAMERA_fixed001=cf)
+ fit_models[[label]]<-list(voom=v,fit=fit,ROAST=rr)
 }
 dev.off()
 write.csv(do.call(rbind,all_results),file.path(out,'combined_results.csv'),row.names=FALSE)

@@ -30,11 +30,7 @@ run_gene_set_tests <- function(v, index, design, seed, nrot) {
   set.seed(seed)
   rr <- limma::mroast(v,index=index,design=design,contrast=ncol(design),nrot=nrot,
                      set.statistic='mean',adjust.method='BH',midp=FALSE,sort='none')
-  cc <- limma::camera(v,index=index,design=design,contrast=ncol(design),
-                     inter.gene.cor=NA,allow.neg.cor=FALSE,use.ranks=FALSE,sort=FALSE)
-  cf <- limma::camera(v,index=index,design=design,contrast=ncol(design),
-                     inter.gene.cor=0.01,allow.neg.cor=FALSE,use.ranks=FALSE,sort=FALSE)
-  for (result in list(rr,cc,cf))
-    if (!isTRUE(all.equal(result$FDR,p.adjust(result$PValue,'BH')))) stop('BH family mismatch')
-  list(ROAST=rr,CAMERA=cc,CAMERA_fixed001=cf)
+  if (!isTRUE(all.equal(rr$FDR,p.adjust(rr$PValue,'BH'))) ||
+      !isTRUE(all.equal(rr$FDR.Mixed,p.adjust(rr$PValue.Mixed,'BH')))) stop('BH family mismatch')
+  list(ROAST=rr)
 }

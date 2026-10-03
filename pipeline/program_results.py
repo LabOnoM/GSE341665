@@ -30,14 +30,12 @@ def export_results(output):
                     'direction':row['ROAST_direction'],'ROAST_P':row['ROAST_P'],'ROAST_BH_adjusted_P':row['ROAST_FDR'],
                     'method':'limma::mroast mean; two-sided directional PValue','rotations':99999,'seed':seed,
                     'adjustment_family':'ROAST_directional_RUV_adjusted_four_programs','midp':False})
-            for method,prefix,corr in [('ROAST','ROAST',None),('CAMERA_estimated','CAMERA','estimated set-specific'),
-                                      ('CAMERA_fixed001','CAMERA_fixed001','fixed 0.01'),('ROAST_mixed','ROAST_mixed',None)]:
+            for method,prefix in [('ROAST','ROAST'),('ROAST_mixed','ROAST_mixed')]:
                 if model=='RUV_adjusted' and method=='ROAST':continue
-                sensitivity.append({**common,'method':method,'direction':row['CAMERA_direction'] if method.startswith('CAMERA') else (row['ROAST_direction'] if method=='ROAST' else 'Mixed'),
+                sensitivity.append({**common,'method':method,'direction':row['ROAST_direction'] if method=='ROAST' else 'Mixed',
                     'raw_P':row[prefix+'_P'],'BH_adjusted_P':row[prefix+'_FDR'],
-                    'adjustment_family':f'{method}_{model}_four_programs','correlation_setting':corr,
-                    'estimated_correlation':row['CAMERA_correlation'] if method=='CAMERA_estimated' else None,
-                    'rotations':99999 if method.startswith('ROAST') else None,'seed':seed if method.startswith('ROAST') else None,
+                    'adjustment_family':f'{method}_{model}_four_programs',
+                    'rotations':99999,'seed':seed,
                     'role':'supplementary sensitivity' if method!='ROAST_mixed' else 'secondary mixed-direction endpoint'})
     for name,rows in [('Supplementary_Data_S3_program_tests.csv',primary),('Supplementary_Data_S3_program_test_sensitivity.csv',sensitivity)]:
         pd.DataFrame(rows).to_csv(output/name,index=False,float_format='%.17g')
