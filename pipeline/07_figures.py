@@ -41,6 +41,10 @@ mod=pd.read_csv(OUT/'module_scores.csv',index_col=0,float_precision='round_trip'
 dec=pd.read_csv(OUT/'deconv_proportions.csv',index_col=0,float_precision='round_trip')
 specificity=pd.read_csv(OUT/'program_celltype_specificity.csv',index_col=0,float_precision='round_trip')
 ai=pd.read_csv(OUT/'AI_gene_directions.csv',float_precision='round_trip')
+from ai_genes import mouse_symbols
+if len(ai) != len(mouse_symbols()) or set(ai.external_gene_name) != mouse_symbols():
+    raise ValueError('Figure 5B gene list differs from the pinned analysis panel')
+
 
 DISPLAY={
  'ERK-associated':['Ereg','Areg','Hras','Dusp1','Dusp4','Dusp5','Dusp6','Spry2','Spry4','Fosl1','Egr1','Fos','Fosb','Dusp8','Dusp10','Dusp16'],

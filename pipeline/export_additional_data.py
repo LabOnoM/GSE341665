@@ -61,9 +61,10 @@ def main():
                 ws.row_dimensions[row[0].row].height=42
     wb.save(target/'Additional_file_2.xlsx')
     import ai_gene_provenance as provenance
-    (target/'Supplementary_Tables_S4_S5.md').write_text(
-        '# Supplementary Table S4\n\n'+provenance.audit_markdown()+provenance.audit_footnote()
-        +'\n\n# Supplementary Table S5\n\n'+provenance.panel_markdown()+provenance.panel_footnote())
+    panel = pd.read_csv(out/'AI_panel_PanelApp_v4.37.csv', keep_default_na=False)
+    provenance.verify_panel_membership(panel.to_dict('records'))
+    (target/'Supplementary_Table_S4.md').write_text(
+        '# Supplementary Table S4\n\n'+provenance.panel_markdown()+provenance.panel_footnote())
 
 
 if __name__=='__main__':main()

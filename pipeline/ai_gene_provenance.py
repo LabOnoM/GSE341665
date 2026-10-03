@@ -1,34 +1,14 @@
-"""
-ai_gene_provenance.py — verified provenance for the amelogenesis-imperfecta (AI) gene
-panel, and the audit trail of the retired hand-curated list.
+"""Per-gene evidence metadata for Supplementary Table S4.
 
-Two datasets:
+The 31 rows describe the GREEN-rated genes of Genomics England PanelApp panel
+269 v4.37 used in the manuscript. Analysis membership is rebuilt from the frozen
+PanelApp/MGI source records by 17_fetch_ai_panel.py and imported by ai_genes.py.
+The exporter checks that these evidence rows have exactly the same gene pairs.
 
-  AUDIT  — the 20 genes of the retired hand-typed panel
-           (scripts/_quarantine/00_Mendelian_AI_Genes.R). For each: the OMIM MIM it
-           claimed and what that MIM actually is, the PMID it claimed and what that PMID
-           actually cites, and the verified correct values. This documents the
-           2026-07-27 integrity audit that motivated switching to a versioned external
-           panel.
-
-  PANEL  — the 31 GREEN-rated genes of the Genomics England PanelApp "Amelogenesis
-           imperfecta" panel (269 v4.37) actually used in the enrichment, each with its
-           verified OMIM phenotype MIM, inheritance, mouse ortholog, and a verified
-           primary PMID.
-
-EVERY identifier below was confirmed on 2026-07-27 against authoritative sources:
-  * OMIM phenotype-vs-gene MIM class — NCBI mim2gene_medgen (each MIM confirmed
-    type == "phenotype", mapped to the stated gene);
-  * PMID existence and topic — NCBI E-utilities esummary (each PMID confirmed to
-    resolve to a real paper on the gene's enamel/AI phenotype);
-  * mouse ortholog — MGI / NCBI Gene, as carried in the Ensembl-116 annotation.
-
-Nothing here is recalled or guessed. Where evidence is genuinely incomplete it is
-flagged in `note` (PEX26 has no enamel-specific paper; PLXNB2 has no OMIM phenotype MIM
-yet; SP6's human evidence is recent and limited).
-
-This module is imported by 15_build_supplementary_docx.py to render Supplementary
-Tables S4 (audit) and S5 (verified panel). It is the single source for those tables.
+OMIM/PMID provenance was checked on 27 July 2026; the dated evidence notes and
+limitations are retained. PEX26 has no enamel-specific paper, PLXNB2 has no
+assigned phenotype MIM in that record, and SP6's human evidence was limited.
+Historical list-audit records remain in project history, outside current exports.
 """
 
 from __future__ import annotations
@@ -37,66 +17,7 @@ from dataclasses import dataclass
 
 
 # ---------------------------------------------------------------------------
-# Supplementary Table S4 — audit of the retired 20-gene hand-curated list
-# ---------------------------------------------------------------------------
-@dataclass(frozen=True)
-class AuditRow:
-    gene: str
-    claimed_mim: str
-    claimed_mim_actual: str      # what that MIM number actually is
-    correct_mim: str             # verified phenotype MIM (or note)
-    claimed_pmid: str
-    claimed_pmid_actual: str     # what that PMID actually cites
-    verified_pmid: str           # verified correct primary (or note)
-    in_panel: bool               # retained on PanelApp GREEN (used) vs excluded
-
-
-AUDIT: tuple[AuditRow, ...] = (
-    AuditRow("AMELX",  "301200", "phenotype (correct)",           "301200",
-             "8651276",  "Apert syndrome (FGFR2)",                "1916828", True),
-    AuditRow("AMBN",   "616270", "phenotype (correct)",           "616270",
-             "25327895", "Atlantic salmon conservation genomics", "24858907", True),
-    AuditRow("ENAM",   "104500", "phenotype (correct)",           "104500",
-             "11992261", "Noonan syndrome (PTPN11)",              "11487571", True),
-    AuditRow("AMTN",   "617607", "phenotype (correct)",           "617607",
-             "28861858", "does not exist in PubMed",              "27412008", False),
-    AuditRow("MMP20",  "612529", "phenotype (correct)",           "612529",
-             "19187894", "chronic anterior uveitis",              "15744043", True),
-    AuditRow("KLK4",   "204700", "phenotype (correct)",           "204700",
-             "14756670", "familial hypercholesterolemia",         "15235027", True),
-    AuditRow("FAM83H", "130900", "phenotype (correct)",           "130900",
-             "18327258", "THM1/hedgehog (mouse cilia)",           "18252228", True),
-    AuditRow("ACP4",   "617297", "phenotype (correct)",           "617297",
-             "28111907", "palaeontology essay",                   "27843125", True),
-    AuditRow("SLC4A4", "(none)", "no MIM given",                  "604278",
-             "15452090", "metipranolol / retina",                 "35260236", False),
-    AuditRow("STIM1",  "612559", "different gene (leukaemia susceptibility 5)", "612783",
-             "25193870", "JAK3 / T-ALL",                          "19420366", True),
-    AuditRow("ORAI1",  "615887", "different gene (SLC24A4 AI locus)",           "612782",
-             "24349437", "cre recombinase (retina)",              "20004786", True),
-    AuditRow("CFTR",   "219700", "phenotype (correct)",           "219700",
-             "24799079", "knee arthroplasty alignment",           "— (excluded)", False),
-    AuditRow("LAMC2",  "150292", "gene MIM (not phenotype)",      "226700",
-             "10798435", "congenital heart surgery nomenclature", "— (excluded)", False),
-    AuditRow("LAMB3",  "150310", "gene MIM (not phenotype)",      "104530",
-             "20034080", "HHS gene-patent news item",             "23958762", True),
-    AuditRow("LAMA3",  "600805", "gene MIM (not phenotype)",      "619786",
-             "36326426", "correct (LAMA3-associated AI)",         "36326426", True),
-    AuditRow("COL17A1","113811", "gene MIM (not phenotype)",      "619787",
-             "16685652", "POLG2 / progressive ophthalmoplegia",   "37979963", True),
-    AuditRow("DLX3",   "600525", "gene MIM (not phenotype)",      "190320",
-             "12649808", "HOXD13 brachydactyly",                  "9467018", True),
-    AuditRow("PITX2",  "137600", "wrong disease (ant. seg. dysgenesis 4)",     "180500",
-             "10508521", "CRB1 / retinitis pigmentosa",           "— (excluded)", False),
-    AuditRow("WNT10A", "150400", "wrong disease (tooth agenesis 4)",           "257980",
-             "17952058", "melanopsin / circadian clock",          "— (excluded)", False),
-    AuditRow("KMT2D",  "147920", "phenotype (correct)",           "147920",
-             "40103013", "correct (KMT2D enamel development)",     "— (excluded)", False),
-)
-
-
-# ---------------------------------------------------------------------------
-# Supplementary Table S5 — verified provenance of the 31 PanelApp GREEN genes
+# Supplementary Table S4 — verified provenance of the 31 PanelApp GREEN genes
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True)
 class PanelRow:
@@ -181,22 +102,8 @@ def _md_escape(s: str) -> str:
     return s.replace("|", "\\|")
 
 
-def audit_markdown() -> str:
-    """Render Supplementary Table S4 as a Markdown table."""
-    h = ("| Gene | Claimed MIM | What that MIM is | Correct phenotype MIM | "
-         "Claimed PMID | What that PMID cites | Verified PMID | On panel |\n"
-         "|---|---|---|---|---|---|---|---|\n")
-    rows = ""
-    for r in AUDIT:
-        rows += "| {} | {} | {} | {} | {} | {} | {} | {} |\n".format(
-            r.gene, r.claimed_mim, _md_escape(r.claimed_mim_actual), r.correct_mim,
-            r.claimed_pmid, _md_escape(r.claimed_pmid_actual), r.verified_pmid,
-            "yes" if r.in_panel else "no")
-    return h + rows
-
-
 def panel_markdown() -> str:
-    """Render Supplementary Table S5 as a Markdown table."""
+    """Render Supplementary Table S4 as a Markdown table."""
     h = ("| Gene (human) | Mouse | OMIM phenotype MIM | Phenotype | Inheritance | "
          "Primary reference (PMID) | Notes |\n"
          "|---|---|---|---|---|---|---|\n")
@@ -209,36 +116,15 @@ def panel_markdown() -> str:
     return h + rows
 
 
-def audit_footnote() -> str:
-    """Footnote defining the conventions used in Supplementary Table S4."""
-    return """
-**Table S4 footnote — how to read this table.** Each row is one gene from the retired
-hand-curated list. **Claimed MIM** and **Claimed PMID** are the identifiers that list
-asserted. **What that MIM is** classifies the claimed number against NCBI
-`mim2gene_medgen`: *phenotype (correct)* means it is a phenotype entry mapping to the
-stated gene; *gene MIM* means a gene entry was given where a phenotype entry is required;
-*different gene* means it maps to another gene entirely; *wrong disease* means it is a
-phenotype of the right gene but not the disease named. **What that PMID cites** is the
-actual subject of the claimed PubMed record, confirmed via NCBI E-utilities. **Verified
-PMID** is the correct primary report where one was identified; an em dash with
-"(excluded)" means the gene is not GREEN-rated on the PanelApp panel and is therefore not
-used in this study, so no replacement was sought. **On panel** indicates whether the gene
-is among the 31 GREEN-rated genes actually used (Supplementary Table S5).
-
-Abbreviations: **MIM**, Mendelian Inheritance in Man identifier; **PMID**, PubMed
-identifier; **AI**, amelogenesis imperfecta.
-"""
-
-
 def panel_footnote() -> str:
-    """Footnote defining every abbreviation that appears in Supplementary Table S5.
+    """Footnote defining every abbreviation that appears in Supplementary Table S4.
 
     Kept next to the data so the two cannot drift; the abbreviation list was derived by
     extracting every acronym actually present in the rendered table, not written from
     memory.
     """
     return """
-**Table S5 footnote — abbreviations and conventions.**
+**Table S4 footnote — abbreviations and conventions.**
 
 *Columns.* **Gene (human)** — HGNC-approved human gene symbol, as listed by PanelApp.
 **Mouse** — the MGI-approved mouse ortholog symbol (italic), as carried in the Ensembl
@@ -298,19 +184,16 @@ and are named in Supplementary Methods B6.
 """
 
 
-def summary() -> str:
-    n_wrong_pmid = sum(1 for r in AUDIT if "correct" not in r.claimed_pmid_actual)
-    n_wrong_mim = sum(1 for r in AUDIT if "correct" not in r.claimed_mim_actual)
-    return (f"AUDIT: {len(AUDIT)} candidate genes; {n_wrong_pmid}/{len(AUDIT)} claimed PMIDs "
-            f"cite unrelated work; {n_wrong_mim}/{len(AUDIT)} claimed MIMs wrong. "
-            f"PANEL: {len(PANEL)} PanelApp GREEN genes, all identifiers verified.")
+def verify_panel_membership(rows) -> None:
+    """Stop if supplementary provenance differs from the rebuilt analysis panel."""
+    actual = [(row["human"], row["mouse"]) for row in rows]
+    expected = [(row.human, row.mouse) for row in PANEL]
+    if len(actual) != len(expected) or set(actual) != set(expected):
+        raise ValueError("Supplementary Table S4 gene pairs differ from the analysis panel")
 
 
 if __name__ == "__main__":
-    print(summary())
     assert len({r.human for r in PANEL}) == 31, "panel must have 31 distinct genes"
-    assert len({r.gene for r in AUDIT}) == 20, "audit must have 20 distinct genes"
-    print("\n### Supplementary Table S4 — audit\n")
-    print(audit_markdown())
-    print("\n### Supplementary Table S5 — verified panel\n")
+    print("\n### Supplementary Table S4 — verified panel\n")
     print(panel_markdown())
+    print(panel_footnote())

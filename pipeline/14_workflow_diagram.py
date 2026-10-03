@@ -71,7 +71,7 @@ def reanalysis():
     # Route reference output around the program-definition note.
     ax.plot([166.5,168.5,168.5],[87,87,138],color='#555555',linewidth=.9)
     arrow(ax,(168.5,138),(150,145));arrow(ax,(133,135.5),(103,145))
-    ax.text(85,179,'export_additional_data.py → Additional files and Tables S4–S5',ha='center',va='center',fontsize=10)
+    ax.text(85,179,'export_additional_data.py → Additional files and Table S4',ha='center',va='center',fontsize=10)
     arrow(ax,(85,169),(85,174))
     ax.text(85,189,'Current reproduction uses archived gene-level results, without a new count-model fit.',ha='center',va='center',fontsize=8.5)
     save(fig,'FigureS5B_reanalysis')

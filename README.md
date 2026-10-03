@@ -78,7 +78,7 @@ Read adjusted P values with `float_precision="round_trip"`. Five source zeros re
 
 ## Scope and citation
 
-Unused MR/GWAS, isoform/circular-RNA/exon-usage outputs, historical main-figure renderers, manuscript builders and deposit/publishing scripts are excluded from the current repository. Table S4 retains the provenance audit of the superseded gene list because that table is explicitly part of current Additional file 1. Historical commits remain available through Git; they do not define the current manuscript version.
+Unused MR/GWAS, isoform/circular-RNA/exon-usage outputs, historical main-figure renderers, manuscript builders and deposit/publishing scripts are excluded from the current repository. Supplementary Table S4 documents the 31 GREEN-rated PanelApp genes actually used. The retired 20-gene provenance audit and its export code are excluded from current manuscript outputs; its historical record remains in Git/project history. Historical commits remain available through Git; they do not define the current manuscript version.
 
 Publication PDFs and the Excel workbook remain in the journal/data package; this code repository versions their numerical CSV evidence and regenerates the computational figures/workbook. Use `CITATION.cff` and record the exact commit. Code remains under the repository's existing MIT license; deposited data retain their existing CC-BY-4.0 terms. See [data access](docs/data-access.md) and [known limitations](docs/known-issues.md).
 
