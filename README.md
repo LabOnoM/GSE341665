@@ -13,6 +13,8 @@ Analysis and figure-generation code for the epithelial Smad4 study and its Addit
 
 Use the data snapshot matching `data/INPUT_MANIFEST.json`. The revised snapshot is prepared for manual author upload; until that upload is confirmed, obtain it from the authors. Reviewer credentials are supplied separately through the journal. Repository access settings are unchanged.
 
+For assay-specific reference genes and loading controls, see [experimental measurements](docs/experimental-data.md).
+
 The data package contains 56 required input files and two additional original evidence files. Native Figure 2 and Figure 3 Prism projects and the original Western blot image deck are retained. The 17 validation benchmarks are versioned with this code in `results/`, rather than duplicated in the data package. Journal documents, generated figures and regenerated program-model outputs are supplied separately or produced by the commands below.
 
 ## Reproduce the analyses
@@ -29,7 +31,13 @@ Rscript environment/setup_reference.R --library /path/to/reference-library --ins
 export R_LIBS_USER=/path/to/reference-library
 ```
 
-The R installers write only to the specified libraries. Source builds require the relevant compiler toolchain and system libraries. Run the complete workflow with separate, empty working and output directories:
+The R installers write only to the specified libraries. Source builds require the relevant compiler toolchain and system libraries. Verify the complete ZIP or extracted data directory before running. This checks consecutive folders, every file checksum, all manifests, and compatibility with this code version:
+
+```bash
+python verify_data_package.py /path/to/Smad4_Reproduction_Inputs_20261004.zip
+```
+
+The data folders are numbered consecutively from `01_processed_data` to `07_locus_alignments`; experimental sources are under `05_experimental_data`. The data README, dictionary and sample metadata describe their contents. Run the complete workflow with separate, empty working and output directories:
 
 ```bash
 /path/to/python-env/bin/python reproduce.py \
@@ -63,7 +71,7 @@ The final validation compares 35 numerical tables, workbook sheets and model/ref
 Rscript tests/test_program_models.R
 ```
 
-Outputs include figures, numerical tables, model objects, command logs, `EXECUTION.json` and `VALIDATION.json`. Ten Python regression checks and the R synthetic-model checks cover input separation, missing/corrupt evidence, probability handling and the production program models. GitHub Actions runs code checks without restricted study inputs.
+Outputs include figures, numerical tables, model objects, command logs, `EXECUTION.json` and `VALIDATION.json`. Python regression checks and the R synthetic-model checks cover input separation, missing/corrupt evidence, probability handling and the production program models. GitHub Actions runs code checks without restricted study inputs.
 
 ## Analysis settings
 

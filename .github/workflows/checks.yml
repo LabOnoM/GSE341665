@@ -17,7 +17,7 @@ jobs:
           cache-dependency-path: environment/python-lock.txt
       - run: python -m pip install -r environment/python-lock.txt
       - run: python -m unittest discover -s tests -v
-      - run: python -m compileall -q reproduce.py validate.py pipeline environment tests
+      - run: python -m compileall -q reproduce.py validate.py verify_data_package.py pipeline environment tests
       - run: bash -n pipeline/04_download_scref.sh
   program-model:
     runs-on: ubuntu-latest

@@ -18,7 +18,7 @@ from scipy import stats
 ap=argparse.ArgumentParser()
 ap.add_argument('--root',type=Path,required=True)
 ap.add_argument('--destination',type=Path,required=True)
-ap.add_argument('--claim-source',type=Path,required=True,help='Captured manuscript paragraph evidence JSON from the data deposit')
+ap.add_argument('--gene-index',type=Path,required=True,help='Ordered gene symbols for the Data S3 text-gene table')
 ap.add_argument('--scratch',type=Path,required=True)
 args=ap.parse_args()
 ROOT=args.root; DEST=args.destination; OUT=ROOT/'scripts/JDR_reanalysis/output'
@@ -267,9 +267,11 @@ fig.text(.02,.013,'All listed genes are shown, including nonsignificant results.
 save(fig,F/'Figure7_signaling_gene_evidence')
 
 # Full expression results with gene, program, manuscript and panel mapping.
-claim_source=json.loads(args.claim_source.read_text())
-body=[(p['index'],p['text']) for p in claim_source['paragraphs']]
-source_manuscript_sha256=claim_source['source_manuscript_sha256']
+gene_index=json.loads(args.gene_index.read_text())
+if gene_index.get('schema_version') != 1 or not isinstance(gene_index.get('genes'),list):
+    raise ValueError('Gene index must contain schema_version 1 and an ordered genes list')
+if not gene_index['genes'] or any(not isinstance(g,str) or not g for g in gene_index['genes']):
+    raise ValueError('Gene index contains an empty or invalid gene symbol')
 colbase=['ensembl_gene_id','external_gene_name','baseMean','FoldChange','log2FoldChange','lfcSE','stat','pvalue','padj']
 full=deg[colbase].merge(tpm[['ensembl_gene_id']+SAMPLES],on='ensembl_gene_id',validate='one_to_one')
 full['mean_TPM_CON']=full[SAMPLES[:3]].mean(axis=1);full['mean_TPM_dcKO']=full[SAMPLES[3:]].mean(axis=1);full['mean_TPM_all']=full[SAMPLES].mean(axis=1)
@@ -277,7 +279,6 @@ full['strict_DEG']=(full.padj<.05)&(full.log2FoldChange.abs()>1)
 full['padj_status']=np.where(full.padj.isna(),'not available',np.where(full.padj==0,'source numeric underflow','finite'))
 full['program_membership']=full.external_gene_name.map(lambda g:'; '.join(k for k,v in PROGRAMS.items() if g in v))
 full['figure_panels']=full.external_gene_name.map(lambda g:'; '.join(dict.fromkeys(PANEL[k] for k,v in all_groups.items() if g in v and PANEL[k])))
-full['main_text_paragraphs']=full.external_gene_name.map(lambda g:'; '.join(str(i) for i,txt in body if isinstance(g,str) and re.search(r'(?<![A-Za-z0-9])'+re.escape(g)+r'(?![A-Za-z0-9])',txt)))
 full=full.rename(columns={'external_gene_name':'gene','FoldChange':'source_FoldChange'})
 full.to_csv(S/'Supplementary_Data_S3_all_gene_statistics.csv',index=False,float_format='%.17g')
 tables={}
@@ -307,14 +308,14 @@ for gene,gid in [('Sox2','ENSMUSG00000074637'),('Lgr5','ENSMUSG00000020140')]:
 assert len(counts)==12
 pd.DataFrame(counts).to_csv(S/'Supplementary_Data_S3_nonretained_gene_counts.csv',index=False)
 
-# Source claims table lists every original numeric-expression paragraph, plus all
-# explicitly named genes, so unsupported/omitted citations can be reviewed directly.
+# Table membership is explicit; no manuscript text or paragraph positions are inputs.
 claimrows=[]
-for i,txt in body:
-    if ('fold' in txt or 'TPM' in txt or 'transcripts per million' in txt or 'adjusted P' in txt) and i>=32:
-        hits=full[full.main_text_paragraphs.map(lambda x:str(i) in x.split('; '))]
-        for _,r in hits.iterrows():
-            claimrows.append({'source_paragraph':i,'gene':r.gene,'log2FoldChange':r.log2FoldChange,'fold_dcKO_over_CON':2**r.log2FoldChange,'adjusted_P':r.padj,'padj_status':r.padj_status,'mean_TPM_CON':r.mean_TPM_CON,'mean_TPM_dcKO':r.mean_TPM_dcKO,'mean_TPM_all':r.mean_TPM_all,'figure_panels':r.figure_panels,'supporting_table':'Supplementary Data S3'})
+for gene in gene_index['genes']:
+    hits=full[full.gene==gene]
+    if len(hits)!=1:
+        raise ValueError(f'Gene index must resolve exactly once: {gene}')
+    row=hits.iloc[0]
+    claimrows.append({'gene':row.gene,'log2FoldChange':row.log2FoldChange,'fold_dcKO_over_CON':2**row.log2FoldChange,'adjusted_P':row.padj,'padj_status':row.padj_status,'mean_TPM_CON':row.mean_TPM_CON,'mean_TPM_dcKO':row.mean_TPM_dcKO,'mean_TPM_all':row.mean_TPM_all,'figure_panels':row.figure_panels,'supporting_table':'Supplementary Data S3'})
 claims=pd.DataFrame(claimrows);claims.to_csv(S/'Supplementary_Data_S3_text_claim_index.csv',index=False,float_format='%.17g')
 
 def matrix(df):
@@ -323,8 +324,8 @@ compactcols=['display_group','gene','log2FoldChange','padj','padj_status','mean_
 readme=[['Field', 'Definition'], ['Comparison', 'dcKO versus CON; 3 pooled biological libraries per genotype.'], ['Gene-level inference', 'Archived DESeq2 likelihood-ratio test: full ~W1 + genotype; reduced ~W1. P values adjusted by Benjamini-Hochberg.'], ['Expression', 'TPM is descriptive, unadjusted expression. Heatmaps are row z-scores of log2(TPM + 1), sample SD (ddof=1).'], ['Effect size', 'log2FoldChange comes from the fitted model; not recomputed as a ratio of mean TPM. Linear fold = 2^log2FoldChange.'], ['No selection', 'All members of the four curated programs are displayed, including effects below the strict DEG cutoff.'], ['Zero adjusted P', 'Source values of zero denote numerical underflow; figures show 0*. They are not literal zero probabilities.'], ['Missing adjusted P', 'A missing test result is retained as missing, not converted to zero.'], ['Program tests', 'Primary: W_1-adjusted limma-voom ROAST; mean statistic, two-sided directional PValue, 99,999 rotations, seed 20261003, ordinary-P BH across four programs. Plotted z scores remain descriptive.'], ['Source data', 'Program model: archived DESeq2_Processing.Rdata, reconstructed lengthScaledTPM/TMM/voom within 15,803 genes. Gene-level archive: DEG_table.csv and TPM_matrix.csv; original workbooks STAR_DEGs_ResOut_01_dcKOvsCON.xlsx and 00.DEGs_Out_TPM.xlsx.'], ['Program membership', 'The four scored gene sets are defined in the Program membership sheet. ERK, stress and Discussion display groups are additional gene groupings shown in the figures, not separately scored programs.'], ['Nonretained genes', 'Sox2 and Lgr5 have low nonzero auxiliary alignment feature counts but no row in the retained DESeq2 table. These counts are not the Salmon/tximport model inputs.'], ['Animal sex', 'All six RNA-seq libraries were derived from male donors. Xist and Y-linked gene expression are included as supporting sample information.'], ['Panel numbering', '4C program overview; sex markers: Data S3 only; 5A identity; 5B human AI orthologs; 5C wound; 5D composition; 5E additional epithelial genes; 5F secretory/maturation TPM; 6A sterol; 6B IFN; 6C reference specificity; 7A ERK/MAPK; 7B p38/TGF-beta/BMP; 7C ER stress.'], ['Source-only markers', 'The Displayed genes sheet also retains Xist, Ddx3y, Eif2s3y, Uty and Kdm5d, labelled Data S3 only. These five genes have no current figure-panel assignment.'], ['Sensitivities', 'Genotype-only directional ROAST is a sensitivity analysis; mixed-direction ROAST in both designs is secondary. Separate four-program BH families.'], ['Limitations', 'Each genotype comprises three pooled biological samples. Gene sets were selected with reference to the differential-expression results; the program analyses are exploratory.'], ['Fit provenance', 'Gene-level statistics were retained from the original DESeq2 models. Separate TMM/voom models were fitted for ROAST gene-set inference.'], ['Finite rotations', 'Raw-P resolution floor 0.00001; not zero or an exact tail probability.']]
 payload={'sheets':[
  {'name':'Displayed genes','data':matrix(display[compactcols]),'numeric':['log2FoldChange','padj','mean_TPM_CON','mean_TPM_dcKO']+SAMPLES},
- {'name':'Text gene values','data':matrix(claims.drop(columns=['source_paragraph'])),'numeric':['log2FoldChange','fold_dcKO_over_CON','adjusted_P','mean_TPM_CON','mean_TPM_dcKO','mean_TPM_all']},
- {'name':'All genes','data':matrix(full.drop(columns=['main_text_paragraphs'])),'numeric':[c for c in full if pd.api.types.is_numeric_dtype(full[c])]},
+ {'name':'Text gene values','data':matrix(claims),'numeric':['log2FoldChange','fold_dcKO_over_CON','adjusted_P','mean_TPM_CON','mean_TPM_dcKO','mean_TPM_all']},
+ {'name':'All genes','data':matrix(full),'numeric':[c for c in full if pd.api.types.is_numeric_dtype(full[c])]},
  {'name':'Program tests','data':matrix(pd.DataFrame(program_tests)),'numeric':[c for c in program_frame if pd.api.types.is_numeric_dtype(program_frame[c])]},
  {'name':'Program sensitivities','data':matrix(sensitivity),'numeric':[c for c in sensitivity if pd.api.types.is_numeric_dtype(sensitivity[c])]},
  {'name':'Program membership','data':matrix(membership),'numeric':[]},
@@ -334,6 +335,6 @@ payload={'sheets':[
  {'name':'Read me','data':readme,'numeric':[]}]}
 (args.scratch/'workbook_payload.json').write_text(json.dumps(payload,ensure_ascii=False,allow_nan=False))
 sources={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [OUT/'DEG_table.csv',OUT/'TPM_matrix.csv',OUT/'module_scores.csv',OUT/'deconv_proportions.csv',OUT/'program_celltype_specificity.csv',ROOT/'scripts/JDR_reanalysis/programs.py']}
-prov={'source_manuscript_sha256':source_manuscript_sha256,'sources':sources,'program_tests':program_tests,'figures':figure_meta,'gene_counts':{'retained':len(full),'finite_adjusted_P':int(deg.padj.notna().sum()),'source_zero_adjusted_P':int(sum(deg.padj==0)),'display_rows':len(display),'unique_display_genes':len(set(display.gene)),'claim_index_rows':len(claims)},'analysis':'Archived DESeq2 values retained; descriptive program scores unchanged; new limma-voom ROAST fit.', 'original_DESeq2_refit':False,'program_limma_voom_fit':True}
+prov={'text_gene_index_sha256':hashlib.sha256(args.gene_index.read_bytes()).hexdigest(),'sources':sources,'program_tests':program_tests,'figures':figure_meta,'gene_counts':{'retained':len(full),'finite_adjusted_P':int(deg.padj.notna().sum()),'source_zero_adjusted_P':int(sum(deg.padj==0)),'display_rows':len(display),'unique_display_genes':len(set(display.gene)),'claim_index_rows':len(claims)},'analysis':'Archived DESeq2 values retained; descriptive program scores unchanged; new limma-voom ROAST fit.', 'original_DESeq2_refit':False,'program_limma_voom_fit':True}
 (DEST/'Figure_Refinement_Provenance.json').write_text(json.dumps(prov,indent=2))
 print(json.dumps(prov['gene_counts']),flush=True)

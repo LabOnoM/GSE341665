@@ -5,7 +5,8 @@ These are normalized values, not raw Ct values or raw band intensities. Biologic
 independence is reported in the author's September Methods, not established by a
 project file. Read declared data sheets in Figure_3.prism and independently
 recalculate ordinary ANOVA / two-sided Dunnett results. Native analyses are
-retained in the unchanged project, separately from this recalculation.
+retained in the project, separately from this recalculation. Inhibitor immunoblot
+values (Figure 3D/E) are normalized to α-tubulin; qPCR uses Gapdh.
 """
 from pathlib import Path
 import csv

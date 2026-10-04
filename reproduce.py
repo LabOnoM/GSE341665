@@ -80,10 +80,10 @@ def main():
     shutil.copytree(source/'data', pipe/'data')
     raw = work/'00.RawData/Bulk-RNAseq';raw.mkdir(parents=True)
     shutil.copytree(source/'workbooks', raw/'02.TableOutput')
-    for p in (data/'05_Raw_data_for_Figures/auxiliary_alignment_counts').glob('*.STAR.counts'):
+    for p in (data/'05_experimental_data/auxiliary_alignment_counts').glob('*.STAR.counts'):
         shutil.copy2(p, raw/p.name)
     project_dir=work/'00.Manuscript/prism_projects';project_dir.mkdir(parents=True)
-    shutil.copy2(data/'05_Raw_data_for_Figures/prism_projects/Figure_3.prism',project_dir/'Figure_3.prism')
+    shutil.copy2(data/'05_experimental_data/prism_projects/Figure_3.prism',project_dir/'Figure_3.prism')
     supplementary = work/'00.Manuscript/Submission_02_JMM_2026-07/4_Journal_JMM/Supplementary'
     supplementary.mkdir(parents=True)
     shutil.copy2(data/'06_single_cell_reference/GSE146855_seurat.rds',pipe/'output/GSE146855_seurat.rds')
@@ -131,12 +131,12 @@ def main():
         run([py,pipe/'program_results.py','--output',pipe/'output'],work)
         shutil.copytree(pipe/'output/program_analysis',dest/'Program_analysis')
         run([py,pipe/'07_figures.py','--root',work,'--destination',dest,
-             '--claim-source',source/'manuscript_claim_source.json','--scratch',work/'payload'],work)
+             '--gene-index',source/'text_gene_index.json','--scratch',work/'payload'],work)
         step('24_september_inhibitor_audit.py')
         run([py,pipe/'export_additional_data.py','--workspace',work,'--destination',dest,
              '--payload',work/'payload/workbook_payload.json'],work)
     if args.mode in ('locus','all'):
-        bam_dir=(args.bam_dir or data/'08_locus_alignments').resolve()
+        bam_dir=(args.bam_dir or data/'07_locus_alignments').resolve()
         for sample in ['CON1','CON2','CON3','dcKO1','dcKO2','dcKO3']:
             for suffix in ['.STAR.Aligned.sortedByCoord.out.bam','.STAR.Aligned.sortedByCoord.out.bam.bai','.STAR.SJ.out.tab']:
                 if not (bam_dir/(sample+suffix)).is_file():raise FileNotFoundError(f'Missing locus input: {bam_dir/(sample+suffix)}')

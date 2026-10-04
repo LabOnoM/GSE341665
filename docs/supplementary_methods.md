@@ -372,7 +372,7 @@ The dose-series images show 50, 90, and 120 µmol/L 4-OHT, distinct from the sub
 | AMBN | Rabbit | 1:500 | Western blot | Bioss antibodies | #bs-12467R |
 | MMP20 | Rabbit | 1:1,000 | Western blot | Proteintech | #55467-1-AP |
 | KLK4 | Rabbit | 1:1,000 | Western blot | Gentaur | #8941 |
-| β-Tubulin | Rabbit | 1:1,000 | Western blot | Thermo Fisher | #600-401-880 |
+| α-Tubulin | Rabbit | 1:1,000 | Western blot | Thermo Fisher | #600-401-880 |
 | GAPDH | Rabbit | 1:1,000 | Western blot | Cell Signaling Technology | #2118 |
 | SMAD4 | Rabbit | 1:1,000 | Western blot | Proteintech | #51069-2-AP |
 

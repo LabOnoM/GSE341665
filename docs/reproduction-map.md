@@ -2,7 +2,7 @@
 
 | Figure, table or result | Retained code | Required source and purpose |
 |---|---|---|
-| Main Figures 4–7; full Data S3 | 01_extract_tables.py, 03_module_scores.py, 06_deconvolution.py, 07_figures.py; volcano_panel.py, vendor/figstyle.py | Two source workbooks; DEG/TPM and captured claim-source JSON; seven-cell-type CPM signature. Preserves original gene-level model statistics and all displayed genes |
+| Main Figures 4–7; full Data S3 | 01_extract_tables.py, 03_module_scores.py, 06_deconvolution.py, 07_figures.py; volcano_panel.py, vendor/figstyle.py | Two source workbooks; DEG/TPM and ordered text-gene index; seven-cell-type CPM signature. Preserves original gene-level model statistics and all displayed genes |
 | Four scored programs; Additional file 5 | programs.py, 03_module_scores.py | The single definition of 16 identity, 20 sterol, 14 wound/stress and 18 interferon genes; full-precision TPM; descriptive mean gene-wise z scores (no score-inference route) |
 | Reference fractions/specificity; Additional files 6–7 | 06_deconvolution.py | Captured GSE146855 CPM signature; full-precision bulk TPM; sorted markers before NNLS |
 | AI enrichment, Additional file 3 and Methods B6 | 16_ai_gene_enrichment.py, ai_genes.py, ai_gene_provenance.py | Pinned PanelApp 269 v4.37 GREEN panel and gene-level statistics; three reported threshold sensitivity tests |
@@ -21,7 +21,7 @@
 
 `reproduce.py` verifies the 56 source-input hashes in `data/INPUT_MANIFEST.json` before running. The original Western blot image deck and Figure 2 Prism project are additional experimental evidence; Figure 3 Prism is also a runtime input. `data/RAW_EVIDENCE_MANIFEST.json` identifies all three original evidence files.
 
-Numerical validation fixtures are versioned with the code: five Additional-file CSVs, nine source CSVs, two inhibitor CSVs and the reader-facing Data S3 workbook in `results/validation/`. The data archive contains the inputs needed to generate these outputs. The captured claim-source JSON is used only to select the historical source-gene index; paragraph indices are omitted from the publication workbook.
+Numerical validation fixtures are versioned with the code: five Additional-file CSVs, nine source CSVs, two inhibitor CSVs and the reader-facing Data S3 workbook in `results/validation/`. The data archive contains the inputs needed to generate these outputs. The ordered text-gene index selects the Data S3 gene-value rows without retaining manuscript prose or paragraph positions.
 
 The complete workflow passed 35 numerical/model/table checks and 20 figure-file checks. All 15,803 retained genes, four primary and 12 supplementary ROAST rows, 31 AI panel genes, 195 inhibitor measurements and 52 comparisons agree with the benchmarks. All 6,248 reference barcodes, cluster and cell-type labels agree, as do the five locus evidence tables. Validation includes the exact zero/missing probability masks and preserves tiny nonzero P values.
 

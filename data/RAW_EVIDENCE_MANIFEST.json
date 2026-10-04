@@ -1,20 +1,20 @@
 [
   {
-    "path": "05_Raw_data_for_Figures/WesternBlotRawImages.pptx",
+    "path": "05_experimental_data/WesternBlotRawImages.pptx",
     "sha256": "90755b7155d5ce02c00a7a5775e9bdc47f9b1763fc03e8b2f8b89f9e4dfefe1b",
     "bytes": 10055471,
     "role": "original experimental evidence"
   },
   {
-    "path": "05_Raw_data_for_Figures/prism_projects/Figure_2.prism",
+    "path": "05_experimental_data/prism_projects/Figure_2.prism",
     "sha256": "7d0ee14dd86c8266f9c885aaa40f8beaa704b8ad02685177794ce1e7422298c3",
     "bytes": 465608,
     "role": "original experimental evidence"
   },
   {
-    "path": "05_Raw_data_for_Figures/prism_projects/Figure_3.prism",
-    "sha256": "79fe91576ae2b2d9d3fc2aa0bdb8bf9a8a16fdbaacc3aca7e562ba6e73cdd1af",
-    "bytes": 738159,
+    "path": "05_experimental_data/prism_projects/Figure_3.prism",
+    "sha256": "c3b1efb6062acfadd5bc7ec8a4561557ec4cfe88bdae3f52e424c01d0af781e3",
+    "bytes": 1013817,
     "role": "original experimental evidence"
   }
 ]

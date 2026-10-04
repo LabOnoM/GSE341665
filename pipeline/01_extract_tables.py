@@ -7,10 +7,8 @@ Purpose
 Robustly extract the DESeq2 DEG table and the per-sample TPM matrix from the two
 project .xlsx workbooks into clean CSVs for downstream analysis.
 
-Why this is not a one-line pandas.read_excel:
-  STAR_DEGs_ResOut_01_dcKOvsCON.xlsx declares a malformed worksheet <dimension>
-  (ref="A1"), which makes openpyxl's read-only path return an empty frame. We
-  therefore parse the sheet XML directly (shared strings + cells), which is exact.
+The parser reads worksheet XML directly to preserve source cells independently
+of cached worksheet dimensions. Both source tables have a grouping header row.
 
 Inputs  (relative to project root /mnt/Disk1/ZXY_2026):
   00.RawData/Bulk-RNAseq/02.TableOutput/STAR_DEGs_ResOut_01_dcKOvsCON.xlsx
