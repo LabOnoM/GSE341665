@@ -10,6 +10,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyArrowPatch
+from matplotlib.path import Path as MplPath
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'scripts/JDR_reanalysis/figures/FigureS1_breeding_scheme'
@@ -25,8 +26,9 @@ def main():
  assert DESIGN['constitutive']['figures']==['1'] and not DESIGN['constitutive']['4OHT']
  assert '3' in DESIGN['inducible']['figures'] and DESIGN['inducible']['4OHT']
  plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'pdf.fonttype':42})
- fig,ax=plt.subplots(figsize=(7.2,7.9));fig.subplots_adjust(0,0,1,1);ax.set_xlim(0,7.2);ax.set_ylim(0,7.9);ax.axis('off')
- ax.text(.25,7.58,'Experimental models and sample collection',fontweight='bold',fontsize=14)
+ # Match the author's displayed figure; editorial notes belong outside the artwork.
+ y_min,y_max=2.440073,7.332069
+ fig,ax=plt.subplots(figsize=(7.2,y_max-y_min));fig.subplots_adjust(0,0,1,1);ax.set_xlim(0,7.2);ax.set_ylim(y_min,y_max);ax.axis('off')
  def box(x,y,w,h,txt,color='#EEF2F5',size=10):
   ax.add_patch(Rectangle((x,y),w,h,facecolor=color,edgecolor='#708090',lw=.8))
   ax.text(x+w/2,y+h/2,txt,ha='center',va='center',fontsize=size,linespacing=1.3)
@@ -37,20 +39,18 @@ def main():
  box(.25,5.48,3.15,.83,'E16.5 male first-molar donors\n24-h culture; no 4-OHT\nConstitutive model: Figure 1')
  box(3.8,5.48,3.15,.83,'P0 male first-molar donors\n90 µmol/L 4-OHT for 24 h\nBoth genotypes treated identically')
  arrow(1.825,5.48,5.20);arrow(5.375,5.48,5.20)
- box(.25,3.88,3.15,1.32,'Subrenal-capsule transplantation\n8-week-old male recipients\nOne mutant + one control per kidney\nRecovery after 14 days\nn = 3 paired recipients')
+ box(.25,3.88,3.15,1.32,'Subrenal-capsule transplantation\n8-week-old male recipients\nOne mutant + one control per kidney\nRecovery after 14 days\nThree recipients; six grafts')
  box(3.8,3.88,3.15,1.32,'Mechanical epithelial separation\nRT-qPCR / immunoblot: Figures 2–3\nRNA sequencing: Figures 4–7\nInhibitor-response assays: Figure 3\nTissue-region image: Figure S2',size=9.5)
  arrow(1.825,3.88,3.62)
  box(.25,2.90,3.15,.72,'Figure 1\nRadiography, H&E, AMBN staining','#DCE6F4')
- # The transplant and dose-series notes are separate protocol branches, not
- # downstream steps of molecular tissue collection.
- box(3.8,2.53,3.15,1.03,'Inducible transplants: Figure S7\nSame paired-recipient design\nRecovery after 14 days',color='#FAEBDD',size=9.5)
- ax.plot([6.98,6.98,6.98],[5.86,3.52,3.05],color='#777777',lw=.8)
- ax.annotate('',xy=(6.94,3.05),xytext=(6.98,3.05),arrowprops={'arrowstyle':'->','lw':.8})
- ax.text(.3,2.26,'Inhibitors (24 h)',fontsize=10,fontweight='bold')
- ax.text(.3,2.02,'SB203580 10 µmol/L; dorsomorphin 10 µmol/L;\nSB525334 1 µmol/L; U0126 10 µmol/L; matched DMSO vehicle.',fontsize=9.5,va='top')
- ax.text(.3,1.36,'Scope and record checks',fontsize=10,fontweight='bold')
- ax.text(.3,1.16,'The five inhibitor groups belong to the inducible / 4-OHT-treated arm; individual\nCre assignments are not encoded in the supplied tables. Figure S6 is an external\nsingle-cell reference. Figure S3 examines the sequenced allele. Stock 016230,\nrecorded for constitutive K14-cre, conflicts with the JAX catalog; stock identity\nremains unresolved. Figure S4 shows the separate dose series (50/90/120 µmol/L),\nwhich preceded selection of 90 µmol/L.',fontsize=9,va='top',linespacing=1.35)
- for ext in ['pdf','png']:fig.savefig(OUT.with_suffix('.'+ext),dpi=300)
+ # Branch directly from treated tooth germs, bypassing epithelial separation.
+ box(3.8,2.53,3.15,1.03,'Inducible transplants: Figure S7\nSame graft allocation\nRecovery after 14 days',color='#FAEBDD',size=9.5)
+ branch=MplPath([(6.95,5.86),(7.15,5.86),(7.15,3.05),(6.95,3.05)],
+                [MplPath.MOVETO,MplPath.LINETO,MplPath.LINETO,MplPath.LINETO])
+ ax.add_patch(FancyArrowPatch(path=branch,arrowstyle='-|>',mutation_scale=12,
+                             color='#555555',lw=.9,joinstyle='miter'))
+ OUT.parent.mkdir(parents=True,exist_ok=True)
+ for ext in ['pdf','svg','png']:fig.savefig(OUT.with_suffix('.'+ext),dpi=300)
  plt.close(fig)
  print('Updated Figure S1 from September experimental allocation')
 
