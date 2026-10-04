@@ -52,7 +52,7 @@ os.makedirs(FIG, exist_ok=True)
 # ---- house style (identical to 07_figures.py) -------------------------------
 BLUE, RED = "#2166AC", "#B2182B"
 plt.rcParams.update({"font.size": 8, "axes.titlesize": 9, "axes.titleweight": "bold",
-                     "axes.titlelocation": "left",   # panel labels A/B/C/D left-aligned
+                     "axes.titlelocation": "left",   # panel labels A/B/C left-aligned
                      "figure.dpi": 150, "savefig.dpi": 300, "axes.spines.top": False,
                      "axes.spines.right": False, "hatch.linewidth": 0.45})
 
@@ -70,7 +70,7 @@ LOXP_CORE_LEN = 34
 # Smallest type size used anywhere in the figure, and the reproduction width the
 # figure is designed for. Asserted at build time so type cannot creep downwards.
 MIN_FONTSIZE = 6.0
-FIGSIZE = (11.0, 11.0)
+FIGSIZE = (11.0, 9.4)
 
 # Shared genomic window for panels A and C (panel B zooms into it).
 WINDOW = (73780000, 73792000)
@@ -914,86 +914,13 @@ def panel_C_ratio(ax, j, cov, ratio):
     return lo, hi, r.loc[i_fx], r.loc[i_op]
 
 
-# ============================ panel D ========================================
-def panel_D(ax, j, junc):
-    neg = j["negative_result"]
-    scols = sample_cols(junc)
-    samples = list(SAMPLE_ORDER)
-    incl = [tuple(int(v) for v in s.split("-"))
-            for s in neg["inclusion_junctions"].split(";")]
-    skip_j = (neg["predicted_cre_skip_junction"]["intron_start"],
-              neg["predicted_cre_skip_junction"]["intron_end"])
-
-    groups = []
-    for a, b in incl + [skip_j]:
-        row = junc[(junc.intron_start == a) & (junc.intron_end == b)]
-        if row.empty:
-            raise RuntimeError(f"junction {a}-{b} absent from smad4_junctions.csv")
-        row = row.iloc[0]
-        groups.append((row, [int(row[c]) for c in scols]))
-    # transcription order: exon8->exon9 first, then exon9->exon10, skip last
-    groups = sorted(groups, key=lambda g: (bool(str(g[0].is_predicted_cre_skip).lower()
-                                                == "true"), -g[0].intron_end))
-
-    pitch, gap = 1.0, 2.4
-    ymax = max(max(v) for _, v in groups) * 1.34
-    for gi, (row, vals) in enumerate(groups):
-        x0 = gi * (len(samples) * pitch + gap)
-        is_skip = str(row.is_predicted_cre_skip).lower() == "true"
-        if is_skip:
-            ax.add_patch(Rectangle((x0 - 0.6, 0), len(samples) * pitch + 0.2, ymax,
-                                   facecolor="#F2F2F2", edgecolor="#9A9A9A", lw=0.6,
-                                   linestyle=(0, (3, 2)), zorder=0))
-        for si, (s, v) in enumerate(zip(samples, vals)):
-            con = s.startswith("CON")
-            ax.bar(x0 + si * pitch, v, width=0.78,
-                   color=BLUE if con else RED, edgecolor="k", lw=0.4,
-                   hatch=None if con else "///", zorder=3)
-            ax.text(x0 + si * pitch, v + ymax * 0.018, str(v), ha="center", va="bottom",
-                    fontsize=6.1, fontweight="bold" if is_skip else "normal")
-        # group caption
-        if is_skip:
-            cap = (f"PREDICTED Cre excision product\nexon 8 → exon 10 skip\n"
-                   f"{fmt(row.intron_start)}–{fmt(row.intron_end)}")
-        else:
-            cap = (f"{row.donor_annot.replace('exon', 'exon ').replace('_end', '')} → "
-                   f"{row.acceptor_annot.replace('exon', 'exon ').replace('_start', '')}"
-                   f"  (normal)\n{fmt(row.intron_start)}–{fmt(row.intron_end)}")
-        ax.text(x0 + (len(samples) - 1) * pitch / 2, -ymax * 0.52, cap, ha="center",
-                va="top", fontsize=6.5, linespacing=1.35,
-                fontweight="bold" if is_skip else "normal",
-                color="#333333" if is_skip else "k")
-        if is_skip:
-            ax.text(x0 + (len(samples) - 1) * pitch / 2, ymax * 0.42,
-                    f"0 reads in {len(samples)}/{len(samples)} libraries",
-                    ha="center", va="center", fontsize=7.8, fontweight="bold",
-                    color="#333333",
-                    bbox=dict(boxstyle="round,pad=0.35", fc="white", ec="#333333", lw=0.8))
-
-    ax.set_xticks([gi * (len(samples) * pitch + gap) + si * pitch
-                   for gi in range(len(groups)) for si in range(len(samples))])
-    ax.set_xticklabels(samples * len(groups), rotation=90, fontsize=6.3)
-    for lbl, s in zip(ax.get_xticklabels(), samples * len(groups)):
-        lbl.set_color(BLUE if s.startswith("CON") else RED)
-    ax.set_ylim(0, ymax)
-    ax.set_xlim(-1.4, (len(groups) - 1) * (len(samples) * pitch + gap)
-                + (len(samples) - 1) * pitch + 1.4)
-    ax.set_ylabel("uniquely mapped\njunction reads", fontsize=7.0)
-    ax.tick_params(axis="y", labelsize=6.8)
-    ax.set_title("D   Splice junctions at the floxed exon — the predicted Cre excision "
-                 "junction has no supporting reads")
-    # PSI, the rule-of-three bound and the survey-scope caveats live in the legend.
-    psi = sorted(set(neg["psi_per_sample"].values()))
-    return psi[0]
-
-
 # ============================ assembly =======================================
 def build(j, reads, cov, ratio, junc, depth, fa):
     r = read_layout(reads)
     zw = zoom_windows(r)
 
     fig = plt.figure(figsize=FIGSIZE)
-    gs = fig.add_gridspec(6, 1, height_ratios=[4.40, 3.00, 3.40, 1.90, 2.20, 2.50],
+    gs = fig.add_gridspec(5, 1, height_ratios=[4.40, 3.00, 3.40, 1.90, 2.20],
                           left=0.098, right=0.972, top=0.912, bottom=0.055, hspace=0.50)
     axA = fig.add_subplot(gs[0])
     gsB = gs[1].subgridspec(1, 2, wspace=0.16)
@@ -1001,7 +928,6 @@ def build(j, reads, cov, ratio, junc, depth, fa):
     axBseq = fig.add_subplot(gs[2])
     axC = fig.add_subplot(gs[3], sharex=axA)
     axCr = fig.add_subplot(gs[4])
-    axD = fig.add_subplot(gs[5])
 
     panel_A(axA, j, cov, junc, zw)
     axA.tick_params(labelsize=6.8)
@@ -1013,25 +939,23 @@ def build(j, reads, cov, ratio, junc, depth, fa):
     picks, n_eligible = panel_B_sequence(axBseq, fig, j, r, fa, cap)
     panel_C_coverage(axC, j, cov, depth)
     lo, hi, fx_row, op_row = panel_C_ratio(axCr, j, cov, ratio)
-    psi = panel_D(axD, j, junc)
 
     de = j["smad4_differential_expression"]
     sdz = j["study_design"]
     fig.suptitle(
-        "Supplementary Figure S3 — RNA sequencing identifies the floxed Smad4 allele "
-        "but cannot determine whether it was excised",
+        "Read-level evidence at the conditional Smad4 locus",
         x=0.008, y=0.998, ha="left", fontsize=11, fontweight="bold")
     fig.text(0.008, 0.9755,
              wrap(
              f"{j['gene']['symbol']} ({j['gene']['ensembl_gene_id']}), "
              f"chr{j['gene']['chrom']}, {j['gene']['strand']} strand, {j['genome_build']}. "
-             f"Six bulk tooth-germ libraries, n = 3 dcKO vs 3 CON; driver "
+             f"Six bulk dental-epithelium libraries, n = 3 dcKO vs 3 CON; driver "
              f"{sdz['sequenced_material_driver']}; controls "
              f"{mathify(sdz['control_genotype'])}. "
              f"Smad4 gene-level log2FC {de['log2FoldChange']:+.4f}, adjusted "
              f"P = {de['padj']:.2e}.", 165),
              ha="left", va="top", fontsize=7.4, linespacing=1.45)
-    return fig, r, zw, (lo, hi, fx_row, op_row, psi, picks, n_eligible)
+    return fig, r, zw, (lo, hi, fx_row, op_row, picks, n_eligible)
 
 
 def save(fig, name):
@@ -1085,16 +1009,13 @@ def type_audit(fig):
 
 # ============================ legend =========================================
 def write_legend(j, r, ratio, junc, stats, path):
-    """Write the Figure S3 legend: 300-400 words, one paragraph per panel.
+    """Write the Figure S3 legend: panels A-C from the retained source data.
 
     Structure is fixed prose; every number, coordinate, sequence, ratio and
-    P value in it is read or derived at run time from step 20's outputs. Anything
-    needed for reproducibility but not for reading the figure -- the exon-numbering
-    and stable-ID ambiguity, the breakpoint and linker derivations, the read-selection
-    rule, the superseded prior statistic -- lives in Supplementary Methods B7 and is
-    deliberately not duplicated here.
+    P value in it is read or derived at run time from step 20's outputs. Detailed exon identities and sequence derivations are described in
+    Supplementary Methods B7 and the deposited locus evidence.
     """
-    lo, hi, fx_row, op_row, psi, picks, n_eligible = stats
+    lo, hi, fx_row, op_row, picks, n_eligible = stats
     g, fx, cas, neg = j["gene"], j["floxed_exon"], j["loxp_cassettes"], j["negative_result"]
     sdz = j["study_design"]
     n_by_gt = r.groupby("genotype")["sample"].nunique()
@@ -1103,17 +1024,7 @@ def write_legend(j, r, ratio, junc, stats, path):
     q = picks[0]
     read_txt = f"{q['sample']}, `{q.cigar}` at {fmt(q.pos)}"
 
-    # --- flanking-junction read range, straight out of the junction table -----
     scols = sample_cols(junc)
-    incl = [tuple(int(v) for v in s.split("-")) for s in neg["inclusion_junctions"].split(";")]
-    incl_vals = []
-    for a, b in incl:
-        row = junc[(junc.intron_start == a) & (junc.intron_end == b)]
-        if row.empty:
-            raise RuntimeError(f"junction {a}-{b} absent from smad4_junctions.csv")
-        incl_vals.extend(int(v) for v in row.iloc[0][scols])
-    j_lo, j_hi = min(incl_vals), max(incl_vals)
-
     skip_row = junc[junc.is_predicted_cre_skip.astype(str).str.lower() == "true"].iloc[0]
     skip_don = int(skip_row.donor_annot[4:-4])
     skip_acc = int(skip_row.acceptor_annot[4:-6])
@@ -1132,9 +1043,7 @@ def write_legend(j, r, ratio, junc, stats, path):
 
     txt = f"""# Supplementary Figure S3 \u2014 legend
 
-**RNA sequencing identifies the floxed *{g['symbol']}* allele but cannot determine whether it
-was excised.** It shows what the reads establish and why they cannot settle excision or its
-efficiency.
+**Read-level evidence at the conditional *{g['symbol']}* locus.**
 
 Six bulk dental-epithelium libraries from male donors: *n* = 3 dcKO ({sdz['sequenced_material_driver']}) versus 3
 {sdz['control_genotype']} controls. {j['genome_build']}, chr{g['chrom']}; *{g['symbol']}* is on
@@ -1162,28 +1071,8 @@ library plotted. All exons lie within {lo:.3f}\u2013{hi:.3f}; the floxed exon is
 {fx_row.ratio_readfrac_dcKO_over_CON:.3f} on reads
 (*P* = {fx_row.perm_p_two_sided_readfrac:.2f}), and the metrics rank the exons differently.
 
-**(D)** Uniquely mapped reads on the two flanking junctions and on the predicted excision
-junction
-(chr{g['chrom']}:{fmt(neg['predicted_cre_skip_junction']['intron_start'])}\u2013{fmt(neg['predicted_cre_skip_junction']['intron_end'])}),
-one bar per library. Per-exon *P* values are in `output/smad4_exon_ratio.csv`. The Cre excision
-is not detected: **0 reads, {n_lib}/{n_lib}
-libraries**.
-
-**The limit.** The allele is present; the excision product is undetectable \u2014 0 skip reads
-in {n_lib}/{n_lib} libraries against {j_lo}\u2013{j_hi} reads on each flanking junction, PSI =
-{psi:.3f} everywhere, one-sided 95% bound (rule of three)
-\u2265 {neg['one_sided_95_lower_bound_on_psi'] * 100:.1f}% of dcKO *{g['symbol']}* mRNA
-retaining the exon. Coverage cannot reach significance either:
-*P* = {float(ratio.perm_p_floor.iloc[0]):.2f} is the floor of the exact
-{int(ratio.n_permutations.iloc[0])}-permutation test at *n* = 3 vs 3. Both coverage and
-junctions are measured on **surviving mRNA**, so neither can distinguish little recombination
-from recombination followed by decay of the frameshifted transcript. Genomic PCR across the floxed interval is needed to assess DNA recombination.
-An excision-junction RNA assay and SMAD4 immunostaining provide complementary
-transcript- and protein-level evidence.
-
----
-Generated by `21_smad4_loxp_figure.py` from the step-20 outputs and `genome.fa`; all values are
-derived at run time. Details: Supplementary Methods B7.
+Per-exon *P* values and the complete splice-junction counts are provided with the
+reproduction data.
 """
 
     with open(path, "w") as fh:
@@ -1221,7 +1110,7 @@ if __name__ == "__main__":
           "duplicate copy marked ‡)")
     print("[21] reads decomposed       :", ", ".join(
         f"{q['sample']}@{q.site} ({int(q.aln_end) - int(q.pos) + 1} nt aligned)"
-        for q in stats[5]), f"of {stats[6]} eligible")
+        for q in stats[4]), f"of {stats[5]} eligible")
     print("[21] legend words           :", len(open(lp).read().split()))
     print(f"[21] smallest type          : {smallest:.1f} pt on a {fw:.1f}x{fh:.1f} in canvas; "
           + "; ".join(f"{k} {v[1]:.1f} pt" for k, v in pages.items()))

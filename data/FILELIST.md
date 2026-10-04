@@ -1,9 +1,7 @@
-# Inputs from the data deposit
+# Reproduction inputs
 
-The existing manuscript identifier is [10.5281/zenodo.21637766](https://doi.org/10.5281/zenodo.21637766). The ROAST snapshot is prepared locally for manual upload; obtain the matching snapshot from the authors until its uploaded version is confirmed. `INPUT_MANIFEST.json` names and hashes every file in the new data snapshot. Code is in this repository; the data record contains no code. The entry point verifies hashes and creates the expected project-shaped working paths automatically.
+`INPUT_MANIFEST.json` identifies the 56 required source inputs and their SHA-256 hashes. `RAW_EVIDENCE_MANIFEST.json` identifies the original Western blot image deck and both Prism projects; Figure 3 Prism overlaps the computational manifest. The matching data package therefore contains 58 scientific files, plus documentation and manifests.
 
-The six full auxiliary `.STAR.counts` files support the nonretained Sox2/Lgr5 evidence. They are not the Salmon/tximport gene-level model inputs. The manuscript claim JSON preserves the captured source used by the existing Data S3 paragraph index, not later author metadata or BMC paragraph numbering.
+The package retains the assembly, saved gene-level model, full-precision source workbooks, captured gene/expression tables, single-cell reference and raw count archive, pinned PanelApp/MGI records, and regional locus evidence. Archived outputs serving as inputs remain necessary because the gene-level model is reused. Fitted ROAST objects and journal results are regenerated and are not included.
 
-Every required runtime source is declared in INPUT_MANIFEST.json. The archived DESeq2_Processing.Rdata now supplies new program-model inputs (counts, full-precision TPM/effective lengths and W_1), without refitting or modifying original DESeq2 results. No cached fitted program model is a runtime input. Original GSE146855, pinned PanelApp/MGI records, regional locus alignments, the source workbooks and Figure_3.prism support the other retained workflows. Counts derive from the current manifest rather than a historical hard-coded target.
-
-RAW_EVIDENCE_MANIFEST.json separately retains the original blot deck and Figure_2.prism. The author will upload the matching validated data snapshot manually; the existing DOI is not evidence that revised files are already deposited.
+Validation benchmarks are under `results/` in this repository. The matching revised data snapshot is prepared for manual author upload to [Zenodo](https://doi.org/10.5281/zenodo.21637766); obtain it from the authors until that version is confirmed. Private reviewer access details are supplied separately.

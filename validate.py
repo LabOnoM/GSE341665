@@ -113,7 +113,7 @@ def main():
             for p in sorted((REPO/'results'/folder).glob('*.csv')):
                 if p.name.startswith('._'):continue
                 checks.append(compare_csv(p,args.destination/target/p.name,descriptive_t=True))
-        a=load_workbook(args.data_root/'07_latest_results/Additional_file_2.xlsx',read_only=True,data_only=True)
+        a=load_workbook(REPO/'results/validation/Additional_file_2.xlsx',read_only=True,data_only=True)
         b=load_workbook(args.destination/'Additional_files/Additional_file_2.xlsx',read_only=True,data_only=True)
         if a.sheetnames != b.sheetnames:raise ValueError('Workbook sheet names changed')
         for name in a.sheetnames:
@@ -138,7 +138,7 @@ def main():
         checks.append(compare_csv(args.data_root/'01_processed_data/reproduction_inputs/output'/name,output/name))
     figures={'manuscript':[f'Figure{i}' for i in range(4,8)],
              'reference':['FigureS6_scref_umap_dotplot'],'reference-figure':['FigureS6_scref_umap_dotplot'],
-             'locus':['FigureS3_smad4_loxp'],'supplement':['FigureS5A_pipeline','FigureS5B_reanalysis','FigureS3_smad4_loxp','FigureS1_breeding_scheme']}
+             'locus':['FigureS3_smad4_loxp'],'supplement':['FigureS5_workflow','FigureS3_smad4_loxp','FigureS1_breeding_scheme']}
     required=figures.get(args.mode,[])
     if args.mode=='all':required=list(dict.fromkeys(sum(figures.values(),[])))
     # Main figures have descriptive suffixes; require one nonempty match per format.

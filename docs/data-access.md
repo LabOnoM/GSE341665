@@ -1,9 +1,7 @@
-# Data access and manual upload status
+# Data access
 
-Code remains in the existing private [GitHub repository](https://github.com/LabOnoM/GSE341665); access settings are preserved. GEO GSE341665 supplies provider-filtered reads and complete processed matrices. The existing manuscript data identifier is [10.5281/zenodo.21637766](https://doi.org/10.5281/zenodo.21637766); this migration does not assert that identifier serves the revised files. The author will manually upload the validated local snapshot. No Zenodo login, account inspection, remote synchronization, upload, version creation or publication was performed.
+The code is maintained in [GSE341665 on GitHub](https://github.com/LabOnoM/GSE341665). Provider-filtered reads and complete count/TPM matrices are associated with [GEO GSE341665](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE341665). Reproduction inputs and original experimental evidence are associated with [Zenodo 21637766](https://doi.org/10.5281/zenodo.21637766).
 
-Use the matching author-supplied data snapshot until its exact uploaded version has been identified. The code input manifest lists required source files and hashes. The local manual-upload guide records files, replacements and the code commit, and leaves the new record/version DOI and publication date for the author to finalize. Existing restricted-access/license preferences are retained in metadata.
+The matching revised data snapshot is prepared locally for manual author upload. Until its uploaded version is confirmed, obtain it from the authors and verify it against `data/INPUT_MANIFEST.json`. Repository access and deposit publication settings are unchanged. Reviewer access information is supplied separately through the journal.
 
-The original WesternBlotRawImages.pptx, Figure_2.prism and Figure_3.prism remain experimental evidence. Open Data S1/S2 retain 195 inhibitor measurements and 52 comparisons. The computational manifest overlaps the separate raw-evidence manifest; absence from computational inputs never makes unique evidence disposable. The duplicate inhibitor_normalized directory remains removed.
-
-The [historical primary-analysis report](http://smad4kotooth.nexitia.ai/) predates this ROAST migration and includes excluded exploratory work. It complements versioned archives and does not represent the new program run.
+The source-data archive contains 56 required inputs plus the original Western blot image deck and Figure 2 Prism project. Figure 3 Prism is a declared computational input. Data S1/S2 are reproduced from that native project and are also available as CSV benchmarks under `results/inhibitor_data/`; they are not duplicated in the revised data archive. Journal Additional files contain the reported tables and figures.

@@ -205,8 +205,8 @@
   },
   {
     "path": "05_Raw_data_for_Figures/prism_projects/Figure_3.prism",
-    "sha256": "569ad40e99e9085b6d0d7285f2754aed504b2df8d2d2fa9b9df89387ca0bd977",
-    "bytes": 739367,
+    "sha256": "79fe91576ae2b2d9d3fc2aa0bdb8bf9a8a16fdbaacc3aca7e562ba6e73cdd1af",
+    "bytes": 738159,
     "role": "source input"
   },
   {
@@ -220,90 +220,6 @@
     "sha256": "b523be829dae107d53da1e3e8465a750d6d16d1af7745e8025dcb1643c7f3346",
     "bytes": 106435627,
     "role": "source input"
-  },
-  {
-    "path": "07_latest_results/Additional_file_2.xlsx",
-    "sha256": "7340b1ce98bb3fdea1311e7c6afb57b3c248859c9c686fc97301c19252714f9e",
-    "bytes": 3972907,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Additional_file_3.csv",
-    "sha256": "d5538835b17ea398bc84b9031eae3d0fe4b1c8ed753aead5e5e4aebcaf270817",
-    "bytes": 2136,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Additional_file_4.csv",
-    "sha256": "3811839f2fa504ed4bdae2ff44ae760eb9ec09b00cd0ee0b8293046db2ec0ad9",
-    "bytes": 2863264,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Additional_file_5.csv",
-    "sha256": "8f77b4c490fdd92f293c7cc7b7958c8c164c038f9d5e68388fc241b9148b2141",
-    "bytes": 588,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Additional_file_6.csv",
-    "sha256": "a0fb74335a24adc1867e8bbc6ff89c0e64e3cdb71df5ea028e1e70319787c623",
-    "bytes": 612,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Additional_file_7.csv",
-    "sha256": "d231e7092a5d9696f4633b399951a35e8d5d8e21f8e3ba469c801d6ece15604c",
-    "bytes": 681,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S1_inhibitor_normalized_values.csv",
-    "sha256": "a77c80697ddf3244baff73d2630ec71666ebbaad80625226d97f14ec5063b21d",
-    "bytes": 27923,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S2_inhibitor_ANOVA_Dunnett.csv",
-    "sha256": "d5c6b51d9a3c5e8fcf25ceff5b6a1c8599b34ec670940cbfd022c4668bac4121",
-    "bytes": 13091,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_all_gene_statistics.csv",
-    "sha256": "9d80692dda6e6ab3ab7e3e555ceeacd6d80419caa9904741464e68b461add43f",
-    "bytes": 5474448,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_deconvolution_tests.csv",
-    "sha256": "b6be1ac055e3763aecffdabfb1160689b11841a1c07ec8138cbf53823b035f37",
-    "bytes": 281,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_displayed_genes.csv",
-    "sha256": "502adfd52589f451382e14b72f04bc8f9e60686489233aabcc381e79643ba78d",
-    "bytes": 61219,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_nonretained_gene_counts.csv",
-    "sha256": "5aa66304b56bcf672a229ce6db92fdafbbfc2d754e3d1f13cf953d40f4e50e2c",
-    "bytes": 1731,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_program_tests.csv",
-    "sha256": "6a49dd5f04442f57abd97f27f856919ee2da09098b4205ce65fbcd6a94b384e5",
-    "bytes": 1554,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_text_claim_index.csv",
-    "sha256": "71a66ceb22b1ba21c8c241af44e3a7cdef3941e5a25d44f4d70a5bb5543cd452",
-    "bytes": 17497,
-    "role": "validation benchmark"
   },
   {
     "path": "08_locus_alignments/CON1.STAR.Aligned.sortedByCoord.out.bam",
@@ -418,23 +334,5 @@
     "sha256": "550dbb6640aad535c1331abb85a014511440148a47beae54f3d5a81d1fb251c8",
     "bytes": 314,
     "role": "source input"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_program_sample_metadata.csv",
-    "sha256": "45ce15c9d4401d36d56429f0b851eed755c548c81bea5d9d0864c1e6ca1eadc6",
-    "bytes": 205,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_program_test_sensitivity.csv",
-    "sha256": "eff7bca1532411952c197f0ce84aa7862231f3d4f5778b0e6d47ad87f9ce0068",
-    "bytes": 2364,
-    "role": "validation benchmark"
-  },
-  {
-    "path": "07_latest_results/Supplementary_Data_S3_program_membership.csv",
-    "sha256": "adb3527db0b00dd478f4bcc8b95d66fd2a1823f73faeb6438390d4bac2d186f9",
-    "bytes": 2140,
-    "role": "validation benchmark"
   }
 ]

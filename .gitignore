@@ -4,6 +4,7 @@ data/**
 !data/**/
 !data/**/FILELIST.md
 !data/INPUT_MANIFEST.json
+!data/RAW_EVIDENCE_MANIFEST.json
 reference/**
 !reference/FILELIST.md
 
