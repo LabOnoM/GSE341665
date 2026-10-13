@@ -71,7 +71,7 @@ The final validation compares 35 numerical tables, workbook sheets and model/ref
 Rscript tests/test_program_models.R
 ```
 
-Outputs include figures, numerical tables, model objects, command logs, `EXECUTION.json` and `VALIDATION.json`. Python regression checks and the R synthetic-model checks cover input separation, missing/corrupt evidence, probability handling and the production program models. GitHub Actions runs code checks without restricted study inputs.
+Outputs include figures, numerical tables, model objects, command logs, `EXECUTION.json` and `VALIDATION.json`. Python regression checks and the R synthetic-model checks cover input separation, missing/corrupt evidence, probability handling and the production program models. `scripts/ci-local.sh` runs these code checks locally without restricted study inputs.
 
 ## Analysis settings
 
@@ -82,6 +82,23 @@ Primary gene-program inference uses lengthScaledTPM-style counts reconstructed w
 `--geo-root /path/to/GEO` optionally checks retained TPM and count entries against GEO exports. Source workbooks preserve full precision; GEO TPM was exported to four decimal places. `--bam-dir /path/to/alignments` optionally substitutes full alignments for the six deposited regional BAMs. Regional BAMs retain the original records overlapping chr18:73,768,343–73,837,915 and support the locus analysis.
 
 The [reproduction map](docs/reproduction-map.md) describes each dependency, and [Supplementary Methods](docs/supplementary_methods.md) describe the analyses. The package reproduces computational outputs from the supplied inputs; it does not reconstruct raw Ct values or band intensities from normalized measurements. See [data access](docs/data-access.md) and [validation results](docs/reproduction-validation.json).
+
+## Checks and deploys
+
+`bash scripts/ci-local.sh` runs the code checks: the Python regression tests, byte-compilation and shell syntax check (Python 3.12 and `environment/python-lock.txt`), then the R program-model checks (R 4.3.2 and the isolated library from `environment/program-packages.tsv`). It replaces the former GitHub Actions workflow, which had no deploy or release step.
+
+### CI/CD is manual: no GitHub Actions (owner's decision, 2026-10-13)
+
+LabOnoM does not use GitHub Actions: there is no budget for it. Never add a file under `.github/workflows/`, never
+rely on or wait for a GitHub status check, and never describe a change as "green on CI". Instead:
+
+- **Before every merge**, run this repository's checks locally (`scripts/ci-local.sh`) and write the pass, fail and
+  skip counts in the pull request.
+- **Deploys and releases** are run by hand from a machine that holds the owner's credentials, with the scripts in
+  `scripts/` (or the documented commands), never by a hosted runner; record what ran and its result (revision,
+  version, digest) in the pull request or the session receipt.
+- Steps that need a platform this machine is not (macOS or Windows builds, signing) are run on such a machine by
+  the owner, or are recorded as not run; they are never claimed.
 
 ## Citation and licensing
 
